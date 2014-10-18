@@ -1,0 +1,3 @@
+class CheckSiteIdController < ApplicationController
+
+end

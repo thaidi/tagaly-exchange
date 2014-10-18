@@ -1,0 +1,574 @@
+.cf:before, .cf:after {
+    content: "";
+    display: table;
+}
+.cf:after {
+    clear: both;
+}
+.cf:before, .cf:after {
+    content: "";
+    display: table;
+}
+.menudropdown {
+
+display: block;
+
+height: 35px;
+
+margin: 0 auto;
+
+max-width: 1100px;
+
+min-width: 960px;
+
+padding: 0 20px;
+
+position: relative;
+
+}
+
+.menudropdown .nav {
+
+    float: left;
+
+    list-style-type: none;
+
+    margin: 6px 0 0 12px;
+
+    padding: 0;
+
+}
+
+.menudropdown .nav li {
+
+    color: #777777;
+
+    display: block;
+
+    float: left;
+
+    margin: 0;
+
+    padding: 0;
+
+}
+
+.menudropdown .nav li:hover a {
+
+    text-decoration: underline;
+
+}
+
+.menudropdown .nav li:active em, .header .nav li.on em {
+
+}
+
+.menudropdown .nav li.marketplace em {
+
+    background: url("/images/i/marketplace.png") no-repeat scroll 16px 12px rgba(0, 0, 0, 0);
+
+    padding-left: 50px;
+
+}
+
+.menudropdown .nav li a {
+
+    color: #444444;
+
+    display: block;
+
+    text-decoration: none;
+
+}
+
+.menudropdown .nav li em {
+
+    display: block;
+
+    float: left;
+
+    font-size: 13px;
+
+    font-style: normal;
+
+    line-height: 17px;
+
+    padding: 5px 11px 6px 2px;
+
+    text-shadow: 1px 1px 0 #FFFFFF;
+
+}
+
+.menudropdown .rightnav {
+
+    float: right;
+
+    list-style-type: none;
+
+    margin: 6px 0 0;
+
+    padding: 0;
+
+    position: relative;
+
+}
+
+.menudropdown .rightnav li {
+
+    float: left;
+
+    margin: 0 0 0 6px;
+
+    padding: 0;
+
+    position: relative;
+
+}
+
+.menudropdown .rightnav li a {
+
+    display: block;
+
+    float: left;
+
+    position: relative;
+
+    text-decoration: none;
+
+    z-index: 7;
+
+}
+
+.menudropdown .rightnav li em {
+
+    font-style: normal;
+
+}
+
+.menudropdown .rightnav li em.t {
+
+    border: 1px solid rgba(0, 0, 0, 0);
+
+    color: #444444;
+
+    display: block;
+
+    float: left;
+
+    font-size: 13px;
+
+    font-style: normal;
+
+    font-weight: normal;
+
+    line-height: 16px;
+
+    min-width: 7px;
+
+    padding: 4px 12px 6px 10px;
+
+    text-shadow: 1px 1px 0 #FFFFFF;
+
+}
+
+.menudropdown .rightnav li a:active em.t {
+
+    padding-top: 5px;
+
+}
+
+.menudropdown .rightnav.loggedin li.account em.t {
+
+    padding-right: 25px;
+
+}
+
+.menudropdown .rightnav li.drop .arrow {
+
+    border-color: #777777 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+
+    border-style: solid;
+
+    border-width: 6px 3px;
+
+    height: 0;
+
+    position: absolute;
+
+    right: 14px;
+
+    top: 11px;
+
+    width: 0;
+
+}
+
+@-moz-document url-prefix("") {
+
+.menudropdown .rightnav li.drop .arrow {
+
+    top: 12px;
+
+}
+
+}
+
+.menudropdown .rightnav li.account li.avatar img {
+
+    border-right: 6px solid #FFFFFF;
+
+    left: 0;
+
+    position: absolute;
+
+    top: 3px;
+
+}
+
+.menudropdown .rightnav li.messages span.count {
+
+    background: -moz-linear-gradient(center top , #0080FF, #0066CC) repeat scroll 0 0 rgba(0, 0, 0, 0);
+
+    border-radius: 2px;
+
+    color: #FFFFFF;
+
+    display: block;
+
+    font-size: 11px;
+
+    line-height: 8px;
+
+    min-width: 9px;
+
+    padding: 4px;
+
+    position: absolute;
+
+    right: 72px;
+
+    text-align: center;
+
+    text-shadow: none;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop:hover em.t {
+
+    background: none repeat scroll 0 0 #FFFFFF;
+
+    border-color: #BBBBBB #BBBBBB #FFFFFF;
+
+    border-radius: 3px 3px 0 0;
+
+    box-shadow: 0 -1px 1px #CCCCCC;
+
+    z-index: 3;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop .accountmenu {
+
+    background: none repeat scroll 0 0 #FFFFFF;
+
+    border: 1px solid #BBBBBB;
+
+    border-radius: 3px 0 3px 3px;
+
+    box-shadow: 0 0 2px #CCCCCC;
+
+    display: none;
+
+    list-style-type: none;
+
+    margin: 0;
+
+    padding: 6px 17px;
+
+    position: absolute;
+
+    right: 0;
+
+    top: 27px;
+
+    width: 280px;
+
+    z-index: 6;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop:hover .accountmenu {
+
+    display: block;
+
+}
+
+.menudropdown .accountmenu .balancemenu {
+
+    -moz-border-bottom-colors: none;
+
+    -moz-border-left-colors: none;
+
+    -moz-border-right-colors: none;
+
+    -moz-border-top-colors: none;
+
+    background: none repeat scroll 0 0 #F5F5F5;
+
+    border-color: #E1E1E1 #FFFFFF #FFFFFF;
+
+    border-image: none;
+
+    border-radius: 0 0 3px 3px;
+
+    border-right: 1px solid #FFFFFF;
+
+    border-style: solid;
+
+    border-width: 1px;
+
+    display: block;
+
+    line-height: 18px;
+
+    margin: 10px -17px -6px;
+
+    padding: 8px 15px 6px;
+
+}
+
+.menudropdown .accountmenu .balancemenu .amount {
+
+    color: #009900;
+
+    font-size: 22px;
+
+    text-shadow: 1px 1px 0 #FFFFFF;
+
+}
+
+.menudropdown .accountmenu .balancemenu .pending .amount {
+
+    color: #BBBBBB;
+
+}
+
+.menudropdown .accountmenu .balancemenu .amount sup {
+
+    display: block;
+
+    float: left;
+
+    font-size: 12px;
+
+    line-height: 8px;
+
+    margin: 2px 2px 0 0;
+
+}
+
+.menudropdown .accountmenu .balancemenu .title {
+
+    color: #666666;
+
+    display: block;
+
+    font-size: 10px;
+
+    margin: 0 25px 0 0;
+
+    text-shadow: 1px 1px 0 #FFFFFF;
+
+    text-transform: uppercase;
+
+}
+
+.menudropdown .accountmenu .balancemenu .pending .title {
+
+    color: #BBBBBB;
+
+}
+
+.menudropdown .rightnav li .balancemenu a.button {
+
+    float: left;
+
+    margin: 9px 0 0;
+
+}
+
+.menudropdown .rightnav li .balancemenu .logout {
+
+    float: right;
+
+    margin: 0 0 0 15px;
+
+}
+
+.menudropdown .rightnav li .balancemenu .logout a em {
+
+    background: url("../images/power_off.png") no-repeat scroll center 0 rgba(0, 0, 0, 0);
+
+    color: #777777;
+
+    display: block;
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    padding: 26px 0 0;
+
+    text-align: center;
+
+    text-shadow: 1px 1px 0 #FFFFFF;
+
+    text-transform: uppercase;
+
+}
+
+.menudropdown .rightnav li .balancemenu .logout:hover a em {
+
+    background-image: url("../images/power_on.png");
+
+    color: #333333;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop ul {
+
+    float: left;
+
+    list-style-type: none;
+
+    margin: 6px 20px 5px 0;
+
+    padding: 0;
+
+    width: 130px;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop ul.first {
+
+    width: 100%;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop ul.first li.title {
+
+    width: 258px;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop ul.first li {
+
+    float: left;
+
+    width: 48%;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop ul.last {
+
+    margin-right: 0;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop ul li.title {
+
+    -moz-border-bottom-colors: none;
+
+    -moz-border-left-colors: none;
+
+    -moz-border-right-colors: none;
+
+    -moz-border-top-colors: none;
+
+    border-color: -moz-use-text-color -moz-use-text-color #EEEEEE;
+
+    border-image: none;
+
+    border-style: none none solid;
+
+    border-width: medium medium 2px;
+
+    color: #444444;
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    line-height: 17px;
+
+    margin-bottom: 5px;
+
+    text-transform: uppercase;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop ul li.title.avatar {
+
+    padding-left: 22px;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop ul li {
+
+    display: block;
+
+    float: none;
+
+    margin: 0;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop ul li a {
+
+    float: none;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop ul li em, .menudropdown .rightnav.loggedin li.drop:hover ul li em {
+
+    background: none repeat scroll 0 0 #FFFFFF;
+
+    border: medium none;
+
+    border-radius: 3px;
+
+    box-shadow: none;
+
+    color: #0066CC;
+
+    display: block;
+
+    float: none;
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    height: auto;
+
+    line-height: 13px;
+
+    padding: 6px 0;
+
+    text-transform: none;
+
+    white-space: nowrap;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop ul li em:hover {
+
+    text-decoration: underline;
+
+}
+
+.menudropdown .rightnav.loggedin li.drop ul li.avatar em, .menudropdown .rightnav.loggedin li.drop:hover ul li.avatar em {
+
+    padding-left: 33px;
+
+}

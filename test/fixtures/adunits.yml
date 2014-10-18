@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  description: MyString
+  backupadtype: MyString
+  alternate: MyString
+  fullbackground: MyString
+  adtype: MyString
+  devicetype: MyString
+  format: MyString
+  styleid: MyString
+  keywordhint: MyString
+  userid: MyString
+  usertype: MyString
+
+two:
+  name: MyString
+  description: MyString
+  backupadtype: MyString
+  alternate: MyString
+  fullbackground: MyString
+  adtype: MyString
+  devicetype: MyString
+  format: MyString
+  styleid: MyString
+  keywordhint: MyString
+  userid: MyString
+  usertype: MyString

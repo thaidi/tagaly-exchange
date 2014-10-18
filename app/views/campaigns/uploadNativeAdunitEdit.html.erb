@@ -1,0 +1,486 @@
+		<script type="text/javascript" src="/assets/bootstrap-dropdown.js"></script>
+		<link href="/assets/smaple.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+		<link rel="stylesheet" href="/assets/bsa.min.css" type="text/css" />
+		<link rel="stylesheet" href="/assets/adblock.css" type="text/css" />
+		<link rel="stylesheet" href="/assets/skinny.css" type="text/css" media="screen and (max-width: 1100px)" />
+		<script>
+		$(document).ready(function(){
+				$("#submitNativeAd").click(function(){
+					failed = false;
+					$(".nativeadsfields").each(function(){
+						id = $(this).attr("id");
+						if($(this).hasClass( "images" )) {
+							
+						} else {
+							value = $(this).val();
+							if(value == '') {
+								failed = true;
+								$(this).parent().children(".error").remove();
+								$(this).parent().append("<div class='error' style='display:inline;'> This field cannot be blank. </div>")
+							} else {
+								$(this).parent().children(".error").remove();
+							}
+							if($(this).hasClass("url")) {
+								if(!value.match(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/)) {
+									failed = true;
+									$(this).parent().children(".error").remove();
+									$(this).parent().append("<div class='error' style='display:inline;'> Please give a valid url. </div>")
+								}
+								else {
+									if(value.length > 1024 ) {
+										failed = true;
+										$(this).parent().children(".error").remove();
+										$(this).parent().append("<div class='error' style='display:inline;'> Url cannot exceed more than 1024 chars. </div>")
+									} else {
+										$(this).parent().children(".error").remove();
+									}
+								}
+							}
+						}
+					});
+					if(failed) {
+						return false;
+					}
+				});
+				$(".images").change(function(e) {
+					id = $(this).attr("id");
+					if(id == "nativeadsimage") { divId == 'linAdunitsimage'; }
+					if(id == "nativeadsauthorimage") { divId == 'linAdunitsauthorimage'; }
+					if(id == "nativeadscaret") { divId == 'linAdunitscaret'; }
+					if(id == "nativeadsvideosnapshot") { divId == 'linAdunitsvideosnapshot'; }
+					if(id == "nativeadsyoutubesnapshot") { divId == 'linAdunitsyoutubesnapshot'; }
+					if(id == "nativeadsfacebooklikeoranysocialmediawidget") { divId == 'linAdunitsfacebooklikeoranysocialmediawidget'; }
+					if(id == "nativeadsfacebookshare") { divId == 'linAdunitsfacebookshare'; }
+					if(id == "nativeadsgoogleplusshare") { divId == 'linAdunitsgoogleplusshare'; }
+					if(id == "nativeadslinkedinshare") { divId == 'linAdunitslinkedinshare'; }
+					if(id == "nativeadstwittershare") { divId == 'linAdunitstwittershare'; }
+					if(id == "nativeadsseriesoficons") { divId == 'linAdunitsseriesoficons'; }
+					var _URL = window.URL || window.webkitURL;
+					var _validFileExtensions = [".jpg",".gif", ".png",".jpeg",".swf",".fla"];
+					var ext = $('#' + id).val().split('.').pop().toLowerCase();
+					if($.inArray(ext, ['gif','png','jpg','jpeg','swf','fla']) == -1) {
+							alert("Invalid File, Please upload images with extension 'gif' , 'png' , 'jpg' , 'jpeg' only.");
+					} else {
+								var file, img;
+								if ((file = this.files[0])) {
+									img = new Image();
+									img.onload = function(e) {
+										$("#" + divId).children("img").attr("src",img.src)
+									};
+									img.src = _URL.createObjectURL(file);
+								}
+						}
+				});
+		});
+		</script>
+		<style>
+			<% if @fontDetails.present? %>
+				<% @fontDetails.each do |fontDetls| %>
+					@font-face {
+						font-family: <%= fontDetls.name %>;
+						src: url( /fonts/<%= fontDetls.url %>);
+					}
+				<% end %>
+			<% end %>
+		</style>
+		<script>
+		$(document).ready(function () {
+			$(".image").on("click",function(){
+				//alert($(this).closest('li').find('.libraryad').val());
+			});
+			$(".nativeadsfields").change(function(){
+				id = $(this).attr("id");
+				idVal = id.substr(9);
+				value = $(this).val();
+				divId = "linAdunits" + idVal;
+				if($(this).hasClass( "images" )) {
+				} else {
+					if(value != '') {
+						$(this).parent().children(".error").remove();
+					} else {
+						$(this).parent().children(".error").remove();
+						$(this).parent().append("<div class='error' style='display:inline;'> This field cannot be blank. </div>")
+					}
+				}
+				if($(this).hasClass("url")) {
+					if(!value.match(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/)) {
+						$(this).parent().children(".error").remove();
+						$(this).parent().append("<div class='error' style='display:inline;'> Please give a valid url. </div>")
+					}
+					else {
+						if(value.length > 1024 ) {
+							failed = true;
+							$(this).parent().children(".error").remove();
+							$(this).parent().append("<div class='error' style='display:inline;'> Url cannot exceed more than 1024 chars. </div>")
+						} else {
+							$(this).parent().children(".error").remove();
+						}
+					}
+				}
+				if (idVal == "coloredtextbox" || idVal == "headline" || idVal == "description" || idVal == "comments" || idVal == "authorname" || idVal == "placeholder" || idVal == "secondheadline" || idVal == "categorytitle" || idVal == "more" || idVal == "nsotp" || idVal == "owtoti" || idVal == "ncotp" || idVal == "readmore" || idVal == "multiplecategories" || idVal == "quotesbelowthephoto" || idVal == "enabletags" || idVal == "categorytitleiconorbox" || idVal == "timeago" || idVal == "horizontalline" || idVal == "dividerline" || idVal == "followmacontwitter" ) {	
+					$("#"+divId).html(value);
+				}
+			
+			});
+			classname = $(".nativeadsfields");
+			classname.each(function(){
+				id = $(this).attr("id");
+				idVal = id.substr(9);
+				value = $(this).val();
+				divId = "linAdunits" + idVal;
+				if (idVal == "coloredtextbox" || idVal == "headline" || idVal == "description" || idVal == "comments" || idVal == "authorname" || idVal == "placeholder" || idVal == "secondheadline" || idVal == "categorytitle" || idVal == "more" || idVal == "nsotp" || idVal == "owtoti" || idVal == "ncotp" || idVal == "readmore" || idVal == "multiplecategories" || idVal == "quotesbelowthephoto" || idVal == "enabletags" || idVal == "categorytitleiconorbox" || idVal == "timeago" || idVal == "horizontalline" || idVal == "dividerline" || idVal == "followmacontwitter" ) {	
+					$("#"+divId).html(value);
+				}
+			});
+		});
+		</script>
+		
+		<style>
+			body {
+					background: none repeat scroll 0 0 #ffffff;
+				}
+				
+			select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input 
+				{
+					height: 25px;
+					line-height: 14px;
+					padding: 5px 8px;
+				}
+			td{ vertical-align: top; padding: 10px; }
+			.contentwrap .content .seventyleft { width:100%; }
+		</style>
+
+		
+		<div id="realpage">
+			<div class="contentwrap cf full">
+				<div class="breathablewrap">
+					<div class="heading cf">
+						<div class="breadcrumbs">
+							<a href="/cart"> View Cart <strong></strong></a>
+							<a class="off"> Add Creative </a>	
+						</div>	
+						<div rel="Add Creative | Tagaly" id="realpagetitle"></div>
+						<span class="title">Add Creative</span>
+					</div>
+					<div class="content nobg cf">
+						<ul class="boxsummary creative cf">
+							<li>
+								<div class="bspad">
+									<span class="title">Native Ads</span>
+									<em class="sub"><%= @adunitDetails['format'] %></em>
+								</div>
+							</li>
+						</ul>
+						<div class="separator border cf"></div>
+						<div class="pad cf">
+							<div class="seventyleft cf">
+							
+					<ul style="margin-top:1px;" class="nav nav-tabs">
+            <li id="new_fb_ad_btn" class="active">
+              <a data-toggle="tab" href="#new_facebook_ad_form">
+              <i class="icon-facebook-sign"></i> Upload New Creative
+              </a>
+            </li>
+          </ul>
+          <div class="tab-content">
+<table>
+<tr>
+<td>
+<div id="new_facebook_ad_form" class="tab-pane active" style="width:214px;">
+  <form action="" method="POST" enctype="multipart/form-data">
+
+    <input type="hidden" name="authenticity_token" id="authenticity_token" value="<%= form_authenticity_token() %>" />
+			<div>
+				<label> Ad Name: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["name"] %>' id="nativeadsname" name="nativead[name]" class="nativeadsfields">
+			</div>
+			<div>
+				<label> Destination URL : </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["destinationUrl"] %>' id="nativeadsDestinationUrl" name="nativead[destinationUrl]" class="nativeadsfields url">
+			</div>
+		<% if @formdata["formdata"]["linAdunitsheadline"].present? %>
+			<div>
+				<label> Headline: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["headline"] %>' id="nativeadsheadline" name="nativead[headline]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitssecondheadline"].present? %>
+			<div>
+				<label> Second Headline: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["secondheadline"] %>' id="nativeadssecondheadline" name="nativead[secondheadline]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsdescription"].present? %>
+			<div>
+				<label> Description: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["description"] %>' id="nativeadsdescription" name="nativead[description]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitscomments"].present? %>
+			<div>
+				<label> Comments: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["comments"] %>' id="nativeadscomments" name="nativead[comments]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsauthorname"].present? %>
+			<div>
+				<label> Authorname: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["authorname"] %>' id="nativeadsauthorname" name="nativead[authorname]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsplaceholder"].present? %>
+			<div>
+				<label> Placeholder: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["placeholder"] %>' id="nativeadsplaceholder" name="nativead[placeholder]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitscategorytitle"].present? %>
+			<div>
+				<label> Category Title: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["categorytitle"] %>' id="nativeadscategorytitle" name="nativead[categorytitle]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsmore"].present? %>
+			<div>
+				<label> More: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["more"] %>' id="nativeadsmore" name="nativead[more]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsnsotp"].present? %>
+			<div>
+				<label> nsotp: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["nsotp"] %>' id="nativeadsnsotp" name="nativead[nsotp]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsowtoti"].present? %>
+			<div>
+				<label> owtoti: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["owtoti"] %>' id="nativeadsowtoti" name="nativead[owtoti]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsncotp"].present? %>
+			<div>
+				<label> ncotp: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["ncotp"] %>' id="nativeadsncotp" name="nativead[ncotp]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsreadmore"].present? %>
+			<div>
+				<label> Read more: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["readmore"] %>' id="nativeadsreadmore" name="nativead[readmore]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsmultiplecategories"].present? %>
+			<div>
+				<label> Multiple Categories: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["multiplecategories"] %>' id="nativeadsmultiplecategories" name="nativead[multiplecategories]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsquotesbelowthephoto"].present? %>
+			<div>
+				<label> Quotes Below the Photo: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["quotesbelowthephoto"] %>' id="nativeadsquotesbelowthephoto" name="nativead[quotesbelowthephoto]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsenabletags"].present? %>
+			<div>
+				<label> Enable Tags: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["enabletags"] %>' id="nativeadsenabletags" name="nativead[enabletags]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitscategorytitleiconorbox"].present? %>
+			<div>
+				<label> Category Title Icon or Box: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["categorytitleiconorbox"] %>' id="nativeadscategorytitleiconorbox" name="nativead[categorytitleiconorbox]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsfollowmacontwitter"].present? %>
+			<div>
+				<label> Follow Mac On Twitter: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["followmacontwitter"] %>' id="nativeadsfollowmacontwitter" name="nativead[followmacontwitter]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitscategorysubtab"].present? %>
+			<div>
+				<label> Category Subtab: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["categorysubtab"] %>' id="nativeadscategorysubtab" name="nativead[categorysubtab]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsauthorbyline"].present? %>
+			<div>
+				<label> Author by Line: </label>
+				<input type="text" value='<%= $editNativeAdDetails["details"]["authorbyline"] %>' id="nativeadsauthorbyline" name="nativead[authorbyline]" class="nativeadsfields">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsimage"].present? %>
+			<div>
+				<label> Image: </label>
+				<input type="file" id="nativeadsimage" name="nativead[image]" class="nativeadsfields images">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsauthorimage"].present? %>
+			<div>
+				<label> Author Image: </label>
+				<input type="file" id="nativeadsauthorimage" name="nativead[authorimage]" class="nativeadsfields images">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitscaret"].present? %>
+			<div>
+				<label> Caret Image: </label>
+				<input type="file" id="nativeadscaret" name="nativead[caret]" class="nativeadsfields images">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsvideosnapshot"].present? %>
+			<div>
+				<label> Videosnap Shot: </label>
+				<input type="file" id="nativeadsvideosnapshot" name="nativead[videosnapshot]" class="nativeadsfields images">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsyoutubesnapshot"].present? %>
+			<div>
+				<label> Youtube Snapshot: </label>
+				<input type="file" id="nativeadsyoutubesnapshot" name="nativead[youtubesnapshot]" class="nativeadsfields images">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsfacebooklikeoranysocialmediawidget"].present? %>
+			<div>
+				<label> Facebook Like Button: </label>
+				<input type="file" id="nativeadsfacebooklikeoranysocialmediawidget" name="nativead[facebooklikeoranysocialmediawidget]" class="nativeadsfields images">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsfacebookshare"].present? %>
+			<div>
+				<label> Facebook Share: </label>
+				<input type="file" id="nativeadsfacebookshare" name="nativead[facebookshare]" class="nativeadsfields images">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsgoogleplusshare"].present? %>
+			<div>
+				<label> Google Plus Share: </label>
+				<input type="file" id="nativeadsgoogleplusshare" name="nativead[googleplusshare]" class="nativeadsfields images">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitslinkedinshare"].present? %>
+			<div>
+				<label> LinkedIn Share: </label>
+				<input type="file" id="nativeadslinkedinshare" name="nativead[linkedinshare]" class="nativeadsfields images">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitstwittershare"].present? %>
+			<div>
+				<label> Twitter Share: </label>
+				<input type="file" id="nativeadstwittershare" name="nativead[twittershare]" class="nativeadsfields images">
+			</div>
+		<% end %>
+		<% if @formdata["formdata"]["linAdunitsseriesoficons"].present? %>
+			<div>
+				<label> Series of Icons: </label>
+				<input type="file" id="nativeadsseriesoficons" name="nativead[seriesoficons]" class="nativeadsfields images">
+			</div>
+		<% end %>
+		<div><button style="" id="submitNativeAd" class="btn green buynow">Create an Ad</button></div>
+	</form>
+</div>
+</td>
+<td>
+	<div>
+		<%
+	require 'json'
+	stylesData = JSON.parse(@nativeAdStyle["styleData"])
+%>
+<div style='<%= @nativeAdStyle["canvasStyle"] %>'>
+<% stylesData.each do |key,data| %>
+	<% if key == "linAdunitscoloredtextbox" || key == "linAdunitsheadline" || key == "linAdunitsdescription" || key == "linAdunitscomments" || key == "linAdunitsauthorname" || key == "linAdunitsplaceholder" || key == "linAdunitssecondheadline" || key == "linAdunitscategorytitle" || key == "linAdunitsmore" || key == "linAdunitsnsotp" || key == "linAdunitsowtoti" || key == "linAdunitsncotp" || key == "linAdunitsreadmore" || key == "linAdunitsmultiplecategories" || key == "linAdunitsquotesbelowthephoto" || key == "linAdunitsenabletags" || key == "linAdunitscategorytitleiconorbox" || key == "linAdunitstimeago" || key == "linAdunitshorizontalline" || key == "linAdunitsdividerline" || key == "linAdunitsfollowmacontwitter" %>
+		<div id="<%= data["name"] %>" style="<%= data["styles"] %>" > <%= raw data["text"] %> </div>
+		<% elsif key == "linAdunitsimage" || key == "linAdunitsauthorimage" || key == "linAdunitscaret" || key == "linAdunitsyoutubesnapshot" || key == "linAdunitsvideosnapshot" || key == "linAdunitsfacebooklikeoranysocialmediawidget" || key == "linAdunitsfacebookshare" || key == "linAdunitsgoogleplusshare" || key == "linAdunitslinkedinshare" || key == "linAdunitstwittershare" || key == "linAdunitsseriesoficons" %>
+			<%
+				if data["imageSrc"] == ""	
+					if key == "linAdunitsimage"
+						src = ""
+					elsif key == "linAdunitsauthorimage"
+						src = ""
+					elsif key == "linAdunitscaret"
+						src = ""
+					elsif key == "linAdunitsyoutubesnapshot"
+						src = "/assets/youtube_icon.png"
+					elsif key == "linAdunitsvideosnapshot"
+						src = "video_icon.png"
+					elsif key == "linAdunitsfacebooklikeoranysocialmediawidget"
+						src = "/assets/facebook_icon.png"
+					elsif key == "linAdunitsfacebookshare"
+						src = "/assets/facebook_icon.png"
+					elsif key == "linAdunitsgoogleplusshare"
+						src = "/assets/google.png"
+					elsif key == "linAdunitslinkedinshare"
+						src = "/assets/linkedin.png"
+					elsif key == "linAdunitstwittershare"
+						src = "/assets/twitter.png"
+					elsif key == "linAdunitsseriesoficons"
+						src = "/assets/shareicons.png"
+					end
+				else
+					src = "/uploads/" + data["imageSrc"]
+				end
+			%>
+		<% if key == "linAdunitsimage" || key == "linAdunitsauthorimage"  %>
+			<div id="<%= data["name"] %>" style="<%= data["styles"] %>" > <img src="<%= src %>" style='<%= data["imgCss"] %>' /> </div>
+		<% elsif key == "linAdunitscaret" || key == "linAdunitsyoutubesnapshot" || key == "linAdunitsvideosnapshot" || key == "linAdunitsfacebooklikeoranysocialmediawidget" || key == "linAdunitsfacebookshare" || key == "linAdunitsgoogleplusshare" || key == "linAdunitslinkedinshare" || key == "linAdunitstwittershare" || key == "linAdunitsseriesoficons" %>
+			<div id="<%= data["name"] %>" style="<%= data["styles"] %>" > <img src="<%= src %>" width="30px" height="30px" style='<%= data["imgCss"] %>' /> </div>
+		<% end %>
+	<% elsif key == "linAdunitsdateofposts" %>
+<%
+	if data["dateType"] == "dd-mm-yy"
+		date = Time.now.strftime("%d-%m-%Y")
+	elsif data["dateType"] == "yy-mm-dd"
+		date = Time.now.strftime("%Y-%m-%d")
+	elsif data["dateType"] == "dd/mm/yy"
+		date = Time.now.strftime("%d/%m/%Y")
+	elsif data["dateType"] == "yy/mm/dd"
+		date = Time.now.strftime("%Y/%m/%d")
+	elsif data["dateType"] == "ddthmmmyy"
+		date = Time.now.strftime("%dth%b%Y")
+	elsif data["dateType"] == "ddthmmmy"
+		date = Time.now.strftime("%dth%b%y")
+	elsif data["dateType"] == "ddmmm"
+		date = Time.now.strftime("%dth%b")
+	end
+%>
+<div id='<%= data["linAdunitsdateofposts"] %>' style='<%= data["styles"] %>'><%= date %></div>
+	<% end %>
+<% end %>
+</div>
+	</div>
+</td>
+</tr>
+</table>
+</div>
+		<div id="new_pagepost_ad_form" class="tab-pane ">
+		</div>
+            </div>
+
+			            						<script type="text/javascript"> OnInit(function () { setTimeout(function () { $('#preexisting_tab a').click(); }, 100); }); </script>
+												
+			            			        
+			        </div>
+								           <div id="new_web_ad_form" class="tab-pane ">
+
+							</div><!-- END div.thirtyright -->
+						</div><!-- END div.pad -->
+					</div>
+				</div>
+
+						<style type="text/css">
+						.block1 a { background: rgba(255, 0, 0, 0.4) !important; }
+						.block2 a { background: rgba(0, 255, 0, 0.4) !important; }
+						.block3 a { background: rgba(255, 0, 255, 0.4) !important; }
+						.block4 a { background: rgba(0, 0, 255, 0.4) !important; }
+						.block5 a { background: rgba(255, 255, 0, 0.4) !important; }
+						.block6 a { background: rgba(0, 255, 255, 0.4) !important; }
+						.block7 a { background: rgba(127, 127, 0, 0.4) !important; }
+						.block8 a { background: rgba(127, 0, 127, 0.4) !important; }
+						</style>
+						<script src="/stuff/newcreative.js" type="text/javascript"></script>
+			</div> <!-- END div#realpage -->
+		</div>
+

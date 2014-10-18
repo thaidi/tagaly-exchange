@@ -1,0 +1,127 @@
+
+<%
+  if params[:accessType]=="campaign"
+%>
+
+<h2>
+Advertisements for : 
+  <%=
+    params[:campaignName]
+  %>
+</h2>
+<%
+end 
+%>
+<table style="margin-bottom:0;" class="table table-striped table-bordered summary-table" id="dashboard-ads-table">
+
+			<tr>
+				<th class="tbllft" rel="tooltip" data-original-title="Ad name">Ad</th>
+				<th rel="tooltip" data-original-title="Ad preview">Preview</th>
+				<th rel="tooltip" data-original-title="Total impressions">Impressions</th>
+				<th rel="tooltip" data-original-title="Total Clicks">Clicks</th>
+				<th rel="tooltip" data-original-title="Click-through rate">CTR</th>
+				<th rel="tooltip" data-original-title="Cost per thousand impressions">CPM</th>
+				<th rel="tooltip" data-original-title="Cost per click">CPC</th>
+				<th rel="tooltip" data-original-title="Blended cost per acquisition">CPA</th>
+				<!--<th rel="tooltip" data-original-title="Click conversions">CTC</th>
+				<th rel="tooltip" data-original-title="Click conversions">CTC%</th>
+				<th rel="tooltip" data-original-title="View conversions">VTC</th>
+				<th rel="tooltip" data-original-title="View conversions">VTC%</th>-->
+				<th rel="tooltip" data-original-title="Total conversions">Conv.</th>
+				<th rel="tooltip" data-original-title="Total spend">Spend</th>
+			</tr>
+
+		<!-- Check if ads are present -->
+
+<%
+if @adsDataStats.present? %>
+<% @adsDataStats.each do |key,ads| %>
+<% 
+#### Take the conversions value
+if @adsDataStats[key]["conversions"] != nil
+ adsConversions=@adsDataStats[key]["conversions"]
+else
+  adsConversions=0
+end
+%>
+<%
+   if @adsDataStats[key]["clicks"] != 0
+	convRate = adsConversions / @adsDataStats[key]["clicks"]
+   elsif
+	convRate = 0
+   end
+   if @adsDataStats[key]["impressions"].to_i != 0
+	ctr = (@adsDataStats[key]["clicks"].to_i / @adsDataStats[key]["impressions"].to_i)*100
+   elsif
+	ctr = 0
+   end
+   if adsConversions != nil && adsConversions != 0
+	cpa = @adsDataStats[key]["advertisementDetails"]["cost"] / adsConversions
+   elsif
+	cpa = 0
+   end
+%>
+  <tr>
+    <td> <%= @adsDataStats[key]["advertisementDetails"]["adName"] %> </td>
+    <td> 
+	<a href="<%= @adsDataStats[key]["advertisementDetails"]['adDestinationUrl'] %>"><%= @adsDataStats[key]["advertisementDetails"]["adHeadline"] %></a><br>
+	<%= @adsDataStats[key]["advertisementDetails"]["adDisplayUrl"] %><br>
+	<%= @adsDataStats[key]["advertisementDetails"]["adText"] %>
+    </td>
+    <td> <%= @adsDataStats[key]["impressions"] %> </td>
+    <td> <%= @adsDataStats[key]["clicks"] %> </td>
+    <td> <%= ctr %> </td>
+    <td> <%= @adsDataStats[key]["CPM"] %> </td>
+    <td> <%= @adsDataStats[key]["CPC"] %> </td>
+    <td> <%= @adsDataStats[key]["CPA"] %> </td>
+    <!--<td> <%= "Ctc" %> </td>
+    <td> <%= "Ctc %" %> </td>
+    <td> <%= "Vtc" %> </td>
+    <td> <%= "Vtc %" %> </td>-->
+    <td> <%= adsConversions %> </td>
+    <td> <%= @adsDataStats[key]["advertisementDetails"]["cost"] %> </td>
+  </tr> 
+<% end %>
+
+			<tr class="">
+				<td class="tbllft"> </td>
+<%
+   if @adsTotals["totClicks"].to_i != 0
+	totconvRate = @adsTotals["totConversions"].to_i / @adsTotals["totClicks"].to_i
+   elsif
+	totconvRate = 0
+   end
+   if @adsTotals["totImpressions"].to_i != 0
+	totctr = @adsTotals["totClicks"].to_i * 100 / @adsTotals["totImpressions"].to_i
+   elsif
+	totctr = 0
+   end
+   if @adsTotals["totConversions"].to_i != 0
+	totcpa = @adsTotals["totCost"].to_i / @adsTotals["totConversions"].to_i
+   elsif
+	totcpa = 0
+   end
+%>
+    <td>Total </td>
+    <td> <%= @adsTotals["totImpressions"] %> </td>
+    <td> <%= @adsTotals["totClicks"] %> </td>
+    <td> <%= totctr %> </td>
+    <td> <%= @adsTotals["totCPM"] %> </td>
+    <td> <%= @adsTotals["totCPC"] %>  </td>
+    <td> <%= @adsTotals["totCPA"] %></td>
+    <!--<td> <%= "Ctc" %> </td>
+    <td> <%= "Ctc %" %> </td>
+    <td> <%= "Vtc" %> </td>
+    <td> <%= "Vtc %" %> </td>-->
+    <td> <%= @adsTotals["totConversions"] %> </td>
+    <td> <%= @adsTotals["totCost"] %> </td>
+			</tr>
+
+
+<!-- If no ads are present , Display proper message -->
+<% else %>
+<tr>
+  <td colspan="14"> No ads found </td>
+</tr>
+<% end %>
+	</table>

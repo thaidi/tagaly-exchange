@@ -1,0 +1,1560 @@
+<script></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			plus = "icon-plus-sign";
+			minus = "icon-minus-sign";
+			$('#accordion2').on('shown', function () { $('#accordion2').find(".icon-plus-sign").removeClass(plus).addClass(minus); });
+			$('#accordion2').on('hidden', function () { $('#accordion2').find(".icon-minus-sign").removeClass(minus).addClass(plus); });
+			$('#accordion3').on('shown', function () { 	$('#accordion3').find(".icon-plus-sign").removeClass(plus).addClass(minus); });
+			$('#accordion3').on('hidden', function () { 	$('#accordion3').find(".icon-minus-sign").removeClass(minus).addClass(plus); });
+			$('#accordion4').on('shown', function () { 	$('#accordion4').find(".icon-plus-sign").removeClass(plus).addClass(minus); }); 
+			$('#accordion4').on('hidden', function () { 	$('#accordion4').find(".icon-minus-sign").removeClass(minus).addClass(plus); });
+			$('#accordion5').on('shown', function () { 	$('#accordion5').find(".icon-plus-sign").removeClass(plus).addClass(minus); });
+			$('#accordion5').on('hidden', function () { 	$('#accordion5').find(".icon-minus-sign").removeClass(minus).addClass(plus); });
+		});
+
+		$(function() {
+		   $("#campaign_geotargeting_countries").click(function () {
+			   $('#countries').removeAttr("disabled", $(this).is(":checked"));
+			   $('#dmas').attr("disabled", $(this).is(":checked"));
+		   });
+		   $("#campaign_geotargeting_dmas").click(function () {
+		     $('#countries').attr("disabled", $(this).is(":checked"));
+		     $('#dmas').removeAttr("disabled", $(this).is(":checked"));
+		   });
+		   $("#campaign_geotargeting_all").click(function () {
+		     $('#countries').attr("disabled", $(this).is(":checked"));
+		     $('#dmas').attr("disabled", $(this).is(":checked"));
+		   });
+		   $("#run-ad-continuously").click(function(){return $("#run-ad-continuously").is(":checked")?($("#manual-dayparting").hide()):$("#manual-dayparting").show()});
+		   $("#specificretargetlists").click(function(){return $("#specificretargetlists").is(":checked")?($("#specific-retargets").show()):$("#specific-retargets").hide()});
+		    $("#allretargetlists").click(function(){return $("#specificretargetlists").is(":checked")?($("#specific-retargets").show()):$("#specific-retargets").hide()});
+		});
+		function showhideconv(str) {
+    	document.getElementById("campaigntype").value=str;
+    }
+		$(document).on('click','.adZoom', function(e){
+  			var idOfZoomClass = $(this).attr("id");
+				var adId = String(idOfZoomClass).substring(4);
+				var adDivId = "div" + adId;
+				var toset=$("#"+adDivId).html() ;
+				var width=$("#"+adDivId).width();
+				var height=$("#"+adDivId).height();
+				$("#adPreview").html("<a class='close-reveal-modal' id='closeadPreview'>&#215;</a>"+toset);
+				if($("#img"+adId).attr('src')) {
+					imgSize();
+					$("#adPreview").css("width", '');
+					$("#adPreview").css("height", '');
+				} else {
+					$("#adPreview").css("width", width);
+					$("#adPreview").css("height", height);
+				}
+		});
+		function imgSize(){
+		  $("img").load(function(){
+	      var width = $(this).width();
+	      var height = $(this).height();
+	      $(this).attr("width",width).attr("height",height);
+		  });
+    }
+	</script>
+<!--<script type="text/javascript" src="/assets/bootstrap-dropdown.js"></script>-->
+<script src="/assets/jquery.reveal.js"  type="text/javascript"></script>
+<script src="/assets/campaign.js" type="text/javascript"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+<link rel="stylesheet" href="/assets/reveal.css"/>
+	<style>
+		.add-on{ background-color: #EEEEEE; border: 1px solid #CCCCCC; display: inline-block; font-weight: normal; height: 18px; line-height: 18px; min-width: 16px; padding: 4px 5px; text-align: center; text-shadow: 0 1px 0 #FFFFFF; vertical-align: middle; width: auto; }
+		.span6{ width:554px; }
+		#dayparting tr { vertical-align: top; }
+	</style>
+<div style="" class="pcontent">
+  <div class="row">
+    <div style="margin-bottom:5px;" class="span12">
+      <h2 style="text-shadow:0 1px white;margin:5px 0 10px 20px;"> <i style="margin-top:0px;" class="icon-facebook-sign"> </i>&nbsp;Edit Campaign </h2>
+    </div>  
+  </div>
+	<div id="myModal" class="reveal-modal" style="width:1183px;height:613px">
+		<a class="close-reveal-modal" id="closeadFrame">&#215;</a>
+		<iframe src="/ads/new/frame" id="adnewads" width="1192px" frameBorder="0" height="100%" ></iframe>
+	</div>
+	<div id="newRetarget" class="reveal-modal" style="width:1183px;height:613px">
+		<a class="close-reveal-modal" id="closeretargetFrame">&#215;</a>
+		<iframe src="/retargets/new/frame" id="adnewretargets" width="1192px" frameBorder="0" height="100%"></iframe>
+	</div>
+	<div id="newConversion" class="reveal-modal" style="width:1183px;height:613px">
+		<a class="close-reveal-modal" id="closeconversionFrame">&#215;</a>
+		<iframe src="/conversions/new/frame" id="adnewconversions" width="1192px" frameBorder="0" height="100%"></iframe>
+	</div>
+	<div id="newAdunit" class="reveal-modal" style="width:1183px;height:613px">
+		<a class="close-reveal-modal" id="closeadunitFrame">&#215;</a>
+		<iframe src="/campaigns/adunits" id="adnewadunits" width="1192px" frameBorder="0" height="100%"></iframe>
+	</div>
+	<div id="adPreview" class="reveal-modal" style="position:absolute; background-color: white; border-radius: 10px; ">
+		<a class="close-reveal-modal" id="closeadPreview">&#215;</a>
+		Ad Preview
+	</div>
+	<div class='campaignDiv'>
+		<% sectionCount = 1 %>
+    <%= form_for :campaign,:html => {:class => "form-horizontal campaign-form-stripe"}, :url=> { :action => "saveRunOfNetworkData" } do |f| %>
+	    <%= f.text_field :siteid , :type=>"hidden",:id=>"siteid",:value=>session[:site_id] %>
+	    <%= f.text_field :authenticity_token , :type=>"hidden",:value=>form_authenticity_token() %>			
+				<div class="control-group">
+					<div class="control-label">
+						Device Preferences: 
+						<a rel="tooltip" data-original-title="You can specify a device preference for any Text, Display ad or Native ad.">[?]</a>
+					</div>
+					<div class="controls">
+						<select name="campaign[device_preferences]" id="device_preference">
+							<option value="DesktopsAndLaptops" <% if @campaignDetails["devicePreference"]=="DesktopsAndLaptops" %> selected <% end %>>Desktops and Laptops</option>
+							<option value="Mobiles" <% if @campaignDetails["devicePreference"]=="Mobiles" %> selected <% end %>>Mobiles</option>
+							<option value="Tabs" <% if @campaignDetails["devicePreference"]=="Tabs" %> selected <% end %>>Tabs</option>
+						</select>
+					</div>
+				</div>
+        <fieldset id="fboo">
+					<div class="widget">
+						<div class="widget-header"> <h3> <span class="sectionnumeral"><%= sectionCount %></span> &nbsp; Set up your ads </h3> </div>
+						<div style="padding:0;" class="widget-content">
+							<div class="" style="border-top:0;padding:15px;">
+								<div style="margin-bottom:0;margin-top:1px;clear:both;" id="accordion7" class="accordion">
+									<div class="accordion-body  collapse admake-group" id="collapseSeven">
+										<div style="border:0;padding-left:0;padding-right:0;padding-top:0;" class="accordion-inner">
+											<div style="margin-left:0;" class="controls">
+												<div style="margin-left:0;margin-right:0;" class="fbmake">
+													<h4>Create new ads</h4>
+													<div style="position:relative;margin-left:0;margin-right:0;margin-bottom:0px;" class="well" id="new-ad-form">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div style="min-height:255px; min-width:500px;" class="modal hide image-resize-modal">
+									</div>
+									
+									<div class="selectable" id="ads-table-container">
+										<div class="selectable-container">
+											<h5> Select ads for this campaign </h5>
+											<a data-animation="fade" data-reveal-id="myModal" id="creatNewAd" href="#" class="pull-right btn btn-success big-link" style="margin: -32px 0px 0px 20px;"> <i style="margin-top: 3px;" class="icon-plus icon-white"></i> Create new ads </a>    
+											<div style="margin-right:148px;" class="ad-search-container pull-right">
+												<div class="form-search">
+													<div class="input-append"> </div>
+												</div>
+											</div>
+											<div style="clear:both;max-height:500px;" class="table-scrollable">
+												<div id="aderrorText" class="error" colspan="3" style="margin-left:0px;"></div>
+												<div id="statusmsg" style="display:none;text-align:left;color:green;padding-bottom:10px;">
+													Status has been changed to "<span id="statustext"></span>" for the Ad "<span id="adname"></span>"
+												</div>
+											</div>
+											<table style="border-radius:0;" id="ads_table" class="table table-striped fbpicker table-bordered">
+												<thead>
+													<tr>
+														<th width="1%"></th>
+														<th> Name </th>
+														<th width="3%"> Impr. </th>
+														<th> Clicks </th>
+														<th> Conversions </th>
+														<th> CTR </th>
+														<th> Status </th>
+														<th> URL </th>
+													</tr>
+												</thead>
+												<tbody>
+													<%  @assignedAds = Array.new %>
+													<% 
+														if @campaignAds.present?
+															@campaignAds.each do |key,ads|
+													%>
+													<tr class="selected" id="tr<%= key %>">
+														<%
+															checkAd=""
+															if @campaignDetails["adId"].include?(key.to_i)
+																checkAd="checked"
+																@assignedAds.push(ads["advertisementDetails"]["adName"])
+															else
+																checkAd="false"
+															end
+														%>
+														<td style="text-align: center;">
+															<%= check_box("campaign", "ads" ,{:style=>"display:none;",:multiple=>"true",:checked=>checkAd,:class=>"ads"}, key,nil ) %>
+															<% if checkAd=="checked" %>
+																<a onclick="toggleAdSelection(this,this.innerHTML);" class="btn btn-mini" href="javascript:void(0);">Remove</a>
+															<% else %>
+																<a onclick="toggleAdSelection(this,this.innerHTML);" class="btn btn-mini btn-primary" href="javascript:void(0);">Add</a>
+															<% end %>
+														</td>
+														<td>
+															<%= ads["advertisementDetails"]["adName"] %>
+															<div style="float:right;">
+																<button class="btn btn-mini btn-inverse" disabled style="cursor:default"> <%= ads["advertisementDetails"]["version"] %> </button>
+																<a data-animation="fade" id="zoom<%= key %>" class="adZoom" data-reveal-id="adPreview" href="#">
+																	<i style="margin-top: 3px;" class="icon-zoom-in adZoom"></i>
+																</a>
+															</div>
+															<div id="div<%= key %>" style="display:none;position:absolute; background-color: white; border-radius: 10px; border: 4px solid rgb(239, 239, 239);">
+																<div> <b><h6><%= ads["advertisementDetails"]['adName'] %></h6></b> </div>
+																<div style="height:7px"></div>
+																<% if ads["advertisementDetails"]['adType'] == 'TextAd' %>
+																	<ul style="width: 234px; height: 60px; margin-left: 5px;">
+																		<li style="float: none; color: rgb(34, 34, 34); "><a href="<%= ads["advertisementDetails"]['adDestinationUrl'] %>" target="_blank"><%= ads["advertisementDetails"]['adHeadline'] %></a></li>
+																		<li class="adunits-innerli" style="float: none; color: rgb(0, 128, 0); "> <%= ads["advertisementDetails"]['adDisplayUrl'] %> </li>
+																		<li class="adunits-innerli" style="float: none; color: rgb(51, 51, 51); "> <%= ads["advertisementDetails"]['adText'] %> </li>
+																	</ul>
+																<% 
+																	elsif ads["advertisementDetails"]['adType'] == 'BannerAd'
+																		my_string = ads['advertisementDetails']['adImageUrl']
+																		if my_string.present?
+																			if my_string.include? ".swf"
+																				adSizes = ads['advertisementDetails']['adSize'].split('x') 
+																%>
+																				<a href="<%= ads['advertisementDetails']['adDestinationUrl'] %>" target="_blank">
+																					<embed width="<%= adSizes[0] %>" height="<%= adSizes[1] %>" src="/uploads/<%= ads['advertisementDetails']['adImageUrl'] %>">
+																				</a>
+																		<%		
+																			elsif my_string.include? ".fla"
+																			else
+																		%>
+																			<a href="<%= ads['advertisementDetails']['adDestinationUrl'] %>" target="_blank">
+																				<img src="/uploads/<%= ads['advertisementDetails']['adImageUrl'] %>"/>
+																			</a>
+																		<%
+																			end
+																		end
+																	end 
+																%>
+															</div>
+														</td>
+														<td width="1%"><%= ads["impressions"] %></td>
+														<td width="1%"><%= ads["clicks"] %></td>
+														<td width="1%"><%= ads["conversions"] %></td>
+														<td width="1%">-</td>
+														<td width="1%" style="text-align:center;">
+															<div id="statusmsg<%= key %>" style="color:green;display:none;" align="center">Status Set!</div>
+														<%= select_tag(:status, options_for_select([['Active', 'Active'],['Pause', 'Paused'],['Delete','Deleted']],ads["advertisementDetails"]["adStatus"]),:onchange=>"setStatus(this.value,'#{key}','#{ads["advertisementDetails"]['adName']}' )" , :style=>"width:83px;") %>
+														</td>
+														<td width="1%" class="ad-url">
+															<% if ads['adType'] == 'TextAd' %>
+																<% displayurl=ads["advertisementDetails"]["adDisplayUrl"] ; %>
+																<a title="<%= ads['adDestinationUrl'] %>" target="new" href="<%= ads['adDestinationUrl'] %>">
+																	<% if displayurl.length > 35 %> <%= displayurl[0,35].to_s + "..." %> <% else %> <%= displayurl %> <% end %>
+																</a>
+															<% elsif ads['adType'] == 'BannerAd' %>
+																<% displayurl=ads["advertisementDetails"]["adDestinationUrl"] ;  %>
+																<a title="<%= ads['adDestinationUrl'] %>" target="new" href="<%= ads['adDestinationUrl'] %>">
+																	<% if displayurl.length > 35 %> <%= displayurl[0,35].to_s + "..." %> <% else %> <%= displayurl %> <% end %>
+																</a>
+															<% end %>
+														</td>
+													</tr>
+												<%
+														end
+													end
+														if @ads.present?
+															@ads.each do |key,ads|
+																checkAd=""
+																if @campaignDetails["adId"].include?(key.to_i)
+																	checkAd="checked"
+																else
+																	checkAd="false"
+																end
+																if !@assignedAds.include?(ads["adName"])
+													%>
+																<tr class="selected" id="tr<%= key %>">
+																	<td style="text-align: center;">
+																		<%= check_box("campaign", "ads" ,{:style=>"display:none;",:multiple=>"true",:checked=>checkAd, :class=>"ads"}, key,nil ) %>
+																		<% if checkAd=="checked" %>
+																			<a onclick="toggleAdSelection(this,this.innerHTML);" class="btn btn-mini" href="javascript:void(0);">Remove</a>
+																		<% else %>
+																			<a onclick="toggleAdSelection(this,this.innerHTML);" class="btn btn-mini btn-primary" href="javascript:void(0);">Add</a>
+																		<% end %>
+																	</td>
+																	<td>
+																		<%= ads["adName"] %>
+																		<div style="float:right;">
+																			<button class="btn btn-mini btn-inverse" disabled style="cursor:default">&nbsp;<%= ads["version"] %> </button>  
+																			<a data-animation="fade" id="zoom<%= key %>" class="adZoom" data-reveal-id="adPreview" href="#">
+																				<i style="margin-top: 3px;" class="icon-zoom-in adZoom"></i>
+																			</a> 
+																		</div>
+																		<div id="div<%= key %>" style="display:none;position:absolute; background-color: white; border-radius: 10px; border: 4px solid rgb(239, 239, 239);">
+																			<div> <b><h6><%= ads['adName'] %></h6></b> </div>
+																			<div style="height:7px"></div>
+																			<% if ads['adType'] == 'TextAd' %>
+																				<ul style="width: 234px; height: 60px; margin-left: 5px;">
+																					<li style="float: none; color: rgb(34, 34, 34); "><a href="<%= ads['adDestinationUrl'] %>" target="_blank"><%= ads['adHeadline'] %></a></li>
+																					<li class="adunits-innerli" style="float: none; color: rgb(0, 128, 0); "> <%= ads['adDisplayUrl'] %> </li>
+																					<li class="adunits-innerli" style="float: none; color: rgb(51, 51, 51); "> <%= ads['adText'] %> </li>
+																				</ul>
+																			<% else %>
+																				<%
+																					my_string = ads['adImageUrl']
+																					if my_string.present?
+																						if my_string.include? ".swf"
+																							adSizes = ads['adSize'].split('x') 
+																						%>
+																							<a href="<%= ads['adDestinationUrl'] %>" target="_blank">
+																								<embed width="<%= adSizes[0] %>" height="<%= adSizes[1] %>" src="/uploads/<%= ads['adImageUrl'] %>">
+																							</a>
+																						<%		
+																						elsif my_string.include? ".fla"
+					
+																						else
+																						%>
+																							<a href="<%= ads['adDestinationUrl'] %>" target="_blank">
+																								<img src="/uploads/<%= ads['adImageUrl'] %>"/>
+																							</a>
+																						<%
+																						end
+																					end
+																				%>
+																			<% end %>
+																		</div>
+																	</td>
+																	<td width="1%">-</td>
+																	<td width="1%">-</td>
+																	<td width="1%">-</td>
+																	<td width="1%">-</td>
+																	<td width="1%" style="text-align:center;">
+																		<div id="statusmsg<%= key %>" style="color:green;display:none;" align="center">Status set !</div>
+																		<%= select_tag(:status, options_for_select([['Active', 'Active'],['Pause', 'Paused'],['Delete','Deleted']],ads["adStatus"]),:onchange=>"setStatus(this.value,'#{key}','#{ads['adName']}' )" , :style=>"width:83px;",:disabled=>"disabled") %>
+																	</td>
+																	<td width="1%" class="ad-url">
+																		<% 
+																			if ads['adType'] == 'TextAd'
+																				displayurl=ads["adDisplayUrl"] ; 
+																		%>
+																				<a title="<%= ads['adDestinationUrl'] %>" target="new" href="<%= ads['adDestinationUrl'] %>"><% if displayurl.length > 35 %> <%= displayurl[0,35].to_s + "..." %> <% else %> <%= displayurl %> <% end %></a>
+																		<% 
+																			else 
+																				displayurl=ads["adDestinationUrl"] ; 
+																		%>
+																				<a title="<%= ads['adDestinationUrl'] %>" target="new" href="<%= ads['adDestinationUrl'] %>"><% if displayurl.length > 35 %> <%= displayurl[0,35].to_s + "..." %> <% else %> <%= displayurl %> <% end %></a>
+																		<% end %>
+																	</td>
+																</tr>
+													<% 
+																end 
+															end 
+														end 
+													%> 
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+									<br>
+
+									<div class="widget">
+										<div class="widget-header">
+											<h3>
+												<span style="margin-left:0;" class="sectionnumeral"><%= sectionCount = sectionCount + 1 %></span> Targeting: What audience do you want to reach?
+											</h3>
+										</div>
+										<div class="widget-content">
+											<%
+												checkallusers=""
+												checkspecificusers=""
+												if @campaignDetails["retargeting"].include?(0)
+													checkallusers="checked"
+												else
+													checkspecificusers="checked"
+												end
+											%>
+											<%= radio_button("campaign", "targetallusers", "no-retargets",{:style=>"float:left;margin-right:10px;margin-left:36px;" , :checked => checkallusers,:id=>"allretargetlists"}) %>Target All Users <br>
+											<%= radio_button("campaign", "targetallusers", "specific-retargets",{:style=>"float:left;margin-right:10px;margin-left:36px;",:checked=>checkspecificusers,:id=>"specificretargetlists"}) %>Target specific user from retargeting lists
+										</div>
+										<div class="widget-content">
+											<div id="specific-retargets" <% if checkspecificusers != "checked" %> style="display:none;" <% end %>>
+												<% 
+													retCount = 0
+													if @retargetCount.present?
+														@retargetCount.each do |key , ret| 
+															if @retargets.present?
+																@retargets.each do |retarget|
+																	if retarget.id.to_i == key.to_i && retarget.retargetName == 'All Visitors'
+																		retCount = ret.to_i
+																	end
+																end
+															end
+														end
+													end
+													#### check if the site traking tag is installed
+													src=Tagaly3::TAG
+													scriptcode=src.to_s + "/retargetPixel.php?tpid="+session[:site_id].to_s
+													scriptpresent=""
+													if((@result != nil) && (@result.include? scriptcode))
+														scriptpresent="yes"
+													else
+														scriptpresent="no"
+													end
+													retargetCount = Tagaly3::RetargetCount
+												%>
+												<a data-animation="fade" data-reveal-id="newRetarget" style="margin-right: 0px;<% if retCount  < retargetCount %>display:none; <% end %>" class="btn btn-success btn-mini pull-right" href="#">
+													<i style="margin-top:3px;" class="icon-plus icon-white"></i> Create new list
+												</a>
+												<% if scriptpresent.to_s == "no" %>
+													<p>It appears that you haven't placed the site tracking code on your website "<a href='<%= session[:site_url] %>' ><%= session[:site_url] %></a>", please place the code on all of the webpages on your site. You can find the instructions <a href= '/sites/tag' target="_blank">here</a> </p>
+												<% elsif retCount.to_i < retargetCount %>
+													<p>It appears that there are only <%= retCount %> visitors in your lists. Retargeting requires atleast <%= retargetCount %> visitors to be able to create retargeting campaign. If you wish to target general visitors, please select "Target All Users" from above menu.
+												<% elsif retCount.to_i >= retargetCount %>
+													<p>Choose which retargeting lists to include in your campaign and whether to target their users or exclude them. </p>
+												<% end %>
+												<div class="selectable" id="segments-table-container" <% if retCount  < retargetCount %> style="display:none;" <% end %>>  
+													<div class="loading-container">
+														<img alt="Loading..." src="images/loading-51a27cd5e585bb07e07ab1773b178dbc.gif">
+													</div>
+													<div class="selectable-container" >
+														<h6></h6>
+														<div class="ad-search-container pull-right">
+															<div class="form-search">
+																<div class="input-append">
+																</div>
+															</div>
+														</div>
+														<div style="clear:both;" class="table-scrollable">
+														<div id="retargeterrorText" class="error" colspan="3" style="margin-left:0px;"></div>
+														<table style="border-radius:0px;" id="retargetTable" class="table table-striped table-bordered">
+															<thead>
+																<tr>
+																	<th style="width: 170px;">Action</th>
+																	<th style="font-size:12px;">Retargeting List Name</th>
+																	<th width="70">List Size</th>
+																</tr>
+															</thead>
+															<tbody>  
+																<%
+																	if @retargets.present?
+																		@retargets.each do |retarget|
+																			if @campaignDetails["retargeting"].include?(retarget.id) && retarget.retargetName=='All Visitors'
+																				checkAll="checked"
+																			elsif  @campaignDetails["retargeting"].include?(0)
+																				checkAll="checked"
+																			else
+																				checkAll="false"
+																			end
+																			if @campaignDetails["retargeting"].include?(retarget.id)
+																				checked="checked"
+																			else
+																				checked="false"
+																			end
+																			checkRetarget=""
+																			targetType=""
+																			if @campaignDetails["retargeting"].include?(retarget.id)
+																				checkRetarget="checked"
+																				targetType="targeted"
+																				retargetid="+"+retarget.id.to_s
+																			elsif @campaignDetails["retargeting"].include?("-#{retarget.id}".to_i)
+																				checkRetarget="checked"
+																				targetType="targeted excluded"
+																				retargetid="-#{retarget.id}".to_i
+																			else
+																				checkRetarget="false"
+																				targetType="ignored"
+																				retargetid="+"+retarget.id.to_s
+																			end
+																%> 
+																			<tr class='<%= targetType %>' id="seg_526f491e3a7bc042e200002b">
+																				<td>
+																					<% if retarget.retargetName=='All Visitors' %>
+																						<%= check_box("campaign", "retargets" ,{:style=>"display:none",:multiple=>"true",:checked=>checkAll,:class=>"retargets"},"+#{retarget.id}",nil) %>
+																					<% else %>
+																						<%= check_box("campaign", "retargets" ,{:style=>"display:none",:multiple=>"true",:checked=>checkRetarget,:class=>"retargets"},"#{retargetid}",nil) %>
+																					<% end %>
+																					<input type="radio" value="Exclude" style="display: none;" >
+																					<input type="radio" value="Ignore" style="display: none;" >
+																					<div class="btn-group">
+																						<button id="target<%= retarget.id %>" onclick="return toggleSegmentSelection(this,'Include');" <% if targetType=="targeted" %> class="btn btn-mini btn-success active" <% else %> class="btn btn-mini " <% end %> value="<%= retarget.id %>" type="button">Target</button>
+																						<button id="exclude<%= retarget.id %>" onclick="return toggleSegmentSelection(this,'Exclude');" <% if targetType=="excluded" %> class="btn btn-mini btn-danger" <% else %> class="btn btn-mini " <% end %> value="<%= retarget.id %>" type="button">Exclude</button>
+																						<button id="ignore<%= retarget.id %>" onclick="return toggleSegmentSelection(this,'Ignore');" <% if targetType=="ignored" %> class="btn btn-mini btn-inverse" <% else %> class="btn btn-mini " <% end %> value="<%= retarget.id %>" type="button">Ignore</button>
+																					</div>
+																				</td>
+																				<td> <%= retarget.retargetName %> </td>
+																				<td>
+																					<% if @retargetCount["#{retarget['id']}"] !=nil %>
+																						<%=  @retargetCount["#{retarget['id']}"]  %>
+																					<% else %>
+																						0
+																					<% end %>
+																				</td>
+																			</tr> 
+																	<% end %>
+																<% else %>
+																		<tr>
+																			<td style="text-align: center;" colspan="3">You don't appear to have any lists available for selection. <a target="blank" href="/retargets/new">Create one.</a></td>
+																		</tr>
+																<% end %>
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+										</div>
+
+  						<div style="margin-bottom:0;margin-top:10px;clear:both;" id="accordion2" class="accordion">
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a href="#collapseOne" data-parent="#accordion2" data-toggle="collapse" style="color:#333;background:#f3f3f3;padding-left:40px;position:relative;" class="accordion-toggle nover">
+                      <i class="icon-plus-sign collapsecon"> </i> <i class="icon-globe"></i> Geo Targeting Settings
+                    </a>
+                  </div>
+                  <div class="accordion-body collapse geo-group " id="collapseOne">
+                    <div class="accordion-inner">
+                      <div class="controls"><br> 
+                        <% 
+                              checkGeotargetAll="false"
+                              checkGeotargetCountries="false"
+                              checkGeotargetDmas="false"
+                              geotargetCountries=""
+                              geotargetDmas=""
+                              if @campaignDetails["geoTargetingType"]=="all"
+                                checkGeotargetAll="checked"
+                              elsif @campaignDetails["geoTargetingType"]=="countries"
+                                checkGeotargetCountries="checked"
+                                geotargetCountries=@campaignDetails["geoTargeting"]
+                              else
+                                checkGeotargetDmas="checked"
+                                geotargetDmas=@campaignDetails["geoTargeting"]
+                              end
+                              
+                             %>
+                       <%= radio_button("campaign", "geotargeting", "all",{:style=>"float:left;margin-right:10px;" , :checked => checkGeotargetAll}) %>
+                       <%= f.text_field :all , :id=>"all",:type=>"hidden",:multiple=>true,:value=>"" %>
+                        <label for="campaign_geo_target_level_none">Target all countries</label>
+                        <br>
+                        <%= radio_button("campaign", "geotargeting", "countries" ,{ :style=>"float:left;margin-right:10px;",:checked=>checkGeotargetCountries}) %>
+                        <label for="campaign_geo_target_level_country">Target specific countries</label>
+                        <div id="geo-country-group" class="control-group">
+                          <div style="font-weight:normal;" class="control-label">Select Country</div>
+                          <!-- first GEO selector, determines others -->
+                          <div style="margin-top:3px;" class="controls">
+                            <div class="input-prepend chzn-container chzn-container-multi chzn-container-active">
+                              <div id="campaign_countries_chzn" class="chzn-container chzn-container-multi" style="width: 460px;">
+                                <ul class="chzn-choices">
+                                  <li class="search-field">
+                                  <!-- <%= f.text_field :countries , :id=>"countries",:value=>geotargetCountries %>-->
+<select name="campaign[countries][]" multiple="multiple" id="countries" data-placeholder="Choose one or more countries..." class="span6 chzn-select chzn-done" data-original-title="Choose one or more from the countries ! Use 'ctrl' key from your keyboard to select more than one country" rel="tooltip" <% if @campaignDetails["geoTargetingType"] != "countries" %> disabled <% end %> >
+	<option value="US" <% if @campaignDetails["geoTargeting"].include?("US") %> selected <% end %> >United States</option>
+	<option value="AD" <% if @campaignDetails["geoTargeting"].include?("AD") %> selected <% end %>>Andorra</option>
+	<option value="AE" <% if @campaignDetails["geoTargeting"].include?("AE") %> selected <% end %>>United Arab Emirates</option>
+	<option value="AF" <% if @campaignDetails["geoTargeting"].include?("AF") %> selected <% end %>>Afghanistan</option>
+	<option value="AG" <% if @campaignDetails["geoTargeting"].include?("AG") %> selected <% end %>>Antigua and Barbuda</option>
+	<option value="AI" <% if @campaignDetails["geoTargeting"].include?("AI") %> selected <% end %>>Anguilla</option>
+	<option value="AL" <% if @campaignDetails["geoTargeting"].include?("AL") %> selected <% end %>>Albania</option>
+	<option value="AM" <% if @campaignDetails["geoTargeting"].include?("AM") %> selected <% end %>>Armenia</option>
+	<option value="AO" <% if @campaignDetails["geoTargeting"].include?("AO") %> selected <% end %>>Angola</option>
+	<option value="AP" <% if @campaignDetails["geoTargeting"].include?("AP") %> selected <% end %>>Asia/Pacific Region</option>
+	<option value="AQ" <% if @campaignDetails["geoTargeting"].include?("AQ") %> selected <% end %>>Antarctica</option>
+	<option value="AR" <% if @campaignDetails["geoTargeting"].include?("AR") %> selected <% end %>>Argentina</option>
+	<option value="AS" <% if @campaignDetails["geoTargeting"].include?("AS") %> selected <% end %>>American Samoa</option>
+	<option value="AT" <% if @campaignDetails["geoTargeting"].include?("AT") %> selected <% end %>>Austria</option>
+	<option value="AU" <% if @campaignDetails["geoTargeting"].include?("AU") %> selected <% end %>>Australia</option>
+	<option value="AW" <% if @campaignDetails["geoTargeting"].include?("AW") %> selected <% end %>>Aruba</option>
+	<option value="AX" <% if @campaignDetails["geoTargeting"].include?("AX") %> selected <% end %>>Aland Islands</option>
+	<option value="AZ" <% if @campaignDetails["geoTargeting"].include?("AZ") %> selected <% end %>>Azerbaijan</option>
+	<option value="BA" <% if @campaignDetails["geoTargeting"].include?("BA") %> selected <% end %>>Bosnia and Herzegovina</option>
+	<option value="BB" <% if @campaignDetails["geoTargeting"].include?("BB") %> selected <% end %>>Barbados</option>
+	<option value="BD" <% if @campaignDetails["geoTargeting"].include?("BD") %> selected <% end %>>Bangladesh</option>
+	<option value="BE" <% if @campaignDetails["geoTargeting"].include?("BE") %> selected <% end %>>Belgium</option>
+	<option value="BF" <% if @campaignDetails["geoTargeting"].include?("BF") %> selected <% end %>>Burkina Faso</option>
+	<option value="BG" <% if @campaignDetails["geoTargeting"].include?("BG") %> selected <% end %>>Bulgaria</option>
+	<option value="BH" <% if @campaignDetails["geoTargeting"].include?("BH") %> selected <% end %>>Bahrain</option>
+	<option value="BI" <% if @campaignDetails["geoTargeting"].include?("BI") %> selected <% end %>>Burundi</option>
+	<option value="BJ" <% if @campaignDetails["geoTargeting"].include?("BJ") %> selected <% end %>>Benin</option>
+	<option value="BL" <% if @campaignDetails["geoTargeting"].include?("BL") %> selected <% end %>>Saint Bartelemey</option>
+	<option value="BM" <% if @campaignDetails["geoTargeting"].include?("BM") %> selected <% end %>>Bermuda</option>
+	<option value="BN" <% if @campaignDetails["geoTargeting"].include?("BN") %> selected <% end %>>Brunei Darussalam</option>
+	<option value="BO" <% if @campaignDetails["geoTargeting"].include?("BO") %> selected <% end %>>Bolivia</option>
+	<option value="BQ" <% if @campaignDetails["geoTargeting"].include?("BQ") %> selected <% end %>>Bonaire, Saint Eustatius and Saba</option>
+	<option value="BR" <% if @campaignDetails["geoTargeting"].include?("BR") %> selected <% end %>>Brazil</option>
+	<option value="BS" <% if @campaignDetails["geoTargeting"].include?("BS") %> selected <% end %>>Bahamas</option>
+	<option value="BT" <% if @campaignDetails["geoTargeting"].include?("BT") %> selected <% end %>>Bhutan</option>
+	<option value="BV" <% if @campaignDetails["geoTargeting"].include?("BV") %> selected <% end %>>Bouvet Island</option>
+	<option value="BW" <% if @campaignDetails["geoTargeting"].include?("BW") %> selected <% end %>>Botswana</option>
+	<option value="BY" <% if @campaignDetails["geoTargeting"].include?("BY") %> selected <% end %>>Belarus</option>
+	<option value="BZ" <% if @campaignDetails["geoTargeting"].include?("BZ") %> selected <% end %>>Belize</option>
+	<option value="CA" <% if @campaignDetails["geoTargeting"].include?("CA") %> selected <% end %>>Canada</option>
+	<option value="CC" <% if @campaignDetails["geoTargeting"].include?("CC") %> selected <% end %>>Cocos (Keeling) Islands</option>
+	<option value="CD" <% if @campaignDetails["geoTargeting"].include?("CD") %> selected <% end %>>Congo, The Democratic Republic of the</option>
+	<option value="CF" <% if @campaignDetails["geoTargeting"].include?("CF") %> selected <% end %>>Central African Republic</option>
+	<option value="CG" <% if @campaignDetails["geoTargeting"].include?("CG") %> selected <% end %>>Congo</option>
+	<option value="CH" <% if @campaignDetails["geoTargeting"].include?("CH") %> selected <% end %>>Switzerland</option>
+	<option value="CI" <% if @campaignDetails["geoTargeting"].include?("CI") %> selected <% end %>>Cote d'Ivoire</option>
+	<option value="CK" <% if @campaignDetails["geoTargeting"].include?("CK") %> selected <% end %>>Cook Islands</option>
+	<option value="CL" <% if @campaignDetails["geoTargeting"].include?("CL") %> selected <% end %>>Chile</option>
+	<option value="CM" <% if @campaignDetails["geoTargeting"].include?("CM") %> selected <% end %>>Cameroon</option>
+	<option value="CN" <% if @campaignDetails["geoTargeting"].include?("CN") %> selected <% end %>>China</option>
+	<option value="CO" <% if @campaignDetails["geoTargeting"].include?("CO") %> selected <% end %>>Colombia</option>
+	<option value="CR" <% if @campaignDetails["geoTargeting"].include?("CR") %> selected <% end %>>Costa Rica</option>
+	<option value="CU" <% if @campaignDetails["geoTargeting"].include?("CU") %> selected <% end %>>Cuba</option>
+	<option value="CV" <% if @campaignDetails["geoTargeting"].include?("CV") %> selected <% end %>>Cape Verde</option>
+	<option value="CW" <% if @campaignDetails["geoTargeting"].include?("CW") %> selected <% end %>>Curacao</option>
+	<option value="CX" <% if @campaignDetails["geoTargeting"].include?("CX") %> selected <% end %>>Christmas Island</option>
+	<option value="CY" <% if @campaignDetails["geoTargeting"].include?("CY") %> selected <% end %>>Cyprus</option>
+	<option value="CZ" <% if @campaignDetails["geoTargeting"].include?("CZ") %> selected <% end %>>Czech Republic</option>
+	<option value="DE" <% if @campaignDetails["geoTargeting"].include?("DE") %> selected <% end %>>Germany</option>
+	<option value="DJ" <% if @campaignDetails["geoTargeting"].include?("DJ") %> selected <% end %>>Djibouti</option>
+	<option value="DK" <% if @campaignDetails["geoTargeting"].include?("DK") %> selected <% end %>>Denmark</option>
+	<option value="DM" <% if @campaignDetails["geoTargeting"].include?("DM") %> selected <% end %>>Dominica</option>
+	<option value="DO" <% if @campaignDetails["geoTargeting"].include?("DO") %> selected <% end %>>Dominican Republic</option>
+	<option value="DZ" <% if @campaignDetails["geoTargeting"].include?("DZ") %> selected <% end %>>Algeria</option>
+	<option value="EC" <% if @campaignDetails["geoTargeting"].include?("EC") %> selected <% end %>>Ecuador</option>
+	<option value="EE" <% if @campaignDetails["geoTargeting"].include?("EE") %> selected <% end %>>Estonia</option>
+	<option value="EG" <% if @campaignDetails["geoTargeting"].include?("EG") %> selected <% end %>>Egypt</option>
+	<option value="EH" <% if @campaignDetails["geoTargeting"].include?("EH") %> selected <% end %>>Western Sahara</option>
+	<option value="ER" <% if @campaignDetails["geoTargeting"].include?("ER") %> selected <% end %>>Eritrea</option>
+	<option value="ES" <% if @campaignDetails["geoTargeting"].include?("ES") %> selected <% end %>>Spain</option>
+	<option value="ET" <% if @campaignDetails["geoTargeting"].include?("ET") %> selected <% end %>>Ethiopia</option>
+	<option value="EU" <% if @campaignDetails["geoTargeting"].include?("EU") %> selected <% end %>>Europe</option>
+	<option value="FI" <% if @campaignDetails["geoTargeting"].include?("FI") %> selected <% end %>>Finland</option>
+	<option value="FJ" <% if @campaignDetails["geoTargeting"].include?("FJ") %> selected <% end %>>Fiji</option>
+	<option value="FK" <% if @campaignDetails["geoTargeting"].include?("FK") %> selected <% end %>>Falkland Islands (Malvinas)</option>
+	<option value="FM" <% if @campaignDetails["geoTargeting"].include?("FM") %> selected <% end %>>Micronesia, Federated States of</option>
+	<option value="FO" <% if @campaignDetails["geoTargeting"].include?("FO") %> selected <% end %>>Faroe Islands</option>
+	<option value="FR" <% if @campaignDetails["geoTargeting"].include?("FR") %> selected <% end %>>France</option>
+	<option value="GA" <% if @campaignDetails["geoTargeting"].include?("GA") %> selected <% end %>>Gabon</option>
+	<option value="GB" <% if @campaignDetails["geoTargeting"].include?("GB") %> selected <% end %>>United Kingdom</option>
+	<option value="GD" <% if @campaignDetails["geoTargeting"].include?("GD") %> selected <% end %>>Grenada</option>
+	<option value="GE" <% if @campaignDetails["geoTargeting"].include?("GE") %> selected <% end %>>Georgia</option>
+	<option value="GF" <% if @campaignDetails["geoTargeting"].include?("GF") %> selected <% end %>>French Guiana</option>
+	<option value="GG" <% if @campaignDetails["geoTargeting"].include?("GG") %> selected <% end %>>Guernsey</option>
+	<option value="GH" <% if @campaignDetails["geoTargeting"].include?("GH") %> selected <% end %>>Ghana</option>
+	<option value="GI" <% if @campaignDetails["geoTargeting"].include?("GI") %> selected <% end %>>Gibraltar</option>
+	<option value="GL" <% if @campaignDetails["geoTargeting"].include?("GL") %> selected <% end %>>Greenland</option>
+	<option value="GM" <% if @campaignDetails["geoTargeting"].include?("GM") %> selected <% end %>>Gambia</option>
+	<option value="GN" <% if @campaignDetails["geoTargeting"].include?("GN") %> selected <% end %>>Guinea</option>
+	<option value="GP" <% if @campaignDetails["geoTargeting"].include?("GP") %> selected <% end %>>Guadeloupe</option>
+	<option value="GQ" <% if @campaignDetails["geoTargeting"].include?("GQ") %> selected <% end %>>Equatorial Guinea</option>
+	<option value="GR" <% if @campaignDetails["geoTargeting"].include?("GR") %> selected <% end %>>Greece</option>
+	<option value="GS" <% if @campaignDetails["geoTargeting"].include?("GS") %> selected <% end %>>South Georgia and the South Sandwich Islands</option>
+	<option value="GT" <% if @campaignDetails["geoTargeting"].include?("GT") %> selected <% end %>>Guatemala</option>
+	<option value="GU" <% if @campaignDetails["geoTargeting"].include?("GU") %> selected <% end %>>Guam</option>
+	<option value="GW" <% if @campaignDetails["geoTargeting"].include?("GW") %> selected <% end %>>Guinea-Bissau</option>
+	<option value="GY" <% if @campaignDetails["geoTargeting"].include?("GY") %> selected <% end %>>Guyana</option>
+	<option value="HK" <% if @campaignDetails["geoTargeting"].include?("HK") %> selected <% end %>>Hong Kong</option>
+	<option value="HM" <% if @campaignDetails["geoTargeting"].include?("HM") %> selected <% end %>>Heard Island and McDonald Islands</option>
+	<option value="HN" <% if @campaignDetails["geoTargeting"].include?("HN") %> selected <% end %>>Honduras</option>
+	<option value="HR" <% if @campaignDetails["geoTargeting"].include?("HR") %> selected <% end %>>Croatia</option>
+	<option value="HT" <% if @campaignDetails["geoTargeting"].include?("HT") %> selected <% end %>>Haiti</option>
+	<option value="HU" <% if @campaignDetails["geoTargeting"].include?("HU") %> selected <% end %>>Hungary</option>
+	<option value="ID" <% if @campaignDetails["geoTargeting"].include?("ID") %> selected <% end %>>Indonesia</option>
+	<option value="IE" <% if @campaignDetails["geoTargeting"].include?("IE") %> selected <% end %>>Ireland</option>
+	<option value="IL" <% if @campaignDetails["geoTargeting"].include?("IL") %> selected <% end %>>Israel</option>
+	<option value="IM" <% if @campaignDetails["geoTargeting"].include?("IM") %> selected <% end %>>Isle of Man</option>
+	<option value="IN" <% if @campaignDetails["geoTargeting"].include?("IN") %> selected <% end %>>India</option>
+	<option value="IO" <% if @campaignDetails["geoTargeting"].include?("IO") %> selected <% end %>>British Indian Ocean Territory</option>
+	<option value="IQ" <% if @campaignDetails["geoTargeting"].include?("IQ") %> selected <% end %>>Iraq</option>
+	<option value="IR" <% if @campaignDetails["geoTargeting"].include?("IR") %> selected <% end %>>Iran, Islamic Republic of</option>
+	<option value="IS" <% if @campaignDetails["geoTargeting"].include?("IS") %> selected <% end %>>Iceland</option>
+	<option value="IT" <% if @campaignDetails["geoTargeting"].include?("IT") %> selected <% end %>>Italy</option>
+	<option value="JE" <% if @campaignDetails["geoTargeting"].include?("JE") %> selected <% end %>>Jersey</option>
+	<option value="JM" <% if @campaignDetails["geoTargeting"].include?("JM") %> selected <% end %>>Jamaica</option>
+	<option value="JO" <% if @campaignDetails["geoTargeting"].include?("JO") %> selected <% end %>>Jordan</option>
+	<option value="JP" <% if @campaignDetails["geoTargeting"].include?("JP") %> selected <% end %>>Japan</option>
+	<option value="KE" <% if @campaignDetails["geoTargeting"].include?("KE") %> selected <% end %>>Kenya</option>
+	<option value="KG" <% if @campaignDetails["geoTargeting"].include?("KG") %> selected <% end %>>Kyrgyzstan</option>
+	<option value="KH" <% if @campaignDetails["geoTargeting"].include?("KH") %> selected <% end %>>Cambodia</option>
+	<option value="KI" <% if @campaignDetails["geoTargeting"].include?("HI") %> selected <% end %>>Kiribati</option>
+	<option value="KM" <% if @campaignDetails["geoTargeting"].include?("KM") %> selected <% end %>>Comoros</option>
+	<option value="KN" <% if @campaignDetails["geoTargeting"].include?("KN") %> selected <% end %>>Saint Kitts and Nevis</option>
+	<option value="KP" <% if @campaignDetails["geoTargeting"].include?("KP") %> selected <% end %>>Korea, Democratic People's Republic of</option>
+	<option value="KR" <% if @campaignDetails["geoTargeting"].include?("KR") %> selected <% end %>>Korea, Republic of</option>
+	<option value="KW" <% if @campaignDetails["geoTargeting"].include?("KW") %> selected <% end %>>Kuwait</option>
+	<option value="KY" <% if @campaignDetails["geoTargeting"].include?("KY") %> selected <% end %>>Cayman Islands</option>
+	<option value="KZ" <% if @campaignDetails["geoTargeting"].include?("KZ") %> selected <% end %>>Kazakhstan</option>
+	<option value="LA" <% if @campaignDetails["geoTargeting"].include?("LA") %> selected <% end %>>Lao People's Democratic Republic</option>
+	<option value="LB" <% if @campaignDetails["geoTargeting"].include?("LB") %> selected <% end %>>Lebanon</option>
+	<option value="LC" <% if @campaignDetails["geoTargeting"].include?("LC") %> selected <% end %>>Saint Lucia</option>
+	<option value="LI" <% if @campaignDetails["geoTargeting"].include?("LI") %> selected <% end %>>Liechtenstein</option>
+	<option value="LK" <% if @campaignDetails["geoTargeting"].include?("LK") %> selected <% end %>>Sri Lanka</option>
+	<option value="LR" <% if @campaignDetails["geoTargeting"].include?("LR") %> selected <% end %>>Liberia</option>
+	<option value="LS" <% if @campaignDetails["geoTargeting"].include?("LS") %> selected <% end %>>Lesotho</option>
+	<option value="LT" <% if @campaignDetails["geoTargeting"].include?("LT") %> selected <% end %>>Lithuania</option>
+	<option value="LU" <% if @campaignDetails["geoTargeting"].include?("LU") %> selected <% end %>>Luxembourg</option>
+	<option value="LV" <% if @campaignDetails["geoTargeting"].include?("LV") %> selected <% end %>>Latvia</option>
+	<option value="LY" <% if @campaignDetails["geoTargeting"].include?("LY") %> selected <% end %>>Libyan Arab Jamahiriya</option>
+	<option value="MA" <% if @campaignDetails["geoTargeting"].include?("MA") %> selected <% end %>>Morocco</option>
+	<option value="MC" <% if @campaignDetails["geoTargeting"].include?("MC") %> selected <% end %>>Monaco</option>
+	<option value="MD" <% if @campaignDetails["geoTargeting"].include?("MD") %> selected <% end %>>Moldova, Republic of</option>
+	<option value="ME" <% if @campaignDetails["geoTargeting"].include?("ME") %> selected <% end %>>Montenegro</option>
+	<option value="MF" <% if @campaignDetails["geoTargeting"].include?("MF") %> selected <% end %>>Saint Martin</option>
+	<option value="MG" <% if @campaignDetails["geoTargeting"].include?("MG") %> selected <% end %>>Madagascar</option>
+	<option value="MH" <% if @campaignDetails["geoTargeting"].include?("MH") %> selected <% end %>>Marshall Islands</option>
+	<option value="MK" <% if @campaignDetails["geoTargeting"].include?("MK") %> selected <% end %>>Macedonia</option>
+	<option value="ML" <% if @campaignDetails["geoTargeting"].include?("ML") %> selected <% end %>>Mali</option>
+	<option value="MM" <% if @campaignDetails["geoTargeting"].include?("MM") %> selected <% end %>>Myanmar</option>
+	<option value="MN" <% if @campaignDetails["geoTargeting"].include?("MN") %> selected <% end %>>Mongolia</option>
+	<option value="MO" <% if @campaignDetails["geoTargeting"].include?("MO") %> selected <% end %>>Macao</option>
+	<option value="MP" <% if @campaignDetails["geoTargeting"].include?("MP") %> selected <% end %>>Northern Mariana Islands</option>
+	<option value="MQ" <% if @campaignDetails["geoTargeting"].include?("MQ") %> selected <% end %>>Martinique</option>
+	<option value="MR" <% if @campaignDetails["geoTargeting"].include?("MR") %> selected <% end %>>Mauritania</option>
+	<option value="MS" <% if @campaignDetails["geoTargeting"].include?("MS") %> selected <% end %>>Montserrat</option>
+	<option value="MT" <% if @campaignDetails["geoTargeting"].include?("MT") %> selected <% end %>>Malta</option>
+	<option value="MU" <% if @campaignDetails["geoTargeting"].include?("MU") %> selected <% end %>>Mauritius</option>
+	<option value="MV" <% if @campaignDetails["geoTargeting"].include?("MV") %> selected <% end %>>Maldives</option>
+	<option value="MW" <% if @campaignDetails["geoTargeting"].include?("MW") %> selected <% end %>>Malawi</option>
+	<option value="MX" <% if @campaignDetails["geoTargeting"].include?("MX") %> selected <% end %>>Mexico</option>
+	<option value="MY" <% if @campaignDetails["geoTargeting"].include?("MY") %> selected <% end %>>Malaysia</option>
+	<option value="MZ" <% if @campaignDetails["geoTargeting"].include?("MZ") %> selected <% end %>>Mozambique</option>
+	<option value="NA" <% if @campaignDetails["geoTargeting"].include?("NA") %> selected <% end %>>Namibia</option>
+	<option value="NC" <% if @campaignDetails["geoTargeting"].include?("NC") %> selected <% end %>>New Caledonia</option>
+	<option value="NE" <% if @campaignDetails["geoTargeting"].include?("NE") %> selected <% end %>>Niger</option>
+	<option value="NF" <% if @campaignDetails["geoTargeting"].include?("NF") %> selected <% end %>>Norfolk Island</option>
+	<option value="NG" <% if @campaignDetails["geoTargeting"].include?("NG") %> selected <% end %>>Nigeria</option>
+	<option value="NI" <% if @campaignDetails["geoTargeting"].include?("NI") %> selected <% end %>>Nicaragua</option>
+	<option value="NL" <% if @campaignDetails["geoTargeting"].include?("NL") %> selected <% end %>>Netherlands</option>
+	<option value="NORWAY" <% if @campaignDetails["geoTargeting"].include?("NORWAY") %> selected <% end %>>Norway</option>
+	<option value="NP" <% if @campaignDetails["geoTargeting"].include?("NP") %> selected <% end %>>Nepal</option>
+	<option value="NR" <% if @campaignDetails["geoTargeting"].include?("NR") %> selected <% end %>>Nauru</option>
+	<option value="NU" <% if @campaignDetails["geoTargeting"].include?("NU") %> selected <% end %>>Niue</option>
+	<option value="NZ" <% if @campaignDetails["geoTargeting"].include?("NZ") %> selected <% end %>>New Zealand</option>
+	<option value="OM" <% if @campaignDetails["geoTargeting"].include?("OM") %> selected <% end %>>Oman</option>
+	<option value="PA" <% if @campaignDetails["geoTargeting"].include?("PA") %> selected <% end %>>Panama</option>
+	<option value="PE" <% if @campaignDetails["geoTargeting"].include?("PE") %> selected <% end %>>Peru</option>
+	<option value="PF" <% if @campaignDetails["geoTargeting"].include?("PF") %> selected <% end %>>French Polynesia</option>
+	<option value="PG" <% if @campaignDetails["geoTargeting"].include?("PG") %> selected <% end %>>Papua New Guinea</option>
+	<option value="PH" <% if @campaignDetails["geoTargeting"].include?("PH") %> selected <% end %>>Philippines</option>
+	<option value="PK" <% if @campaignDetails["geoTargeting"].include?("PK") %> selected <% end %>>Pakistan</option>
+	<option value="PL" <% if @campaignDetails["geoTargeting"].include?("PL") %> selected <% end %>>Poland</option>
+	<option value="PM" <% if @campaignDetails["geoTargeting"].include?("PM") %> selected <% end %>>Saint Pierre and Miquelon</option>
+	<option value="PN" <% if @campaignDetails["geoTargeting"].include?("PN") %> selected <% end %>>Pitcairn</option>
+	<option value="PR" <% if @campaignDetails["geoTargeting"].include?("PR") %> selected <% end %>>Puerto Rico</option>
+	<option value="PS" <% if @campaignDetails["geoTargeting"].include?("PS") %> selected <% end %>>Palestinian Territory</option>
+	<option value="PT" <% if @campaignDetails["geoTargeting"].include?("PT") %> selected <% end %>>Portugal</option>
+	<option value="PW" <% if @campaignDetails["geoTargeting"].include?("PW") %> selected <% end %>>Palau</option>
+	<option value="PY" <% if @campaignDetails["geoTargeting"].include?("PY") %> selected <% end %>>Paraguay</option>
+	<option value="QA" <% if @campaignDetails["geoTargeting"].include?("QA") %> selected <% end %>>Qatar</option>
+	<option value="RE" <% if @campaignDetails["geoTargeting"].include?("RE") %> selected <% end %>>Reunion</option>
+	<option value="RO" <% if @campaignDetails["geoTargeting"].include?("RO") %> selected <% end %>>Romania</option>
+	<option value="RS" <% if @campaignDetails["geoTargeting"].include?("RS") %> selected <% end %>>Serbia</option>
+	<option value="RU" <% if @campaignDetails["geoTargeting"].include?("RU") %> selected <% end %>>Russian Federation</option>
+	<option value="RW" <% if @campaignDetails["geoTargeting"].include?("RW") %> selected <% end %>>Rwanda</option>
+	<option value="SA" <% if @campaignDetails["geoTargeting"].include?("SA") %> selected <% end %>>Saudi Arabia</option>
+	<option value="SB" <% if @campaignDetails["geoTargeting"].include?("SB") %> selected <% end %>>Solomon Islands</option>
+	<option value="SC" <% if @campaignDetails["geoTargeting"].include?("SC") %> selected <% end %>>Seychelles</option>
+	<option value="SD" <% if @campaignDetails["geoTargeting"].include?("SD") %> selected <% end %>>Sudan</option>
+	<option value="SE" <% if @campaignDetails["geoTargeting"].include?("SE") %> selected <% end %>>Sweden</option>
+	<option value="SG" <% if @campaignDetails["geoTargeting"].include?("SG") %> selected <% end %>>Singapore</option>
+	<option value="SH" <% if @campaignDetails["geoTargeting"].include?("SH") %> selected <% end %>>Saint Helena</option>
+	<option value="SI" <% if @campaignDetails["geoTargeting"].include?("SI") %> selected <% end %>>Slovenia</option>
+	<option value="SJ" <% if @campaignDetails["geoTargeting"].include?("SJ") %> selected <% end %>>Svalbard and Jan Mayen</option>
+	<option value="SK" <% if @campaignDetails["geoTargeting"].include?("SK") %> selected <% end %>>Slovakia</option>
+	<option value="SL" <% if @campaignDetails["geoTargeting"].include?("SL") %> selected <% end %>>Sierra Leone</option>
+	<option value="SM" <% if @campaignDetails["geoTargeting"].include?("SM") %> selected <% end %>>San Marino</option>
+	<option value="SN" <% if @campaignDetails["geoTargeting"].include?("SN") %> selected <% end %>>Senegal</option>
+	<option value="SO" <% if @campaignDetails["geoTargeting"].include?("SO") %> selected <% end %>>Somalia</option>
+	<option value="SR" <% if @campaignDetails["geoTargeting"].include?("SR") %> selected <% end %>>Suriname</option>
+	<option value="ST" <% if @campaignDetails["geoTargeting"].include?("ST") %> selected <% end %>>Sao Tome and Principe</option>
+	<option value="SV" <% if @campaignDetails["geoTargeting"].include?("SV") %> selected <% end %>>El Salvador</option>
+	<option value="SX" <% if @campaignDetails["geoTargeting"].include?("SX") %> selected <% end %>>Sint Maarten</option>
+	<option value="SY" <% if @campaignDetails["geoTargeting"].include?("SY") %> selected <% end %>>Syrian Arab Republic</option>
+	<option value="SZ" <% if @campaignDetails["geoTargeting"].include?("SZ") %> selected <% end %>>Swaziland</option>
+	<option value="TC" <% if @campaignDetails["geoTargeting"].include?("TC") %> selected <% end %>>Turks and Caicos Islands</option>
+	<option value="TD" <% if @campaignDetails["geoTargeting"].include?("TD") %> selected <% end %>>Chad</option>
+	<option value="TF" <% if @campaignDetails["geoTargeting"].include?("TF") %> selected <% end %>>French Southern Territories</option>
+	<option value="TG" <% if @campaignDetails["geoTargeting"].include?("TG") %> selected <% end %>>Togo</option>
+	<option value="TH" <% if @campaignDetails["geoTargeting"].include?("TH") %> selected <% end %>>Thailand</option>
+	<option value="TJ" <% if @campaignDetails["geoTargeting"].include?("TJ") %> selected <% end %>>Tajikistan</option>
+	<option value="TK" <% if @campaignDetails["geoTargeting"].include?("TK") %> selected <% end %>>Tokelau</option>
+	<option value="TL" <% if @campaignDetails["geoTargeting"].include?("TL") %> selected <% end %>>Timor-Leste</option>
+	<option value="TM" <% if @campaignDetails["geoTargeting"].include?("TM") %> selected <% end %>>Turkmenistan</option>
+	<option value="TN" <% if @campaignDetails["geoTargeting"].include?("TN") %> selected <% end %>>Tunisia</option>
+	<option value="TO" <% if @campaignDetails["geoTargeting"].include?("TO") %> selected <% end %>>Tonga</option>
+	<option value="TR" <% if @campaignDetails["geoTargeting"].include?("TR") %> selected <% end %>>Turkey</option>
+	<option value="TT" <% if @campaignDetails["geoTargeting"].include?("TT") %> selected <% end %>>Trinidad and Tobago</option>
+	<option value="TV" <% if @campaignDetails["geoTargeting"].include?("TV") %> selected <% end %>>Tuvalu</option>
+	<option value="TW" <% if @campaignDetails["geoTargeting"].include?("TW") %> selected <% end %>>Taiwan</option>
+	<option value="TZ" <% if @campaignDetails["geoTargeting"].include?("TZ") %> selected <% end %>>Tanzania, United Republic of</option>
+	<option value="UA" <% if @campaignDetails["geoTargeting"].include?("UA") %> selected <% end %>>Ukraine</option>
+	<option value="UG" <% if @campaignDetails["geoTargeting"].include?("UG") %> selected <% end %>>Uganda</option>
+	<option value="UM" <% if @campaignDetails["geoTargeting"].include?("UM") %> selected <% end %>>United States Minor Outlying Islands</option>
+	<option value="UY" <% if @campaignDetails["geoTargeting"].include?("UY") %> selected <% end %>>Uruguay</option>
+	<option value="UZ" <% if @campaignDetails["geoTargeting"].include?("UZ") %> selected <% end %>>Uzbekistan</option>
+	<option value="VA" <% if @campaignDetails["geoTargeting"].include?("VA") %> selected <% end %>>Holy See (Vatican City State)</option>
+	<option value="VC" <% if @campaignDetails["geoTargeting"].include?("VC") %> selected <% end %>>Saint Vincent and the Grenadines</option>
+	<option value="VE" <% if @campaignDetails["geoTargeting"].include?("VE") %> selected <% end %>>Venezuela</option>
+	<option value="VG" <% if @campaignDetails["geoTargeting"].include?("VG") %> selected <% end %>>Virgin Islands, British</option>
+	<option value="VI" <% if @campaignDetails["geoTargeting"].include?("VI") %> selected <% end %>>Virgin Islands, U.S.</option>
+	<option value="VN" <% if @campaignDetails["geoTargeting"].include?("VN") %> selected <% end %>>Vietnam</option>
+	<option value="VU" <% if @campaignDetails["geoTargeting"].include?("VU") %> selected <% end %>>Vanuatu</option>
+	<option value="WF" <% if @campaignDetails["geoTargeting"].include?("WF") %> selected <% end %>>Wallis and Futuna</option>
+	<option value="WS" <% if @campaignDetails["geoTargeting"].include?("WS") %> selected <% end %>>Samoa</option>
+	<option value="YE" <% if @campaignDetails["geoTargeting"].include?("YE") %> selected <% end %>>Yemen</option>
+	<option value="YT" <% if @campaignDetails["geoTargeting"].include?("YT") %> selected <% end %>>Mayotte</option>
+	<option value="ZA" <% if @campaignDetails["geoTargeting"].include?("ZA") %> selected <% end %>>South Africa</option>
+	<option value="ZM" <% if @campaignDetails["geoTargeting"].include?("ZM") %> selected <% end %>>Zambia</option>
+	<option value="ZW" <% if @campaignDetails["geoTargeting"].include?("ZW") %> selected <% end %>>Zimbabwe</option>
+</select>  
+                                  </li>
+                                  
+                                </ul>
+                                <div id="geoCountrieserrorText" class="error" ></div>
+                                <div style="left: -9000px; width: 458px; top: 29px;" class="chzn-drop">
+                                 
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <%= radio_button("campaign", "geotargeting", "dmas" ,{ :style=>"float:left;margin-right:10px;",:checked=>checkGeotargetDmas}) %>
+                        
+                        <label for="campaign_geo_target_level_dma">Target DMA (Designated Market Area) Regions</label>
+                        <div id="geo-dma-group" class="control-group">
+                          <div style="font-weight:normal;" class="control-label">Select DMA Region 
+                            <a rel="tooltip" data-original-title="DMA regions are large metro areas in the U.S. such as Chicago, San Franciso-San Jose-Oakland, etc."> [?]</a>
+                          </div>
+                          <div style="margin-top:3px;" class="controls">
+                            <div class="input-prepend chzn-container chzn-container-multi chzn-container-active">
+                               
+                              <div id="campaign_dmas_chzn" class="chzn-container chzn-container-multi" style="width: 460px;">
+                                <ul class="chzn-choices">
+                                  <!--<%= f.text_field :dmas , :id=>"dmas", :value=>geotargetDmas %>-->
+                                  <li class="search-field">
+                                    <!--<%= f.text_field :dmas , :id=>"dmas" , :disabled=>"" %>-->
+<select name="campaign[dmas][]" multiple="multiple" id="dmas" data-placeholder="Choose one or more DMAs..." class="span6 chzn-select chzn-single chzn-default chzn-done"  data-original-title="Choose one or more from the DMAs ! Use 'ctrl' key from your keyboard to select more than one DMA" rel="tooltip" <% if @campaignDetails["geoTargetingType"] != "dmas" %> disabled <% end %>>
+
+	<option value="662:Abilene-Sweetwater ( TX )" <% if @campaignDetails["geoTargeting"].include?("662:Abilene-Sweetwater ( TX )") %> selected <% end %>>Abilene-Sweetwater ( TX)</option>
+	<option value="525:Albany ( GA)" <% if @campaignDetails["geoTargeting"].include?("525:Albany ( GA)") %> selected <% end %>>Albany ( GA)</option>
+	<option value="532:Albany-Schenectady-Troy ( NY)" <% if @campaignDetails["geoTargeting"].include?("532:Albany-Schenectady-Troy ( NY)") %> selected <% end %>>Albany-Schenectady-Troy ( NY)</option>
+	<option value="790:Albuquerque-Santa Fe ( NM)" <% if @campaignDetails["geoTargeting"].include?("790:Albuquerque-Santa Fe ( NM)") %> selected <% end %>>Albuquerque-Santa Fe ( NM)</option>
+	<option value="644:Alexandria ( LA)" <% if @campaignDetails["geoTargeting"].include?("644:Alexandria ( LA)") %> selected <% end %>>Alexandria ( LA)</option>
+	<option value="583:Alpena ( MI)" <% if @campaignDetails["geoTargeting"].include?("583:Alpena ( MI)") %> selected <% end %>>Alpena ( MI)</option>
+	<option value="634:Amarillo ( TX)" <% if @campaignDetails["geoTargeting"].include?("634:Amarillo ( TX)") %> selected <% end %>>Amarillo ( TX)</option>
+	<option value="743:Anchorage ( AK)" <% if @campaignDetails["geoTargeting"].include?("743:Anchorage ( AK)") %> selected <% end %>>Anchorage ( AK)</option>
+	<option value="524:Atlanta ( GA)" <% if @campaignDetails["geoTargeting"].include?("524:Atlanta ( GA)") %> selected <% end %>>Atlanta ( GA)</option>
+	<option value="520:Augusta ( GA)" <% if @campaignDetails["geoTargeting"].include?("520:Augusta ( GA)") %> selected <% end %>>Augusta ( GA)</option>
+	<option value="635:Austin ( TX)" <% if @campaignDetails["geoTargeting"].include?("635:Austin ( TX)") %> selected <% end %>>Austin ( TX)</option>
+	<option value="800:Bakersfield ( CA)" <% if @campaignDetails["geoTargeting"].include?("800:Bakersfield ( CA)") %> selected <% end %>>Bakersfield ( CA)</option>
+	<option value="512:Baltimore ( MD)" <% if @campaignDetails["geoTargeting"].include?("512:Baltimore ( MD)") %> selected <% end %>>Baltimore ( MD)</option>
+	<option value="537:Bangor ( ME)" <% if @campaignDetails["geoTargeting"].include?("537:Bangor ( ME)") %> selected <% end %>>Bangor ( ME)</option>
+	<option value="716:Baton Rouge ( LA)" <% if @campaignDetails["geoTargeting"].include?("716:Baton Rouge ( LA)") %> selected <% end %>>Baton Rouge ( LA)</option>
+	<option value="692:Beaumont-Port Arthur ( TX)" <% if @campaignDetails["geoTargeting"].include?("692:Beaumont-Port Arthur ( TX)") %> selected <% end %>>Beaumont-Port Arthur ( TX)</option>
+	<option value="821:Bend ( OR)" <% if @campaignDetails["geoTargeting"].include?("821:Bend ( OR)") %> selected <% end %>>Bend ( OR)</option>
+	<option value="756:Billings ( MT)" <% if @campaignDetails["geoTargeting"].include?("756:Billings ( MT)") %> selected <% end %>>Billings ( MT)</option>
+	<option value="746:Biloxi-Gulfport ( MS)" <% if @campaignDetails["geoTargeting"].include?("746:Biloxi-Gulfport ( MS)") %> selected <% end %>>Biloxi-Gulfport ( MS)</option>
+	<option value="502:Binghamton ( NY)" <% if @campaignDetails["geoTargeting"].include?("502:Binghamton ( NY)") %> selected <% end %>>Binghamton ( NY)</option>
+	<option value="630:Birmingham ( AL)" <% if @campaignDetails["geoTargeting"].include?("630:Birmingham ( AL)") %> selected <% end %>>Birmingham ( AL)</option>
+	<option value="559:Bluefield-Beckley-Oak Hill ( WV)" <% if @campaignDetails["geoTargeting"].include?("559:Bluefield-Beckley-Oak Hill ( WV)") %> selected <% end %>>Bluefield-Beckley-Oak Hill ( WV)</option>
+	<option value="757:Boise ( ID)" <% if @campaignDetails["geoTargeting"].include?("757:Boise ( ID)") %> selected <% end %>>Boise ( ID)</option>
+	<option value="506:Boston ( MA-Manchester ( NH)" <% if @campaignDetails["geoTargeting"].include?("506:Boston ( MA-Manchester ( NH)") %> selected <% end %>>Boston ( MA-Manchester ( NH)</option>
+	<option value="736:Bowling Green ( KY)" <% if @campaignDetails["geoTargeting"].include?("736:Bowling Green ( KY)") %> selected <% end %>>Bowling Green ( KY)</option>
+	<option value="514:Buffalo ( NY)" <% if @campaignDetails["geoTargeting"].include?("514:Buffalo ( NY)") %> selected <% end %>>Buffalo ( NY)</option>
+	<option value="523:Burlington ( VT-Plattsburgh ( NY)" <% if @campaignDetails["geoTargeting"].include?("523:Burlington ( VT-Plattsburgh ( NY)") %> selected <% end %>>Burlington ( VT-Plattsburgh ( NY)</option>
+	<option value="754:Butte-Bozeman ( MT)" <% if @campaignDetails["geoTargeting"].include?("754:Butte-Bozeman ( MT)") %> selected <% end %>>Butte-Bozeman ( MT)</option>
+	<option value="767:Casper-Riverton ( WY)" <% if @campaignDetails["geoTargeting"].include?("767:Casper-Riverton ( WY)") %> selected <% end %>>Casper-Riverton ( WY)</option>
+	<option value="637:Cedar Rapids-Waterloo-Iowa City ( IA)" <% if @campaignDetails["geoTargeting"].include?("637:Cedar Rapids-Waterloo-Iowa City ( IA)") %> selected <% end %>>Cedar Rapids-Waterloo-Iowa City ( IA)</option>
+	<option value="648:Champaign &amp; Springfield-Decatur ( IL)" <% if @campaignDetails["geoTargeting"].include?("648:Champaign &amp; Springfield-Decatur ( IL)") %> selected <% end %>>Champaign &amp; Springfield-Decatur ( IL)</option>
+	<option value="519:Charleston ( SC)" <% if @campaignDetails["geoTargeting"].include?("519:Charleston ( SC)") %> selected <% end %>>Charleston ( SC)</option>
+	<option value="564:Charleston-Huntington ( WV)" <% if @campaignDetails["geoTargeting"].include?("564:Charleston-Huntington ( WV)") %> selected <% end %>>Charleston-Huntington ( WV)</option>
+	<option value="517:Charlotte ( NC)" <% if @campaignDetails["geoTargeting"].include?("517:Charlotte ( NC)") %> selected <% end %>>Charlotte ( NC)</option>
+	<option value="584:Charlottesville ( VA)" <% if @campaignDetails["geoTargeting"].include?("584:Charlottesville ( VA)") %> selected <% end %>>Charlottesville ( VA)</option>
+	<option value="575:Chattanooga ( TN)" <% if @campaignDetails["geoTargeting"].include?("575:Chattanooga ( TN)") %> selected <% end %>>Chattanooga ( TN)</option>
+	<option value="759:Cheyenne ( WY-Scottsbluff ( NE)" <% if @campaignDetails["geoTargeting"].include?("759:Cheyenne ( WY-Scottsbluff ( NE)") %> selected <% end %>>Cheyenne ( WY-Scottsbluff ( NE)</option>
+	<option value="602:Chicago ( IL)" <% if @campaignDetails["geoTargeting"].include?("602:Chicago ( IL)") %> selected <% end %>>Chicago ( IL)</option>
+	<option value="868:Chico-Redding ( CA)" <% if @campaignDetails["geoTargeting"].include?("868:Chico-Redding ( CA)") %> selected <% end %>>Chico-Redding ( CA)</option>
+	<option value="515:Cincinnati ( OH)" <% if @campaignDetails["geoTargeting"].include?("515:Cincinnati ( OH)") %> selected <% end %>>Cincinnati ( OH)</option>
+	<option value="598:Clarksburg-Weston ( WV)" <% if @campaignDetails["geoTargeting"].include?("598:Clarksburg-Weston ( WV)") %> selected <% end %>>Clarksburg-Weston ( WV)</option>
+	<option value="510:Cleveland-Akron (Canton) ( OH)" <% if @campaignDetails["geoTargeting"].include?("510:Cleveland-Akron (Canton) ( OH)") %> selected <% end %>>Cleveland-Akron (Canton) ( OH)</option>
+	<option value="752:Colorado Springs-Pueblo ( CO)" <% if @campaignDetails["geoTargeting"].include?("752:Colorado Springs-Pueblo ( CO)") %> selected <% end %>>Colorado Springs-Pueblo ( CO)</option>
+	<option value="546:Columbia ( SC)" <% if @campaignDetails["geoTargeting"].include?("546:Columbia ( SC)") %> selected <% end %>>Columbia ( SC)</option>
+	<option value="604:Columbia-Jefferson City ( MO)" <% if @campaignDetails["geoTargeting"].include?("604:Columbia-Jefferson City ( MO)") %> selected <% end %>>Columbia-Jefferson City ( MO)</option>
+	<option value="522:Columbus ( GA)" <% if @campaignDetails["geoTargeting"].include?("522:Columbus ( GA)") %> selected <% end %>>Columbus ( GA)</option>
+	<option value="535:Columbus ( OH)" <% if @campaignDetails["geoTargeting"].include?("535:Columbus ( OH)") %> selected <% end %>>Columbus ( OH)</option>
+	<option value="673:Columbus-Tupelo-West Point ( MS)" <% if @campaignDetails["geoTargeting"].include?("673:Columbus-Tupelo-West Point ( MS)") %> selected <% end %>>Columbus-Tupelo-West Point ( MS)</option>
+	<option value="600:Corpus Christi ( TX)" <% if @campaignDetails["geoTargeting"].include?("600:Corpus Christi ( TX)") %> selected <% end %>>Corpus Christi ( TX)</option>
+	<option value="623:Dallas-Ft. Worth ( TX)" <% if @campaignDetails["geoTargeting"].include?("623:Dallas-Ft. Worth ( TX)") %> selected <% end %>>Dallas-Ft. Worth ( TX)</option>
+	<option value="682:Davenport-IA-Rock Island-Moline ( IL)" <% if @campaignDetails["geoTargeting"].include?("682:Davenport-IA-Rock Island-Moline ( IL)") %> selected <% end %>>Davenport-IA-Rock Island-Moline ( IL)</option>
+	<option value="542:Dayton ( OH)" <% if @campaignDetails["geoTargeting"].include?("542:Dayton ( OH)") %> selected <% end %>>Dayton ( OH)</option>
+	<option value="751:Denver ( CO)" <% if @campaignDetails["geoTargeting"].include?("751:Denver ( CO)") %> selected <% end %>>Denver ( CO)</option>
+	<option value="679:Des Moines-Ames ( IA)" <% if @campaignDetails["geoTargeting"].include?("679:Des Moines-Ames ( IA)") %> selected <% end %>>Des Moines-Ames ( IA)</option>
+	<option value="505:Detroit ( MI)" <% if @campaignDetails["geoTargeting"].include?("505:Detroit ( MI)") %> selected <% end %>>Detroit ( MI)</option>
+	<option value="606:Dothan ( AL)" <% if @campaignDetails["geoTargeting"].include?("606:Dothan ( AL)") %> selected <% end %>>Dothan ( AL)</option>
+	<option value="676:Duluth ( MN-Superior ( WI)" <% if @campaignDetails["geoTargeting"].include?("676:Duluth ( MN-Superior ( WI)") %> selected <% end %>>Duluth ( MN-Superior ( WI)</option>
+	<option value="765:El Paso ( TX)" <% if @campaignDetails["geoTargeting"].include?("765:El Paso ( TX)") %> selected <% end %>>El Paso ( TX)</option>
+	<option value="565:Elmira ( NY)" <% if @campaignDetails["geoTargeting"].include?("565:Elmira ( NY)") %> selected <% end %>>Elmira ( NY)</option>
+	<option value="516:Erie ( PA)" <% if @campaignDetails["geoTargeting"].include?("516:Erie ( PA)") %> selected <% end %>>Erie ( PA)</option>
+	<option value="801:Eugene ( OR)" <% if @campaignDetails["geoTargeting"].include?("801:Eugene ( OR)") %> selected <% end %>>Eugene ( OR)</option>
+	<option value="802:Eureka ( CA)" <% if @campaignDetails["geoTargeting"].include?("802:Eureka ( CA)") %> selected <% end %>>Eureka ( CA)</option>
+	<option value="649:Evansville ( IN)" <% if @campaignDetails["geoTargeting"].include?("649:Evansville ( IN)") %> selected <% end %>>Evansville ( IN)</option>
+	<option value="745:Fairbanks ( AK)" <% if @campaignDetails["geoTargeting"].include?("745:Fairbanks ( AK)") %> selected <% end %>>Fairbanks ( AK)</option>
+	<option value="724:Fargo-Valley City ( ND)" <% if @campaignDetails["geoTargeting"].include?("724:Fargo-Valley City ( ND)") %> selected <% end %>>Fargo-Valley City ( ND)</option>
+	<option value="513:Flint-Saginaw-Bay City ( MI)" <% if @campaignDetails["geoTargeting"].include?("513:Flint-Saginaw-Bay City ( MI)") %> selected <% end %>>Flint-Saginaw-Bay City ( MI)</option>
+	<option value="570:Florence-Myrtle Beach ( SC)" <% if @campaignDetails["geoTargeting"].include?("570:Florence-Myrtle Beach ( SC)") %> selected <% end %>>Florence-Myrtle Beach ( SC)</option>
+	<option value="866:Fresno-Visalia ( CA)" <% if @campaignDetails["geoTargeting"].include?("866:Fresno-Visalia ( CA)") %> selected <% end %>>Fresno-Visalia ( CA)</option>
+	<option value="571:Ft. Myers-Naples ( FL)" <% if @campaignDetails["geoTargeting"].include?("571:Ft. Myers-Naples ( FL)") %> selected <% end %>>Ft. Myers-Naples ( FL)</option>
+	<option value="670:Ft Smith-Springdale ( AR)" <% if @campaignDetails["geoTargeting"].include?("670:Ft Smith-Springdale ( AR)") %> selected <% end %>>Ft Smith-Springdale ( AR)</option>
+	<option value="509:Ft. Wayne ( IN)" <% if @campaignDetails["geoTargeting"].include?("509:Ft. Wayne ( IN)") %> selected <% end %>>Ft. Wayne ( IN)</option>
+	<option value="592:Gainesville ( FL)" <% if @campaignDetails["geoTargeting"].include?("592:Gainesville ( FL)") %> selected <% end %>>Gainesville ( FL)</option>
+	<option value="798:Glendive ( MT)" <% if @campaignDetails["geoTargeting"].include?("798:Glendive ( MT)") %> selected <% end %>>Glendive ( MT)</option>
+	<option value="773:Grand Junction-Montrose ( CO)" <% if @campaignDetails["geoTargeting"].include?("773:Grand Junction-Montrose ( CO)") %> selected <% end %>>Grand Junction-Montrose ( CO)</option>
+	<option value="563:Grand Rapids-Kalamazoo ( MI)" <% if @campaignDetails["geoTargeting"].include?("563:Grand Rapids-Kalamazoo ( MI)") %> selected <% end %>>Grand Rapids-Kalamazoo ( MI)</option>
+	<option value="755:Great Falls ( MT)" <% if @campaignDetails["geoTargeting"].include?("755:Great Falls ( MT)") %> selected <% end %>>Great Falls ( MT)</option>
+	<option value="658:Green Bay-Appleton ( WI)" <% if @campaignDetails["geoTargeting"].include?("658:Green Bay-Appleton ( WI)") %> selected <% end %>>Green Bay-Appleton ( WI)</option>
+	<option value="518:Greensboro-Winston Salem ( NC)" <% if @campaignDetails["geoTargeting"].include?("518:Greensboro-Winston Salem ( NC)") %> selected <% end %>>Greensboro-Winston Salem ( NC)</option>
+	<option value="545:Greenville-New Bern-Washington ( NC)" <% if @campaignDetails["geoTargeting"].include?("545:Greenville-New Bern-Washington ( NC)") %> selected <% end %>>Greenville-New Bern-Washington ( NC)</option>
+	<option value="567:Greenville-Spartanburg ( SC)" <% if @campaignDetails["geoTargeting"].include?("567:Greenville-Spartanburg ( SC)") %> selected <% end %>>Greenville-Spartanburg ( SC)</option>
+	<option value="647:Greenwood-Greenville ( MS)" <% if @campaignDetails["geoTargeting"].include?("647:Greenwood-Greenville ( MS)") %> selected <% end %>>Greenwood-Greenville ( MS)</option>
+	<option value="636:Harlingen-Weslaco-McAllen ( TX)" <% if @campaignDetails["geoTargeting"].include?("636:Harlingen-Weslaco-McAllen ( TX)") %> selected <% end %>>Harlingen-Weslaco-McAllen ( TX)</option>
+	<option value="566:Harrisburg-Lancaster-York ( PA)" <% if @campaignDetails["geoTargeting"].include?("566:Harrisburg-Lancaster-York ( PA)") %> selected <% end %>>Harrisburg-Lancaster-York ( PA)</option>
+	<option value="569:Harrisonburg ( VA)" <% if @campaignDetails["geoTargeting"].include?("569:Harrisonburg ( VA)") %> selected <% end %>>Harrisonburg ( VA)</option>
+	<option value="533:Hartford &amp; New Haven ( CT)" <% if @campaignDetails["geoTargeting"].include?("533:Hartford &amp; New Haven ( CT)") %> selected <% end %>>Hartford &amp; New Haven ( CT)</option>
+	<option value="710:Hattiesburg-Laurel ( MS)" <% if @campaignDetails["geoTargeting"].include?("710:Hattiesburg-Laurel ( MS)") %> selected <% end %>>Hattiesburg-Laurel ( MS)</option>
+	<option value="766:Helena ( MT)" <% if @campaignDetails["geoTargeting"].include?("766:Helena ( MT)") %> selected <% end %>>Helena ( MT)</option>
+	<option value="744:Honolulu ( HI)" <% if @campaignDetails["geoTargeting"].include?("744:Honolulu ( HI)") %> selected <% end %>>Honolulu ( HI)</option>
+	<option value="618:Houston ( TX)" <% if @campaignDetails["geoTargeting"].include?("618:Houston ( TX)") %> selected <% end %>>Houston ( TX)</option>
+	<option value="691:Huntsville-Decatur (Florence) ( AL)" <% if @campaignDetails["geoTargeting"].include?("691:Huntsville-Decatur (Florence) ( AL)") %> selected <% end %>>Huntsville-Decatur (Florence) ( AL)</option>
+	<option value="758:Idaho Falls-Pocatello ( ID)" <% if @campaignDetails["geoTargeting"].include?("758:Idaho Falls-Pocatello ( ID)") %> selected <% end %>>Idaho Falls-Pocatello ( ID)</option>
+	<option value="527:Indianapolis ( IN)" <% if @campaignDetails["geoTargeting"].include?("527:Indianapolis ( IN)") %> selected <% end %>>Indianapolis ( IN)</option>
+	<option value="718:Jackson ( MS)" <% if @campaignDetails["geoTargeting"].include?("718:Jackson ( MS)") %> selected <% end %>>Jackson ( MS)</option>
+	<option value="639:Jackson ( TN)" <% if @campaignDetails["geoTargeting"].include?("639:Jackson ( TN)") %> selected <% end %>>Jackson ( TN)</option>
+	<option value="561:Jacksonville ( FL)" <% if @campaignDetails["geoTargeting"].include?("561:Jacksonville ( FL)") %> selected <% end %>>Jacksonville ( FL)</option>
+	<option value="574:Johnstown-Altoona ( PA)" <% if @campaignDetails["geoTargeting"].include?("574:Johnstown-Altoona ( PA)") %> selected <% end %>>Johnstown-Altoona ( PA)</option>
+	<option value="734:Jonesboro ( AR)" <% if @campaignDetails["geoTargeting"].include?("734:Jonesboro ( AR)") %> selected <% end %>>Jonesboro ( AR)</option>
+	<option value="603:Joplin ( MO-Pittsburg ( KS)" <% if @campaignDetails["geoTargeting"].include?("603:Joplin ( MO-Pittsburg ( KS)") %> selected <% end %>>Joplin ( MO-Pittsburg ( KS)</option>
+	<option value="747:Juneau ( AK)" <% if @campaignDetails["geoTargeting"].include?("747:Juneau ( AK)") %> selected <% end %>>Juneau ( AK)</option>
+	<option value="616:Kansas City ( MO)" <% if @campaignDetails["geoTargeting"].include?("616:Kansas City ( MO)") %> selected <% end %>>Kansas City ( MO)</option>
+	<option value="557:Knoxville ( TN)" <% if @campaignDetails["geoTargeting"].include?("557:Knoxville ( TN)") %> selected <% end %>>Knoxville ( TN)</option>
+	<option value="702:La Crosse-Eau Claire ( WI)" <% if @campaignDetails["geoTargeting"].include?("702:La Crosse-Eau Claire ( WI)") %> selected <% end %>>La Crosse-Eau Claire ( WI)</option>
+	<option value="582:Lafayette ( IN)" <% if @campaignDetails["geoTargeting"].include?("582:Lafayette ( IN)") %> selected <% end %>>Lafayette ( IN)</option>
+	<option value="642:Lafayette ( LA)" <% if @campaignDetails["geoTargeting"].include?("642:Lafayette ( LA)") %> selected <% end %>>Lafayette ( LA)</option>
+	<option value="643:Lake Charles ( LA)" <% if @campaignDetails["geoTargeting"].include?("643:Lake Charles ( LA)") %> selected <% end %>>Lake Charles ( LA)</option>
+	<option value="551:Lansing ( MI)" <% if @campaignDetails["geoTargeting"].include?("551:Lansing ( MI)") %> selected <% end %>>Lansing ( MI)</option>
+	<option value="749:Laredo ( TX)" <% if @campaignDetails["geoTargeting"].include?("749:Laredo ( TX)") %> selected <% end %>>Laredo ( TX)</option>
+	<option value="839:Las Vegas ( NV)" <% if @campaignDetails["geoTargeting"].include?("839:Las Vegas ( NV)") %> selected <% end %>>Las Vegas ( NV)</option>
+	<option value="541:Lexington ( KY)" <% if @campaignDetails["geoTargeting"].include?("541:Lexington ( KY") %> selected <% end %>>Lexington ( KY)</option>
+	<option value="558:Lima ( OH)" <% if @campaignDetails["geoTargeting"].include?("558:Lima ( OH)") %> selected <% end %>>Lima ( OH)</option>
+	<option value="722:Lincoln &amp; Hastings-Kearney ( NE)" <% if @campaignDetails["geoTargeting"].include?("722:Lincoln &amp; Hastings-Kearney ( NE)") %> selected <% end %>>Lincoln &amp; Hastings-Kearney ( NE)</option>
+	<option value="693:Little Rock-Pine Bluff ( AR)" <% if @campaignDetails["geoTargeting"].include?("693:Little Rock-Pine Bluff ( AR)") %> selected <% end %>>Little Rock-Pine Bluff ( AR)</option>
+	<option value="803:Los Angeles ( CA)" <% if @campaignDetails["geoTargeting"].include?("803:Los Angeles ( CA)") %> selected <% end %>>Los Angeles ( CA)</option>
+	<option value="529:Louisville ( KY)" <% if @campaignDetails["geoTargeting"].include?("529:Louisville ( KY)") %> selected <% end %>>Louisville ( KY)</option> 
+	<option value="651:Lubbock ( TX)" <% if @campaignDetails["geoTargeting"].include?("651:Lubbock ( TX)") %> selected <% end %>>Lubbock ( TX)</option>
+	<option value="503:Macon ( GA)" <% if @campaignDetails["geoTargeting"].include?("503:Macon ( GA)") %> selected <% end %>>Macon ( GA)</option>
+	<option value="669:Madison ( WI)" <% if @campaignDetails["geoTargeting"].include?("669:Madison ( WI)") %> selected <% end %>>Madison ( WI)</option>
+	<option value="737:Mankato ( MN)" <% if @campaignDetails["geoTargeting"].include?("737:Mankato ( MN)") %> selected <% end %>>Mankato ( MN)</option>
+	<option value="553:Marquette ( MI)" <% if @campaignDetails["geoTargeting"].include?("553:Marquette ( MI)") %> selected <% end %>>Marquette ( MI)</option>
+	<option value="813:Medford-Klamath Falls ( OR)" <% if @campaignDetails["geoTargeting"].include?("813:Medford-Klamath Falls ( OR)") %> selected <% end %>>Medford-Klamath Falls ( OR)</option>
+	<option value="640:Memphis ( TN)" <% if @campaignDetails["geoTargeting"].include?("640:Memphis ( TN)") %> selected <% end %>>Memphis ( TN)</option>
+	<option value="711:Meridian ( MS)" <% if @campaignDetails["geoTargeting"].include?("711:Meridian ( MS)") %> selected <% end %>>Meridian ( MS)</option>
+	<option value="528:Miami-Ft. Lauderdale ( FL)" <% if @campaignDetails["geoTargeting"].include?("528:Miami-Ft. Lauderdale ( FL)") %> selected <% end %>>Miami-Ft. Lauderdale ( FL)</option>
+	<option value="617:Milwaukee ( WI)" <% if @campaignDetails["geoTargeting"].include?("617:Milwaukee ( WI)") %> selected <% end %>>Milwaukee ( WI)</option>
+	<option value="613:Minneapolis-St. Paul ( MN)" <% if @campaignDetails["geoTargeting"].include?("613:Minneapolis-St. Paul ( MN)") %> selected <% end %>>Minneapolis-St. Paul ( MN)</option>
+	<option value="687:Minot-Bismarck-Dickinson ( ND)" <% if @campaignDetails["geoTargeting"].include?("687:Minot-Bismarck-Dickinson ( ND)") %> selected <% end %>>Minot-Bismarck-Dickinson ( ND)</option>
+	<option value="762:Missoula ( MT)" <% if @campaignDetails["geoTargeting"].include?("762:Missoula ( MT)") %> selected <% end %>>Missoula ( MT)</option>
+	<option value="686:Mobile ( AL-Pensacola ( FL)" <% if @campaignDetails["geoTargeting"].include?("686:Mobile ( AL-Pensacola ( FL)") %> selected <% end %>>Mobile ( AL-Pensacola ( FL)</option>
+	<option value="628:Monroe ( LA-El Dorado ( AR)" <% if @campaignDetails["geoTargeting"].include?("628:Monroe ( LA-El Dorado ( AR)") %> selected <% end %>>Monroe ( LA-El Dorado ( AR)</option>
+	<option value="828:Monterey-Salinas ( CA)" <% if @campaignDetails["geoTargeting"].include?("828:Monterey-Salinas ( CA)") %> selected <% end %>>Monterey-Salinas ( CA)</option>
+	<option value="698:Montgomery (Selma) ( AL)" <% if @campaignDetails["geoTargeting"].include?("698:Montgomery (Selma) ( AL)") %> selected <% end %>>Montgomery (Selma) ( AL)</option>
+	<option value="659:Nashville ( TN)" <% if @campaignDetails["geoTargeting"].include?("659:Nashville ( TN)") %> selected <% end %>>Nashville ( TN)</option>
+	<option value="622:New Orleans ( LA)" <% if @campaignDetails["geoTargeting"].include?("622:New Orleans ( LA)") %> selected <% end %>>New Orleans ( LA)</option>
+	<option value="501:New York ( NY)" <% if @campaignDetails["geoTargeting"].include?("501:New York ( NY)") %> selected <% end %>>New York ( NY)</option>
+	<option value="544:Norfolk-Portsmouth-Newport News ( VA)" <% if @campaignDetails["geoTargeting"].include?("544:Norfolk-Portsmouth-Newport News ( VA)") %> selected <% end %>>Norfolk-Portsmouth-Newport News ( VA)</option>
+	<option value="740:North Platte ( NE)" <% if @campaignDetails["geoTargeting"].include?("740:North Platte ( NE)") %> selected <% end %>>North Platte ( NE)</option>
+	<option value="633:Odessa-Midland ( TX)" <% if @campaignDetails["geoTargeting"].include?("633:Odessa-Midland ( TX)") %> selected <% end %>>Odessa-Midland ( TX)</option>
+	<option value="650:Oklahoma City ( OK)" <% if @campaignDetails["geoTargeting"].include?("650:Oklahoma City ( OK)") %> selected <% end %>>Oklahoma City ( OK)</option>
+	<option value="652:Omaha ( NE)" <% if @campaignDetails["geoTargeting"].include?("652:Omaha ( NE)") %> selected <% end %>>Omaha ( NE)</option>
+	<option value="534:Orlando-Daytona Beach ( FL)" <% if @campaignDetails["geoTargeting"].include?("534:Orlando-Daytona Beach ( FL)") %> selected <% end %>>Orlando-Daytona Beach ( FL)</option>
+	<option value="631:Ottumwa ( IA-Kirksville ( MO)" <% if @campaignDetails["geoTargeting"].include?("631:Ottumwa ( IA-Kirksville ( MO)") %> selected <% end %>>Ottumwa ( IA-Kirksville ( MO)</option>
+	<option value="632:Paducah ( KY-Harrisburg ( IL)" <% if @campaignDetails["geoTargeting"].include?("632:Paducah ( KY-Harrisburg ( IL)") %> selected <% end %>>Paducah ( KY-Harrisburg ( IL)</option>
+	<option value="804:Palm Springs ( CA)" <% if @campaignDetails["geoTargeting"].include?("804:Palm Springs ( CA)") %> selected <% end %>>Palm Springs ( CA)</option>
+	<option value="656:Panama City ( FL)" <% if @campaignDetails["geoTargeting"].include?("656:Panama City ( FL)") %> selected <% end %>>Panama City ( FL)</option>
+	<option value="597:Parkersburg ( WV)" <% if @campaignDetails["geoTargeting"].include?("597:Parkersburg ( WV)") %> selected <% end %>>Parkersburg ( WV)</option>
+	<option value="675:Peoria-Bloomington ( IL)" <% if @campaignDetails["geoTargeting"].include?("675:Peoria-Bloomington ( IL)") %> selected <% end %>>Peoria-Bloomington ( IL)</option>
+	<option value="504:Philadelphia ( PA)" <% if @campaignDetails["geoTargeting"].include?("504:Philadelphia ( PA)") %> selected <% end %>>Philadelphia ( PA)</option>
+	<option value="753:Phoenix ( AZ)" <% if @campaignDetails["geoTargeting"].include?("753:Phoenix ( AZ)") %> selected <% end %>>Phoenix ( AZ)</option>
+	<option value="508:Pittsburgh ( PA)" <% if @campaignDetails["geoTargeting"].include?("508:Pittsburgh ( PA)") %> selected <% end %>>Pittsburgh ( PA)</option>
+	<option value="820:Portland ( OR)" <% if @campaignDetails["geoTargeting"].include?("820:Portland ( OR)") %> selected <% end %>>Portland ( OR)</option>
+	<option value="500:Portland-Auburn ( ME)" <% if @campaignDetails["geoTargeting"].include?("500:Portland-Auburn ( ME)") %> selected <% end %>>Portland-Auburn ( ME)</option>
+	<option value="552:Presque Isle ( ME)" <% if @campaignDetails["geoTargeting"].include?("552:Presque Isle ( ME)") %> selected <% end %>>Presque Isle ( ME)</option>
+	<option value="521:Providence ( RI-New Bedford ( MA)" <% if @campaignDetails["geoTargeting"].include?("521:Providence ( RI-New Bedford ( MA)") %> selected <% end %>>Providence ( RI-New Bedford ( MA)</option>
+	<option value="717:Quincy ( IL-Hannibal ( MO-Keokuk ( IA)" <% if @campaignDetails["geoTargeting"].include?("717:Quincy ( IL-Hannibal ( MO-Keokuk ( IA)") %> selected <% end %>>Quincy ( IL-Hannibal ( MO-Keokuk ( IA)</option>
+	<option value="560:Raleigh-Durham (Fayetteville) ( NC)" <% if @campaignDetails["geoTargeting"].include?("560:Raleigh-Durham (Fayetteville) ( NC)") %> selected <% end %>>Raleigh-Durham (Fayetteville) ( NC)</option>
+	<option value="764:Rapid City ( SD)" <% if @campaignDetails["geoTargeting"].include?("764:Rapid City ( SD)") %> selected <% end %>>Rapid City ( SD)</option>
+	<option value="811:Reno ( NV)" <% if @campaignDetails["geoTargeting"].include?("811:Reno ( NV)") %> selected <% end %>>Reno ( NV)</option>
+	<option value="556:Richmond-Petersburg ( VA)" <% if @campaignDetails["geoTargeting"].include?("556:Richmond-Petersburg ( VA)") %> selected <% end %>>Richmond-Petersburg ( VA)</option>
+	<option value="573:Roanoke-Lynchburg ( VA)" <% if @campaignDetails["geoTargeting"].include?("504:Philadelphia ( PA)") %> selected <% end %>>Roanoke-Lynchburg ( VA)</option>
+	<option value="611:Rochester-Austin ( MN-Mason City ( IA)" <% if @campaignDetails["geoTargeting"].include?("504:Philadelphia ( PA)") %> selected <% end %>>Rochester-Austin ( MN-Mason City ( IA)</option>
+	<option value="538:Rochester ( NY)" <% if @campaignDetails["geoTargeting"].include?("504:Philadelphia ( PA)") %> selected <% end %>>Rochester ( NY)</option>
+	<option value="610:Rockford ( IL)" <% if @campaignDetails["geoTargeting"].include?("504:Philadelphia ( PA)") %> selected <% end %>>Rockford ( IL)</option>
+	<option value="862:Sacramento-Stockton-Modesto ( CA)" <% if @campaignDetails["geoTargeting"].include?("862:Sacramento-Stockton-Modesto ( CA)") %> selected <% end %>>Sacramento-Stockton-Modesto ( CA)</option>
+	<option value="576:Salisbury ( MD)" <% if @campaignDetails["geoTargeting"].include?("576:Salisbury ( MD)") %> selected <% end %>>Salisbury ( MD)</option>
+	<option value="770:Salt Lake City ( UT)" <% if @campaignDetails["geoTargeting"].include?("770:Salt Lake City ( UT)") %> selected <% end %>>Salt Lake City ( UT)</option>
+	<option value="661:San Angelo ( TX)" <% if @campaignDetails["geoTargeting"].include?("661:San Angelo ( TX)") %> selected <% end %>>San Angelo ( TX)</option>
+	<option value="641:San Antonio ( TX)" <% if @campaignDetails["geoTargeting"].include?("641:San Antonio ( TX)") %> selected <% end %>>San Antonio ( TX)</option>
+	<option value="825:San Diego ( CA)" <% if @campaignDetails["geoTargeting"].include?("825:San Diego ( CA)") %> selected <% end %>>San Diego ( CA)</option>
+	<option value="807:San Francisco-Oakland-San Jose ( CA)" <% if @campaignDetails["geoTargeting"].include?("807:San Francisco-Oakland-San Jose ( CA)") %> selected <% end %>>San Francisco-Oakland-San Jose ( CA)</option>
+	<option value="855:Santa Barbara-San Luis Obispo ( CA)" <% if @campaignDetails["geoTargeting"].include?("855:Santa Barbara-San Luis Obispo ( CA)") %> selected <% end %>>Santa Barbara-San Luis Obispo ( CA)</option>
+	<option value="507:Savannah ( GA)" <% if @campaignDetails["geoTargeting"].include?("507:Savannah ( GA)") %> selected <% end %>>Savannah ( GA)</option>
+	<option value="819:Seattle-Tacoma ( WA)" <% if @campaignDetails["geoTargeting"].include?("819:Seattle-Tacoma ( WA)") %> selected <% end %>>Seattle-Tacoma ( WA)</option>
+	<option value="657:Sherman ( TX-Ada ( OK)" <% if @campaignDetails["geoTargeting"].include?("657:Sherman ( TX-Ada ( OK)") %> selected <% end %>>Sherman ( TX-Ada ( OK)</option>
+	<option value="612:Shreveport ( LA)" <% if @campaignDetails["geoTargeting"].include?("612:Shreveport ( LA)") %> selected <% end %>>Shreveport ( LA)</option>
+	<option value="624:Sioux City ( IA)" <% if @campaignDetails["geoTargeting"].include?("624:Sioux City ( IA)") %> selected <% end %>>Sioux City ( IA)</option>
+	<option value="725:Sioux Falls(Mitchell) ( SD)" <% if @campaignDetails["geoTargeting"].include?("725:Sioux Falls(Mitchell) ( SD)") %> selected <% end %>>Sioux Falls(Mitchell) ( SD)</option>
+	<option value="588:South Bend-Elkhart ( IN)" <% if @campaignDetails["geoTargeting"].include?("588:South Bend-Elkhart ( IN)") %> selected <% end %>>South Bend-Elkhart ( IN)</option>
+	<option value="881:Spokane ( WA)" <% if @campaignDetails["geoTargeting"].include?("881:Spokane ( WA)") %> selected <% end %>>Spokane ( WA)</option>
+	<option value="619:Springfield ( MO)" <% if @campaignDetails["geoTargeting"].include?("619:Springfield ( MO)") %> selected <% end %>>Springfield ( MO)</option>
+	<option value="543:Springfield-Holyoke ( MA)" <% if @campaignDetails["geoTargeting"].include?("543:Springfield-Holyoke ( MA)") %> selected <% end %>>Springfield-Holyoke ( MA)</option>
+	<option value="638:St. Joseph ( MO)" <% if @campaignDetails["geoTargeting"].include?("638:St. Joseph ( MO)") %> selected <% end %>>St. Joseph ( MO)</option>
+	<option value="609:St. Louis ( MO)" <% if @campaignDetails["geoTargeting"].include?("609:St. Louis ( MO)") %> selected <% end %>>St. Louis ( MO)</option>
+	<option value="555:Syracuse ( NY)" <% if @campaignDetails["geoTargeting"].include?("555:Syracuse ( NY)") %> selected <% end %>>Syracuse ( NY)</option>
+	<option value="530:Tallahassee ( FL-Thomasville ( GA)" <% if @campaignDetails["geoTargeting"].include?("530:Tallahassee ( FL-Thomasville ( GA)") %> selected <% end %>>Tallahassee ( FL-Thomasville ( GA)</option>
+	<option value="539:Tampa-St Petersburg (Sarasota) ( FL)" <% if @campaignDetails["geoTargeting"].include?("539:Tampa-St Petersburg (Sarasota) ( FL)") %> selected <% end %>>Tampa-St Petersburg (Sarasota) ( FL)</option>
+	<option value="581:Terre Haute ( IN)" <% if @campaignDetails["geoTargeting"].include?("581:Terre Haute ( IN)") %> selected <% end %>>Terre Haute ( IN)</option>
+	<option value="547:Toledo ( OH)" <% if @campaignDetails["geoTargeting"].include?("547:Toledo ( OH)") %> selected <% end %>>Toledo ( OH)</option>
+	<option value="605:Topeka ( KS)" <% if @campaignDetails["geoTargeting"].include?("605:Topeka ( KS)") %> selected <% end %>>Topeka ( KS)</option>
+	<option value="540:Traverse City-Cadillac ( MI)" <% if @campaignDetails["geoTargeting"].include?("540:Traverse City-Cadillac ( MI)") %> selected <% end %>>Traverse City-Cadillac ( MI)</option>
+	<option value="531:Tri-Cities ( TN-VA)" <% if @campaignDetails["geoTargeting"].include?("531:Tri-Cities ( TN-VA)") %> selected <% end %>>Tri-Cities ( TN-VA)</option>
+	<option value="789:Tucson (Sierra Vista) ( AZ)" <% if @campaignDetails["geoTargeting"].include?("789:Tucson (Sierra Vista) ( AZ)") %> selected <% end %>>Tucson (Sierra Vista) ( AZ)</option>
+	<option value="671:Tulsa ( OK)" <% if @campaignDetails["geoTargeting"].include?("671:Tulsa ( OK)") %> selected <% end %>>Tulsa ( OK)</option>
+	<option value="760:Twin Falls ( ID)" <% if @campaignDetails["geoTargeting"].include?("760:Twin Falls ( ID)") %> selected <% end %>>Twin Falls ( ID)</option>
+	<option value="709:Tyler-Longview(Nacogdoches) ( TX)" <% if @campaignDetails["geoTargeting"].include?("709:Tyler-Longview(Nacogdoches) ( TX)") %> selected <% end %>>Tyler-Longview(Nacogdoches) ( TX)</option>
+	<option value="526:Utica ( NY)" <% if @campaignDetails["geoTargeting"].include?("526:Utica ( NY)") %> selected <% end %>>Utica ( NY)</option>
+	<option value="626:Victoria ( TX)" <% if @campaignDetails["geoTargeting"].include?("626:Victoria ( TX)") %> selected <% end %>>Victoria ( TX)</option>
+	<option value="625:Waco-Temple-Bryan ( TX)" <% if @campaignDetails["geoTargeting"].include?("625:Waco-Temple-Bryan ( TX)") %> selected <% end %>>Waco-Temple-Bryan ( TX)</option>
+	<option value="511:Washington ( DC (Hagerstown ( MD))" <% if @campaignDetails["geoTargeting"].include?("511:Washington ( DC (Hagerstown ( MD)") %> selected <% end %>>Washington ( DC (Hagerstown ( MD))</option>
+	<option value="549:Watertown ( NY)" <% if @campaignDetails["geoTargeting"].include?("549:Watertown ( NY)") %> selected <% end %>>Watertown ( NY)</option>
+	<option value="705:Wausau-Rhinelander ( WI)" <% if @campaignDetails["geoTargeting"].include?("705:Wausau-Rhinelander ( WI)") %> selected <% end %>>Wausau-Rhinelander ( WI)</option>
+	<option value="548:West Palm Beach-Ft. Pierce ( FL)" <% if @campaignDetails["geoTargeting"].include?("548:West Palm Beach-Ft. Pierce ( FL)") %> selected <% end %>>West Palm Beach-Ft. Pierce ( FL)</option>
+	<option value="554:Wheeling ( WV-Steubenville ( OH)" <% if @campaignDetails["geoTargeting"].include?("554:Wheeling ( WV-Steubenville ( OH)") %> selected <% end %>>Wheeling ( WV-Steubenville ( OH)</option>
+	<option value="627:Wichita Falls ( TX &amp; Lawton ( OK)" <% if @campaignDetails["geoTargeting"].include?("627:Wichita Falls ( TX &amp; Lawton ( OK)") %> selected <% end %>>Wichita Falls ( TX &amp; Lawton ( OK)</option>
+	<option value="678:Wichita-Hutchinson ( KS)" <% if @campaignDetails["geoTargeting"].include?("678:Wichita-Hutchinson ( KS)") %> selected <% end %>>Wichita-Hutchinson ( KS)</option>
+	<option value="577:Wilkes Barre-Scranton ( PA)" <% if @campaignDetails["geoTargeting"].include?("577:Wilkes Barre-Scranton ( PA)") %> selected <% end %>>Wilkes Barre-Scranton ( PA)</option>
+	<option value="550:Wilmington ( NC)" <% if @campaignDetails["geoTargeting"].include?("550:Wilmington ( NC)") %> selected <% end %>>Wilmington ( NC)</option>
+	<option value="810:Yakima-Pasco-Richland-Kennewick ( WA)" <% if @campaignDetails["geoTargeting"].include?("810:Yakima-Pasco-Richland-Kennewick ( WA)") %> selected <% end %>>Yakima-Pasco-Richland-Kennewick ( WA)</option>
+	<option value="536:Youngstown ( OH)" <% if @campaignDetails["geoTargeting"].include?("536:Youngstown ( OH)") %> selected <% end %>>Youngstown ( OH)</option>
+	<option value="771:Yuma ( AZ-El Centro ( CA)" <% if @campaignDetails["geoTargeting"].include?("771:Yuma ( AZ-El Centro ( CA)") %> selected <% end %>>Yuma ( AZ-El Centro ( CA)</option>
+	<option value="596:Zanesville ( OH)" <% if @campaignDetails["geoTargeting"].include?("596:Zanesville ( OH)") %> selected <% end %>>Zanesville ( OH)</option>
+</select>
+                                  </li>
+                                  
+                                </ul>
+                                <div id="geoDmaserrorText" class="error" ></div>
+                                <div style="left: -9000px; width: 458px; top: 29px;" class="chzn-drop"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div style="margin-bottom:20px" class="span6 offset4">
+                        <p class="muted">Geo-targeting allows you to concentrate on a specific geography, but also greatly limits your reach. We recommend against using geography targeting for lists under 20,000 users.  You just won't reach many people. If you have more questions about geographic targeting please look at our documentation. </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+<div style="margin-bottom:0;margin-top:10px;clear:both;" id="accordion4" class="accordion">
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a href="#collapseThree" data-parent="#accordion4" data-toggle="collapse" style="color:#333;background:#f3f3f3;padding-left:40px;position:relative;" class="accordion-toggle nover">
+                    <i class="icon-plus-sign collapsecon"></i>   <i class="icon-time"></i> Dayparting Settings
+                    </a>
+                  </div>
+                  <div class="accordion-body collapse" id="collapseThree">
+                    <div class="accordion-inner">
+                      <% trId=1 %>
+                      <div>
+                      <%
+                      daypartingtype=""
+                      @campaignDetails["dayParting"].each do |dayparting|
+                      #daypartingsArray=dayparting.split(/|/)
+                      daypartingtype =dayparting
+                      end
+                      if daypartingtype=="all"
+                        runAdContinuously="checked"
+                      else
+                        runAdContinuously="false"
+                      end
+                      %>
+                       <%= check_box("campaign", "runadcontinuously" ,{:checked=>runAdContinuously,:id=>"run-ad-continuously"}, "ongoing") %>&nbsp;Run my ads continuously
+                       
+                       </div>
+                       <br><br>
+                       <div id="manual-dayparting" <% if runAdContinuously == "checked" %> class="hide" <% end %>>
+                      <table id="dayparting">
+                        <%
+                           @campaignDetails["dayParting"].each do |dayparting|
+                           daypartingsArray=dayparting.split("|")
+                           day =daypartingsArray[0]
+                           if daypartingsArray[1] != nil
+                           starthrssecs=daypartingsArray[1].split(":")
+                           else
+                           starthrssecs=''
+                           end
+                           startHr=starthrssecs[0]
+                           startMin=starthrssecs[1]
+                           if daypartingsArray[2] != nil
+                           endhrssecs=daypartingsArray[2].split(":")
+                           else
+                           endhrssecs=''
+                           end
+                           endHr=endhrssecs[0]
+                           endMin=endhrssecs[1]
+                           daypartingsArray=""
+                           starthrssecs=""
+                           endhrssecs=""
+                        %>
+                      	<tr id="daypartingRow<%= trId %>">
+                      	  <td>
+                      	  
+                      	    <%= select(:campaign,"dayparting_day"+trId.to_s,options_for_select([['Monday', 'monday'],['Tuesday', 'tuesday'],['Wednesday','wednesday'],['Thursday', 'thursday'],['Friday', 'friday'],['Saturday', 'saturday'],['Sunday', 'sunday']],day.to_s)) %>
+                      	  </td>
+                      	  <td>
+                      	    <%= select(:campaign,"dayparting_start_hr"+trId.to_s,options_for_select([['0', 0],['1', 1],['2', 2],['3', 3],['4', 4],['5', 5],['6', 6],['7', 7],['8', 8],['9', 9],['10', 10],['11', 11],['12', 12],['13', 13],['14', 14],['15', 15],['16', 16],['17', 17],['18', 18],['19', 19],['20', 20],['21', 21],['22', 22],['23', 23]],startHr.to_s), {} , :onchange => "validateHr(this.id)") %>
+                      	  </td>
+                      	  <td>
+                      	    <%= select(:campaign,"dayparting_start_min"+trId.to_s ,options_for_select([['0', 0],['15', 15],['30', 30],['45', 45]],startMin.to_s), {} , :onchange => "validateMin(this.id)") %>
+                      	  </td>
+                      	  <td>
+                      	    &nbsp;to&nbsp;
+                      	  </td>
+                      	  <td>
+                      	    <%= select(:campaign,"dayparting_end_hr"+trId.to_s ,options_for_select([['0', 0],['1', 1],['2', 2],['3', 3],['4', 4],['5', 5],['6', 6],['7', 7],['8', 8],['9', 9],['10', 10],['11', 11],['12', 12],['13', 13],['14', 14],['15', 15],['16', 16],['17', 17],['18', 18],['19', 19],['20', 20],['21', 21],['22', 22],['23', 23]],endHr.to_s), {} , :onchange => "validateHr(this.id)") %>
+                      	    <div id="cenderror<%= trId %>" class="error" style="width:210px;margin-left:1px;"></div>
+                      	  </td>
+                      	  <td>
+                      	  <%= select(:campaign,"dayparting_end_min"+trId.to_s ,options_for_select([['0', 0],['15', 15],['30', 30],['45', 45]],endMin.to_s), {} , :onchange => "validateHr(this.id)") %>
+                      	  </td>
+                      	  <td>
+                      	   <a href='' onclick='deleteRow(<%= trId %>)'>X</a>
+                      	  </td>
+                      	  <% trId = trId +1 %>  
+                      	</tr>
+                      	<% end %>
+                      </table>
+                      <input type="hidden" id="trId" value="<%= trId %>"/>
+                      <div><a href="javascript:addRow('<%= trId %>')"> Add Day Parting </a></div>
+                      <%= f.text_field :countDayparting , :id=>"countDayparting",:type=>"hidden",:value=>1 %>
+
+                      Please note a campaign will start serving on the first minute of the Start Hour and then will stop on the last minute of the End Hour. EG - a campaign starting at 8 will start at 8:00am in the users local time. A campaign ending at 20 will stop at 20:59 or 8:59PM in the user's local time.
+                    </div></div>
+                  </div>
+                </div>
+              </div>
+
+									</div>
+
+									<br>
+
+<div class="widget">
+	<div class="widget-header">
+		<h3><span class="sectionnumeral"><%= sectionCount = sectionCount+1 %></span> &nbsp; Bid Strategy </h3>
+	</div>
+	<div class="widget-content " style="padding:15px;">
+		<div style="width:910px;margin-left: 0px;" class="span12">
+			<input type="hidden" id="campaigntype" value="<%= @campaignDetails['bidType']  %>"/>
+			<div class="tabbable widget">
+				<div style="border-bottom:0;" class="widget-header ">	
+					<ul style="padding-left:15px;margin-top:5px;" class="nav nav-tabs">
+						<li <% if @campaignDetails["bidType"]=="cpm" %> class="active" <% end %> onclick="showhideconv('cpm')">
+							<a class="table-tab-toggle" data-toggle="tab" href="#cpm" onclick="setbidType('cpm')"><i class="icon-flag"></i> Cpm</a>
+						</li>
+						<li <% if @campaignDetails["bidType"]=="cpc" %> class="active" <% end %> onclick="showhideconv('cpc')">
+							<a class="table-tab-toggle" data-toggle="tab" href="#cpc" id="ads_summary_table_link" onclick="setbidType('cpc')">
+								<i class="icon-eye-open"></i> Cpc
+							</a>
+						</li>
+						<li <% if @campaignDetails["bidType"]=="cpa" %> class="active" <% end %> onclick="showhideconv('cpa')">
+							<a class="table-tab-toggle" data-toggle="tab" href="#cpa" id="conversion_summary_table_link" onclick="setbidType('cpa')">
+								<i class="icon-shopping-cart"></i> Cpa
+							</a>
+						</li>
+					</ul>
+				</div>
+				<%
+					if @campaignDetails["bidType"]=="cpm"
+						impresions=@campaignDetails["volume"]
+						cpm=number_with_precision(@campaignDetails["price"], precision: 2)
+					elsif @campaignDetails["bidType"]=="cpc"
+						clicks=@campaignDetails["volume"]
+						cpc=number_with_precision(@campaignDetails["price"], precision: 2)
+					elsif @campaignDetails["bidType"]=="cpa"
+						conversions = @campaignDetails["volume"]
+						cpa = number_with_precision(@campaignDetails["price"], precision: 2)
+					end
+					volume = @campaignDetails["volume"].to_i / 1000
+					campaignCost = volume * @campaignDetails["price"].to_i
+					campaignCost = number_with_precision(campaignCost, precision: 2)
+				%>
+				<%= f.text_field :bidtype , :id=>"bidtype" ,:type=>"hidden",:value=>@campaignDetails["bidType"] %>
+			<div class="tab-content widget-content stattables">
+
+				<div data-url="campaign_summaries" style="margin-left:117px;" id="cpm" <% if @campaignDetails["bidType"]=="cpm" %> class="tab-pane loaded offset3 span6 active" <% else %> class="tab-pane loaded offset3 span6" <% end %>>
+					<div class="form-group">
+						<label class="sr-only">Impression:</label>
+						<%= f.text_field :impressions , :id=>"impressions" ,:class=>"bids req numeric" , :rel=>"tooltip" , :title=>"Impresions (Provide number of impresions)" ,:value=>impresions, :onKeyUp=>"calculateCost()", :onchange=>"validate(this.id,'impressionserror')" %>
+						<br>
+						<div id="impressionserror" class="error" style="width:210px;margin-left:1px;"></div>
+					</div>
+					<div style="float: left; margin: -53px 0px 0px 290px;" id="form-cpm" class="form-group">
+						<label class="sr-only">CPM</label>
+						<span class="add-on">$</span>
+						<%= f.text_field :cpm , :id=>"campaign_cpm" ,:class=>"bids req numeric" , :rel=>"tooltip" , :title=>"Impresions (Provide number of impresions)",:value=>cpm , :onKeyUp=>"calculateCost()", :onchange=>"validate(this.id,'campaign_cpmerror')" %>
+						<div id="campaign_cpmerror" class="error" style="width:210px;margin-left:1px;"></div>
+					</div>
+					<div style="margin-top: 12px; text-align:center; border-top: 1px solid #c7c7c7;" class="form-group">
+						<input type="text" style="background-color:#BCF5A9;" value="<%= number_with_precision(campaignCost, :precision => 2) %>" name="campaigncost" id="cpmcampaigncost" class="ccnum">
+					</div>
+				</div>
+
+				<div data-url="campaign_summaries" id="cpc" style="margin-left:117px;" <% if @campaignDetails["bidType"]=="cpc" %> class="tab-pane loaded offset3 span6 active" <% else %> class="tab-pane loaded offset3 span6" <% end %>>
+					<div class="form-group">
+						<label style="display: table;" class="sr-only">Cicks:</label>
+						<%= f.text_field :clicks , :id=>"clicks" ,:class=>"bids req numeric " ,:value=>clicks , :onKeyUp=>"calculateCost()", :onchange=>"validate(this.id,'clickserror')"  %>
+						<br>
+						<div id="clickserror" class="error" style="width:210px;margin-left:1px;"></div>
+					</div>
+					<div style="float: left; margin: -53px 0px 0px 290px;" id="form-cpc" class="form-group">
+						<label class="sr-only">CPC</label>
+						<span class="add-on">$</span><%= f.text_field :cpc , :id=>"campaign_cpc" ,:class=>"bids req numeric"  , :value=>cpc , :onKeyUp=>"calculateCost()", :onchange=>"validate(this.id,'campaign_cpcerror')" %>
+						<div id="campaign_cpcerror" class="error" style="width:210px;margin-left:1px;"></div>
+					</div>
+					<div style="margin-top: 12px; text-align:center; border-top: 1px solid #c7c7c7;" class="form-group">
+						<input type="text" style="background-color:#BCF5A9;" id="cpccampaigncost" value="<%= campaignCost %>" name="campaigncost" class="ccnum">
+					</div>
+				</div>
+
+				<div data-url="campaign_summaries" id="cpa" style="margin-left:117px;" <% if @campaignDetails["bidType"]=="cpa" %> class="tab-pane loaded offset3 span6 active" <% else %> class="tab-pane loaded offset3 span6" <% end %>>
+					<div class="form-group">
+						<label style="display: table;" class="sr-only">Conversions:</label>
+						<%= f.text_field :conversionscpa , :id=>"conversions" ,:class=>"bids req numeric" ,:value=>conversions, :onKeyUp=>"calculateCost()", :onchange=>"validate(this.id,'conversionserror')" %>
+						<br>
+						<div id="conversionserror" class="error" style="width:210px;margin-left:1px;"></div>
+					</div>
+					<div style="float: left; margin: -53px 0px 0px 290px;" id="form-cpa" class="form-group">
+						<label class="sr-only">CPA</label>
+						<span class="add-on">$</span><%= f.text_field :cpa , :id=>"campaign_cpa" ,:class=>"bids req numeric" ,:value=>cpa , :onKeyUp=>"calculateCost()",  :onchange=>"validate(this.id,'campaign_cpaerror')"  %>
+						<div id="campaign_cpaerror" class="error" style="width:210px;margin-left:1px;"></div>
+					</div>
+					<div style="margin-top: 12px; text-align:center; border-top: 1px solid #c7c7c7;" class="form-group">
+						<input type="text" style="background-color:#BCF5A9;" value="<%= campaignCost %>" id="cpacampaigncost" name="campaigncost" class="ccnum">
+					</div>
+				</div>
+				<a href="JAVASCRIPT:void()" onclick="calculateMinBid()">Minimum bid price suggestions</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+									<br>
+
+
+<div class="widget">
+	<div class="widget-header">
+		<h3>
+			<span class="sectionnumeral"><%= sectionCount=sectionCount+1 %></span> Campaign, Pricing, Schedule
+		</h3>
+	</div>
+	<div style="padding:15px;" class="widget-content ">
+		<div class="control-group">
+			<div class="control-label">
+				Campaign Name: <a rel="tooltip" data-original-title="Give your campaign a descriptive name so you remember what it does.">[?]</a>
+				<div class="helpform"></div>
+			</div>
+			<input type="hidden" id="campaignoldName" value="<%= @campaignDetails["campaignName"] %>"/>
+			<%= f.text_field :campaign_name , :id=>"campaign_name" ,:placeholder=>"My Campaign",:value=>@campaignDetails["campaignName"],:onchange=>"checkCampaignName(this.value)",:maxlength=>"200", :class=>"req", :onchange=>"validate(this.id,'campaignNameerrorText')" %>
+			<div id="campaignNameerrorText" class="error" style="width:210px;margin-left:162px;"></div>
+			<%= f.text_field :campaign_type ,:type=>"hidden", :id=>"campaign_type" ,:value=>@campaignDetails["campaignType"], :class=>"req numeric", :onchange=>"validate(this.id,'budgeterrorText')" %>
+		</div>
+
+		<div class="control-group">
+			<div class="control-label">
+				Daily Budget: <a rel="tooltip" data-original-title="Campaigns are prepaid on a Daily basis and budgets refill every Monday.  You will be billed this amount at the beginning of the campaign and each Monday will be billed when the budget refills to full.  You can transfer or withdraw funds at any time.">[?]</a>
+			</div>
+			<div class="controls">
+				<div class="input-prepend">
+					<span style="" class="add-on">$</span>
+					<%= f.text_field :weekly_budget ,:size=>"30", :id=>"weekly_budget" ,:value=>number_with_precision(@campaignDetails["budget"], precision: 2) ,:class=>"req numeric", :onchange=>"validate(this.id,'budgeterrorText')"%> 
+					<small style="color:#999;font-size:11px;">($25 minimum) 
+						<a rel="tooltip" data-original-title="Your retargeting budget should scale based on your web traffic.  Here are some budget guidelines:&lt;br/&gt;-10k-25k visitors: $350-700/week&lt;br/&gt;-25k-50k visitors: $700-1500/week&lt;br/&gt;-50k-100k visitors: $1500-3000/week&lt;br/&gt;-100k-350k+ visitors: $3k-10k/week">Recommendations</a>
+					</small>
+					<br>
+					<div id="budgeterrorText" class="error" style="width:240px;margin-left:30px;"></div>
+				</div>
+			</div>
+		</div>
+
+		<div style="margin-bottom:18px;" class="control-group schedule">
+			<div class="control-label">
+				Campaign Schedule: <a rel="tooltip" data-original-title="Your campaign is set to run continuously starting today. If you want to set a specific start and end day, uncheck the box.">[?]</a>
+			</div>
+			<%
+				checkRunCampaign="false"
+				if @campaignDetails["campaignEndDate"]==""
+					checkRunCampaign="checked"
+				end
+			%>
+			<%= check_box("campaign", "runcampaigncontinuously" ,{:checked=>checkRunCampaign,:id=>"run-campaign-continuously"}, "ongoing") %>
+			Run my campaign continuously starting today.
+			<div data-today="11/29/2013" class="hide" id="start-end-schedule-picker" <% if checkRunCampaign=="false" %> style="display:block;" <% end %>>
+				<div style="margin-bottom:18px;" class="control-group datefields" rel="tooltip" title="Once Campaign is created, you can't edit Campaign start date!">	
+					<div style="width:50px;" class="control-label"> Start: </div>
+					<%= f.text_field :campaign_startdate ,:size=>"30" ,:id=>"campaign_start_date" ,:style=>"background-color: rgb(255, 255, 255); cursor: pointer;" , :readonly=>"readonly",:disabled=>"disabled",:value=>@campaignDetails["campaignStartDate"]  , :onchange=>"validateDate(this.id)" %>
+					<div id="startDateerrortext" class="error"></div>
+				</div>
+				<div style="margin-bottom:5px;" class="control-group datefields">
+					<div style="width:50px;" class="control-label"> End: </div>
+					<%= f.text_field :campaign_enddate ,:size=>"30" ,:id=>"campaign_end_date" ,:style=>"background-color: rgb(255, 255, 255); cursor: pointer;" , :class=>"datepicker",:readonly=>"readonly",:value=>@campaignDetails["campaignEndDate"]  , :onchange=>"validateDate(this.id)"  %>
+					<div id="endDateerrortext" class="error"></div>
+					<small style="font-size:12px;position:relative;top:11px;">
+						<a style="margin-top:-15px;line-height:15px;" onclick="$('#campaign_end_date').val(''); return false;" href="#" class="btn btn-mini">
+							<i class="icon-minus-sign"></i> clear date
+						</a>
+					</small>
+				</div>
+			</div>
+		</div>
+		<input type="hidden" value="12" name="campaign[max_day_imps]" id="campaign_max_day_imps">
+
+		<div class="control-group" id="conversionsDiv" >
+			<label class="control-label">
+				Conversion Goals <a rel="tooltip" data-original-title="Choose a conversion goal to track for this campaign">[?]</a> 
+			</label>
+			<div class="controls">
+				<div id="conversionGoalerrorText" class="error" style="margin-left:0px;width:720px;"></div>
+					<table style="clear:none;width:720px;" class="table table-striped table-bordered" id="conversion-chooser">
+						<thead>
+							<tr>
+								<th>
+									<i class="icon-exchange"></i>
+									Select up to 3 Conversion Goals to track 
+									<a rel="tooltip" href="" style="color:#888;font-weight:normal;display:inline;" data-original-title="The ad networks may block your ads from serving if you attach more than 3 conversion goals.">[?]</a>
+								</th>
+								<th width="1%">Track</th>
+							</tr>
+						</thead>
+						<tbody>
+							<%
+								if @conversionsList.present?
+									@conversionsList.each do |key , conversion| 
+										checkConversion=""
+										if @campaignDetails["coversionGoals"].include?(key.to_s)
+											checkConversion="checked"
+										else
+											checkConversion="false"
+										end
+							%>
+								<tr>
+									<td> <%= conversion["conversionName"] %> </td>
+									<td> <%= check_box("campaign", "conversions" ,{:multiple=>"true",:class=>"conversionGoals",:checked=>checkConversion},key,nil) %> </td>
+								</tr>
+							<% 
+									end 
+								end
+							%>
+						</tbody>
+					</table>
+					<span class="pull-right">
+						<a data-animation="fade" data-reveal-id="newConversion" href="#" style="clear:both;text-align:right;margin:5px 30px 10px 0;color:#fff;" id="new-conversion-button" class="btn btn-mini btn-success" ><i style="margin-top:3px;" class="icon-plus icon-white"></i> Create new conversion goal</a>
+					</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="control-label">
+					Campaign Status <a rel="tooltip" data-original-title="Check this box to set campaign 'inactive'.  Ads will not serve until it is unchecked and the campaign is saved again.">[?]</a>
+					<div class="helpform"> </div>
+				</div>
+				<% status = @campaignDetails["campaignStatus"] %>
+				<%= select(:campaign,:state, options_for_select([['Active', 'active'],['Pause', 'pause'],['Delete','delete']] , status )) %>
+			</div>
+	</div>
+</div>
+
+
+<div class="widget">
+            <div class="widget-header">
+              <h3>
+              <span class="sectionnumeral">5</span> &nbsp; Billing Information <span style="color:red;">*</span>
+              </h3>
+            </div>
+            <div class="widget-content in collapse" style="padding:0;">
+              <div class="" style="border-top:0;padding:15px;">
+                <p>You campaign budget will refill weekly, every Monday, to minimize charges.  Billing information is required during free trials to verify identity and ensure seamless transition to live campaigns. 24 hours before your free trial expires we will notify you and your campaign will seamlessly shift into full active mode. </p>
+                <div class="control-group">
+                <!-- Choose or new CC -->
+                <style type="text/css">
+                  .ccnum {background: url("images/lock-829d4ddb647037c0d6d54bbfe25f9403.png") 257px 6px no-repeat;}
+                </style>
+
+                <!-- Partial for choosing existing or new CC -->
+                  <div class="control-group">
+                    <div class="controls">
+                      <div class="radio" style="margin-bottom: 4px">
+                        <input type="radio" name="cc_chooser" id="cc_chooser_1" value="old" disabled="disabled">
+                          Use existing card
+                         <br>
+                        <input type="radio" name="cc_chooser" id="cc_chooser_2" value="new" checked="checked" disabled="disabled">
+                        <!-- If using new card -->
+                        <input type="hidden" id="cc_stripe_card_token" name="cc[stripe_card_token]">
+                        <input type="hidden" id="cc_last_four" name="cc[last_four]">
+                        <input type="hidden" id="cc_expiration_month" name="cc[expiration_month]">
+                        <input type="hidden" id="cc_expiration_year" name="cc[expiration_year]">
+                        <input type="hidden" id="cc_type" name="cc[type]">  Pay with new card
+                        <div class="cc" style="margin-top:5px;">              
+                          <h4 style="padding:8px 10px;line-height:20px;font-size:16px;background:#ddd;text-shadow:0 1px 0px #fff;">Card Details</h4>  
+                          <div style="padding:0px 10px;"> 
+                            <div class="field" style="margin-bottom:5px;">
+                              <label for="cc_card_number">CREDIT CARD NUMBER</label>
+                              <img alt="Ccard" class="pull-right" src="/assets/ccard.png">
+                              <input type="text" class="ccnum" id="cc_card_number" placeholder="" style="width:131px">
+                            </div>
+                            <div class="field pull-left" style="width:50%; margin-bottom:5px;">
+                              <label for="card_code">CV CODE</label>
+                              <input type="text" id="cc_card_code" placeholder="" style="width:50px;">
+                            </div>
+                            <div class="field pull-right" style="width:50%; margin-bottom:5px;">
+                              <label for="cc_card_month">EXPIRY DATE</label>
+                              <select id="cc_card_month">
+                                <option value="1">1 - January</option>
+                                <option value="2">2 - February</option>
+                                <option value="3">3 - March</option>
+                                <option value="4">4 - April</option>
+                                <option value="5">5 - May</option>
+                                <option value="6">6 - June</option>
+                                <option value="7">7 - July</option>
+                                <option value="8">8 - August</option>
+                                <option value="9">9 - September</option>
+                                <option value="10">10 - October</option>
+                                <option value="11">11 - November</option>
+                                <option value="12">12 - December</option>
+                              </select>
+                              <select id="cc_card_year">
+                                <option value="2013">2013</option>
+                                <option value="2014">2014</option>
+                                <option value="2015">2015</option>
+                                <option value="2016">2016</option>
+                                <option value="2017">2017</option>
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                              </select>
+                            </div>
+                            <div class="field" style="width:50%">
+                              <label for="cc_nickname">CARD NICKNAME</label>
+                              <input type="text" id="cc_nickname" name="cc[nickname]" placeholder="" style="width:131px">
+                            </div>
+                          </div>
+                        </div>
+                        <div id="stripe_error" class="alert alert-danger alert-block" style="padding:0px;margin-top:10px;border:0;">             
+                          <noscript>JavaScript is not enabled and is required for this form. First enable it in your web browser settings.</noscript>              
+                        </div>
+                        <div style="color:#999;margin-left:90px;margin-top:-10px;">
+                          Secure billing powered by<a href="http://stripe.com"><img alt="Stripelogo" src="/assets/stripe.png"></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="span12">
+              <div style="margin-top:0;border:0px solid #ccc;" class="actions">
+                <input type="submit" value="Save and submit campaign" style="margin-top:0px;" name="commit" data-portion="0.2857142857142857" data-invoiced="false" data-id="52986238da46178dab000034" data-credits="0.0" onclick="return validateCampaign() " class="next-button btn btn-success btn-large">
+              </div>
+            </div>
+          </div>
+
+						</div>
+					</div>
+				</fieldset>
+    <% end %>
+	</div>
+</div>
+
+
+<div id="new-conversion-modal" class="modal hide">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+          <h3> Create a New Conversion Goal </h3>
+        </div>
+        <form method="post" id="new-conversion-form" data-remote="true" class="form-horizontal" action=" " accept-charset="UTF-8"><div style="margin:0;padding:0;display:inline"><input type="hidden" value="✓" name="utf8"><input type="hidden" value="Fu6fc1RaORFUQadbo7dgjt3IlwcNplEf23Rh5HhQOIM=" name="authenticity_token"></div>
+          <div class="modal-body">
+          <div class="alert alert-error hide" id="new-conversion-errors"> </div>
+            <fieldset>
+              <div class="control-group">
+                <label for="conversion_Conversion Name" class="control-label">Conversion name</label>
+                <div class="controls">
+                  <input type="text" size="30" placeholder="Customer Sign Up" name="conversion[name]" id="conversion_name" autofocus="autofocus">
+                </div>
+              </div>
+                <br>
+              <div class="control-group">
+                <div class="control-label">Conversion Type 
+                  <span style="color:red;margin-right:-10px;">*</span>
+                </div>
+                <div style="padding-left:20px;" class="controls">
+                  <div style="margin-bottom: 4px" class="radio">
+                    <input type="radio" checked="checked" value="path" style="margin-top:4px;" id="optionsRadios1" name="conversion[goal]">
+                      When a user visits a specific page or section: 
+                    <div id="path" class="input-prepend goal-choice">
+                      <span class="add-on">http://domain.com</span><input type="text" style="width:135px;" placeholder="/thankyou.html" name="path" id="path">
+                    </div>
+                  </div>
+                  <div class="radio">
+                    <input type="radio" value="query" style="margin-top:4px;" id="optionsRadios2" name="conversion[goal]">
+                    URL Querystring 
+                    <div id="query" class="goal-choice input-prepend hide">
+                      <span class="add-on">http://domain.com/?</span><input type="text" name="query" id="query">
+                    </div>
+                  </div>
+                  <br>
+                  <div class="radio">
+                    <input type="radio" value="event" style="margin-top:4px;" id="optionsRadios3" name="conversion[goal]">
+                    When a user triggers a specific javascript event <a href="/docs#javascript_api_autoopen" tabindex="-1">(API Docs)</a><br>
+                    <div id="event" class="input-prepend input-append goal-choice hide">
+                      &nbsp;<span class="add-on">_pa.track("</span><input type="text" style="width:100px;" name="event" id="event"><span class="add-on">")
+                    </span></div>
+                  </div>
+                  <br>
+                  <div class="radio">
+                    <input type="radio" value="regex" style="margin-top:4px;" id="optionsRadios4" name="conversion[goal]">
+                    Advanced: match against the full URL with a regular expression.
+                    <br>
+                    <div id="regex" class="input-prepend input-append goal-choice hide">
+                      <span class="add-on">/</span><input type="text" style="width:200px;" name="regex" id="regex"><span class="add-on">/i</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                <br>
+              <div class="control-group">
+                <div class="control-label"> Revenue Value </div>
+                <div class="helpform"> How much is each conversion worth? </div>
+                <div class="controls">
+                  <div class="input-prepend">
+                    <span style="" class="add-on">$</span><input type="text" style="width: 40px" size="30" placeholder="25" name="conversion[default_value]" id="conversion_default_value"> per conversion
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="control-group">
+                <div class="control-label"> Conversion Counting </div>
+                <div class="helpform">
+                  Configure your conversion to be counted every time it fires or once per user
+                </div>
+                <div class="controls">
+                  <select name="conversion[conversion_frequency]" id="conversion_conversion_frequency">
+                    <option value="every">Count every conversion</option>
+                    <option value="once">Count once per user</option>
+                  </select>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="modal-footer">
+            <a data-dismiss="modal" href="#">cancel</a>
+            <input type="submit" value="Create Conversion Goal" name="commit" id="new-conversion-submit" class="btn btn-primary btn-large">
+          </div>
+        </form>
+      </div>

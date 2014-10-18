@@ -1,0 +1,322 @@
+    
+		<script type="text/javascript">
+			$(document).ready(function () {
+            $('.dropdown-toggle').dropdown();
+			});
+		</script>    
+
+		<link href="/assets/smaple.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+		<link rel="stylesheet" href="/assets/bsa.min.css" type="text/css" />
+		<link rel="stylesheet" href="/assets/adblock.css" type="text/css" />
+		<link rel="stylesheet" href="/assets/skinny.css" type="text/css" media="screen and (max-width: 1100px)" />
+		 
+		<script type="text/javascript" src="/assets/jquery.js"></script>
+		<script type="text/javascript" src="/assets/bootstrap-dropdown.js"></script>
+
+		<style>
+			body {
+					background: none repeat scroll 0 0 #ffffff;
+				}
+				
+			select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input 
+				{
+					height: 25px;
+					line-height: 14px;
+					padding: 5px 8px;
+				}
+			
+		</style>
+		
+		<div id="realpage">
+			<div class="contentwrap cf full">
+				<div class="breathablewrap">
+					<div class="heading cf">
+						<div class="breadcrumbs"> 
+							<a href="/cart">Cart<strong></strong></a> <a class="off">Billing Information</a>	
+						</div>
+						<div rel="Checkout / Billing Information | BuySellAds" id="realpagetitle"></div>
+						<span class="title">Order Complete!</span>
+					</div>
+
+					<div class="content nobg cf">
+						<div class="pad cf">
+							<span><strong><b>Step 3</b></strong>Order complete!<div class="arrow"></div></span>
+	
+							<div id="tabs" class="cf ui-tabs ui-widget ui-widget-content ui-corner-all">
+								<ul class="tabletabs cf ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+									<li class="card paypal ui-state-default ui-corner-top"><a href="#ui-tabs-1"><em></em>PayPal</a></li>
+									<li class="card ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="#ui-tabs-2"><em></em>Credit Card</a></li>
+									<li class="card funds ui-state-default ui-corner-top"><a href="#ui-tabs-3"><em></em>Account Funds: $<strong>0.00</strong></a></li>
+								</ul>
+								<div id="ui-tabs-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+									<div class="bigsuccess success">
+										<h1 class="solo success">Checkout with Paypal</h1>
+										<div class="notify"><p>To pay through Paypal, you will be sent to the Paypal website to enter your billing information. When that is completed, you will be redirected back to our website to complete your purchase.</p></div>
+			
+										<ul class="usefullinks">
+											<li class="primary"><a class="useful" href="">Proceed to PayPal</a></li>
+											<li><a class="useful" href="/cart/checkout">Select a different payment method</a></li>
+										</ul>
+									</div>
+								</div>
+								<div id="ui-tabs-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom">	
+									<div class="content nobg cf">
+										<div class="pad cf">
+											<div class="seventyleft">
+												<form class="form standard billing credit" method="post" enctype="multipart/form-data" action="order.html" id="checkout" name="form1">
+													<input type="hidden" value="5d0e1a7d6d345bc8aafbf900d7c5144a" name="_csrftoken">
+													<p>A total of <strong class="highlight">$3,510.00</strong> will be charged to your credit card.</p>
+													<p>Please select a credit card, or <a id="newcard" href="/cart/checkout/method/3/showform/1">add a new card to your account</a>.</p>
+													<div class="creditcardform">
+														<div class="fiftyleft cf">
+															<div class="reg">
+																<label for="nameOnCardid">Name On Card</label>
+																<div class="inputpad cf">
+																	<input type="text" class="mledium text " value="" name="nameOnCard" id="nameOnCardid">
+																</div>
+															</div>
+															<div class="alt">
+																<label for="addressid">Address</label>
+																<div class="inputpad cf">
+																	<input type="text" class="mledium text " value="" name="address" id="addressid">
+																</div>
+															</div>
+															<div class="thirds first">
+																<div class="reg">
+																	<label for="cityid">City</label>
+																	<div class="inputpad cf">
+																		<input type="text" class="mledium text " value="" name="city" id="cityid">
+																	</div>
+																</div>
+															</div>
+															<div class="thirds" style="margin-left: 0px;" >
+																<div class="alt" style="width: 110px;" >
+																	<label for="stateid">State / Province</label>
+																	<div class="inputpad cf">
+																		<input type="text" label="State / Province" class="mledium text " value="" name="state" id="stateid">
+																	</div>
+																</div>
+															</div>
+															<div class="thirds" style="margin-left: 18px;" >
+																<div class="reg">
+																	<label for="postalCodeid">Postal Code</label>
+																	<div class="inputpad cf">
+																		<input type="text" class="medium text " value="" name="postalCode" id="postalCodeid">
+																	</div>
+																</div>
+															</div>
+															<div class="separator mtop cf"></div>
+															<div class="alt">
+																<label for="countryid">Country</label>
+																<div class="inputpad cf">
+																	<select id="countryid" name="country">
+																		<option selected="" value="0">--</option>
+																		<option value="1">United States</option>
+																		<option value="2">Canada</option>
+																		<option value="3">Afghanistan</option>
+																		<option value="4">Albania</option>
+																		<option value="6">Algeria</option>
+																		<option value="7">Argentina</option>
+																		<option value="8">Australia</option>
+																		<option value="9">Austria</option>
+																		<option value="10">Belgium</option>
+																		<option value="11">Brazil</option>
+																		<option value="12">Bulgaria</option>
+																		<option value="13">Chile</option>
+																		<option value="14">China</option>
+																		<option value="15">Colombia</option>
+																		<option value="16">Costa Rica</option>
+																		<option value="17">Croatia</option>
+																		<option value="18">Czech Republic</option>
+																		<option value="19">Denmark</option>
+																		<option value="20">Ecuador</option>
+																		<option value="21">Egypt</option>
+																		<option value="22">El Salvador</option>
+																		<option value="23">Finland</option>
+																		<option value="24">France</option>
+																		<option value="25">Germany</option>
+																		<option value="26">Greece</option>
+																		<option value="27">Hong Kong</option>
+																		<option value="28">Hungary</option>
+																		<option value="29">India</option>
+																		<option value="30">Indonesia</option>
+																		<option value="31">Ireland</option>
+																		<option value="32">Israel</option>
+																		<option value="33">Italy</option>
+																		<option value="34">Japan</option>
+																		<option value="35">Jordan</option>
+																		<option value="36">Korea =&gt; South</option>
+																		<option value="37">Lebanon</option>
+																		<option value="38">Malaysia</option>
+																		<option value="39">Mexico</option>
+																		<option value="40">Morocco</option>
+																		<option value="41">Netherlands</option>
+																		<option value="42">New Zealand</option>
+																		<option value="43">Norway</option>
+																		<option value="44">Pakistan</option>
+																		<option value="45">Peru</option>
+																		<option value="46">Philippines</option>
+																		<option value="47">Poland</option>
+																		<option value="48">Portugal</option>
+																		<option value="49">Puerto Rico</option>
+																		<option value="50">Romania</option>
+																		<option value="51">Russia</option>
+																		<option value="52">Saudi Arabia</option>
+																		<option value="53">Singapore</option>
+																		<option value="54">South Africa</option>
+																		<option value="55">Spain</option>
+																		<option value="56">Sweden</option>
+																		<option value="57">Switzerland</option>
+																		<option value="58">Taiwan</option>
+																		<option value="59">Thailand</option>
+																		<option value="60">Turkey</option>
+																		<option value="61">US Minor Out. Islands</option>
+																		<option value="62">Ukraine</option>
+																		<option value="63">United Arab Emirates</option>
+																		<option value="64">United Kingdom</option>
+																		<option value="65">Venezuela</option>
+																		<option value="66">Serbia</option>
+																		<option value="67">Other</option>
+																		<option value="68">Panama</option>
+																		<option value="69">Slovenia</option>
+																		<option value="70">Lithuania</option>
+																		<option value="71">Republic Of Moldova</option>
+																		<option value="72">Sri Lanka</option>
+																		<option value="73">Slovakia</option>
+																		<option value="75">Azerbaijan</option>
+																		<option value="76">Maldives</option>
+																		<option value="77">Paraguay</option>
+																		<option value="78">Trinidad and Tobago</option>
+																		<option value="79">Cambodia</option>
+																		<option value="80">Uruguay</option>
+																		<option value="81">Vietnam</option>
+																		<option value="82">Latvia</option>
+																		<option value="83">Bosnia and Herzegovina</option>
+																		<option value="84">Nepal</option>
+																		<option value="85">Belarus</option>
+																		<option value="86">Armenia</option>
+																		<option value="87">Macedonia</option>
+																		<option value="88">Tunisia</option>
+																		<option value="89">Kazakhstan</option>
+																		<option value="90">Ghana</option>
+																		<option value="91">Cyprus</option>
+																		<option value="92">Jamaica</option>
+																		<option value="93">Bangladesh</option>
+																		<option value="94">Guatemala</option>
+																		<option value="95">Kenya</option>
+																		<option value="96">Mauritius</option>
+																		<option value="97">Guyana</option>
+																		<option value="98">Uzbekistan</option>
+																		<option value="99">Kuwait</option>
+																		<option value="100">Malta</option>
+																		<option value="101">Lithuania</option>
+																		<option value="102">Estonia</option>
+																		<option value="103">Honduras</option>
+																		<option value="104">Zimbabwe</option>
+																		<option value="105">Luxembourg</option>
+																	</select>
+																</div>
+															</div>
+															<div class="reg email">
+																<label for="emailid">Email</label>
+																<div class="inputpad cf">
+																	<input type="text" divclass="email" class="mledium text " value="test@ppcminds.com" name="email" id="emailid">
+																</div>
+															</div>
+															<div class="alt phonenumber" style="width: 85px;" >
+																<label for="phoneNumberid">Phone Number</label>
+																<div class="inputpad cf">
+																	<input type="text" divclass="phonenumber" class="large text " value="" name="phoneNumber" id="phoneNumberid">
+																</div>
+															</div>
+														</div>
+														<div class="fiftyright cardinfo contrast alt shadow cf">
+															<ul class="cards cf">
+																<li class="visa"><em>Visa</em></li>
+																<li class="mastercard"><em>MasterCard</em></li>
+																<li class="amex"><em>American Express</em></li>
+																<li class="discover"><em>Discover</em></li>
+															</ul>
+															<div class="reg cardnumber">
+																<label for="cardNumberid">Card Number</label>
+																<div class="inputpad cf">
+																	<input type="text" divclass="cardnumber" class="mledium text " value="" name="cardNumber" id="cardNumberid">
+																</div>
+															</div>
+															<div class="alt securitycode" style="width: 85px;" >
+																<label for="CSCid">Security Code</label>
+																<div class="inputpad cf">
+																	<input type="text" divclass="securitycode" class="mledium text " label="Security Code" value="" name="CSC" id="CSCid">
+																</div>
+															</div>
+															<div class="separator cf"></div>
+															<div class="reg expires cf">
+																<label for="expirationMonthid">Expiration Date</label>
+																<select class="expdate" name="expirationMonth">
+																	<option value="01">01</option>
+																	<option value="02">02</option>
+																	<option value="03">03</option>
+																	<option value="04">04</option>
+																	<option value="05">05</option>
+																	<option value="06">06</option>
+																	<option value="07">07</option>
+																	<option value="08">08</option>
+																	<option value="09">09</option>
+																	<option value="10">10</option>
+																	<option value="11">11</option>
+																	<option value="12">12</option>
+																</select>
+																<select class="expdate sleft" name="expirationYear">
+																	<option value="2013">2013</option>
+																	<option value="2014">2014</option>
+																	<option value="2015">2015</option>
+																	<option value="2016">2016</option>
+																	<option value="2017">2017</option>
+																	<option value="2018">2018</option>
+																	<option value="2019">2019</option>
+																	<option value="2020">2020</option>
+																	<option value="2021">2021</option>
+																	<option value="2022">2022</option>
+																	<option value="2023">2023</option>
+																</select>
+															</div>
+														</div>
+														<div class="separator cf"></div>
+													</div>
+													<div class="terms">
+														<label for="agree">
+															<input type="checkbox" value="1" id="agree" name="agree">
+															I have reviewed the <a href="/about/terms">Terms of Use</a>, <a href="/about/privacy">Privacy</a>, and <a href="/about/refunds">Refund</a> policies.
+														</label>
+														<div class="cf"></div>
+													</div>
+													<div class="submit bcenter cf">
+														<a href="/dashboard/<%= session[:site_id] %>"<button rel="" id="submitbutton" value="submit" name="submit1" class="button checkout green" type="submit"> <span><em> Complete my order </em></span>
+														</button></a>
+													</div>
+												</form>
+											</div>
+											<div class="thirtyright">
+												<div class="helpnote">
+													<div class="helppad">
+														<h4>Important stuff to know</h4>
+														<ul class="text note">
+															<li>We do not store any of your sensitive credit card information on our servers; it stays with our merchant processor (Authorize.net), who is PCI Compliant. Even though we don't store any sensitive data, we take security seriously and we are also PCI Compliant.</li>
+															<li>If you are having trouble processing payment, please fill out a <a href="/support/ticket">support request</a> and we'll be happy to help out.</li>
+														</ul>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="ui-tabs-3" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide"></div>
+							</div>
+							
+						</div><!-- END div.pad -->
+					</div>
+				</div>
+			</div> <!-- END div#realpage -->
+		</div>
+

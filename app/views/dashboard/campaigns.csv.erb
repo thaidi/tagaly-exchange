@@ -1,0 +1,119 @@
+<table style="margin-bottom:0;" class="table table-striped table-bordered summary-table" id="dashboard-ads-table">
+
+			<tr>
+				<th class="tbllft" rel="tooltip" data-original-title="Ad name">Campaign</th>
+				<th rel="tooltip" data-original-title="Ad preview">Status</th>
+				<th rel="tooltip" data-original-title="Budget">Budget</th>
+				<th rel="tooltip" data-original-title="Bid Type"><a href="">BidType</a></th>
+				<th rel="tooltip" data-original-title="Total impressions">Impressions</th>
+				<th rel="tooltip" data-original-title="Total Clicks">Clicks</th>
+				<th rel="tooltip" data-original-title="Click-through rate">CTR</th>
+				<th rel="tooltip" data-original-title="Cost per thousand impressions">CPM</th>
+				<th rel="tooltip" data-original-title="Cost per click">CPC</th>
+				<th rel="tooltip" data-original-title="Blended cost per acquisition">CPA</th>
+				<!--<th rel="tooltip" data-original-title="Click conversions">CTC</th>
+				<th rel="tooltip" data-original-title="Click conversions">CTC%</th>
+				<th rel="tooltip" data-original-title="View conversions">VTC</th>
+				<th rel="tooltip" data-original-title="View conversions">VTC%</th>-->
+				<th rel="tooltip" data-original-title="Total conversions">Conv.</th>
+				<th rel="tooltip" data-original-title="Total spend">Spend</th>
+			</tr>
+
+<% @CampDataStats.each do |key,camps| %>
+<%
+   if @CampDataStats[key]["click"] != 0
+	convRate = @CampDataStats[key]["conversions"] / @CampDataStats[key]["click"]
+   elsif
+	convRate = 0
+   end
+   if @CampDataStats[key]["impressions"].to_i != 0
+	ctr = (@CampDataStats[key]["clicks"].to_i / @CampDataStats[key]["impressions"].to_i)*100
+   elsif
+	ctr = 0
+   end
+   if @CampDataStats[key]["conversions"] != 0
+	cpa = @CampDataStats[key]["cost"] / @CampDataStats[key]["conversions"]
+   elsif
+	cpa = 0
+   end
+%>
+  <tr>
+ 
+    <td>
+    <!--<%= @CampDataStats[key]["campaignDetails"]["campaignName"] %>-->
+    <a href="/dashboard/<%= session[:site_id] %>?displayType=ads&accessType=campaign&campaignId=<%= @CampDataStats[key]["campaignDetails"]["campaignId"] %>&campaignName=<%= @CampDataStats[key]["campaignDetails"]["campaignName"] %>"  target="adsframe"><%= @CampDataStats[key]["campaignDetails"]["campaignName"] %></a>
+    <a href="/campaigns/<%= @CampDataStats[key]['campaignDetails']['campaignId'] %>/edit" target="_blank" class="paulund_modal_1" style="float:right;">
+    <i class="icon-pencil"></i>Edit</a></td>
+    <td>
+      <div id="statusmsg<%= key %>" style="color:green;display:none;" align="center">Status set !</div>
+      <%= select_tag(:status, options_for_select([['Active', 'active'],['Pause', 'pause'],['Delete','delete']],@CampDataStats[key]["campaignDetails"]["campaignStatus"]),:onchange=>"setStatus(this.value,#{key.to_i} )") %>
+    </td>
+    <td id="<%= @CampDataStats[key]['campaignDetails']['campaignId'] %>" class="editme" style="background-color:rgb(255,255,204);">
+    <%= @CampDataStats[key]["campaignDetails"]["budget"] %>
+    </td>
+    <td><%= @CampDataStats[key]["campaignDetails"]["bidType"] %></td>
+    <td> <%= @CampDataStats[key]["impressions"] %></td>
+    <td> <%= @CampDataStats[key]["click"] %> </td>
+    <!--
+    <td> 
+    <%
+    if @CampDataStats[key]["impressions"] != 0 
+    ctr=(@CampDataStats[key]["click"]/@CampDataStats[key]["impressions"])*100;
+    else
+    ctr=0
+    end
+    %>
+    <%= ctr %> </td>-->
+    <td> <%= @CampDataStats[key]["CTR"] %> </td>
+    <td> <%= @CampDataStats[key]["CPM"] %> </td>
+    <td> <%= @CampDataStats[key]["CPC"] %> </td>
+    <td> <%= @CampDataStats[key]["CPA"] %> </td>
+   <!-- <td> <%= "Ctc" %> </td>
+    <td> <%= "Ctc %" %> </td>
+    <td> <%= "Vtc" %> </td>
+    <td> <%= "Vtc %" %> </td>-->
+    <td> <%= @CampDataStats[key]["conversions"] %> </td>
+    <td> <%= @CampDataStats[key]["cost"] %> </td>
+  </tr> 
+<% end %>
+		
+		<% if @adsTotals.present? %>
+			<tr class="">
+				<td class="tbllft"> </td>
+<%
+   if @adsTotals["totClicks"].to_i != 0
+	totconvRate = @adsTotals["totConversions"].to_i / @adsTotals["totClicks"].to_i
+   elsif
+	totconvRate = 0
+   end
+   if @adsTotals["totImpressions"].to_i != 0
+	# totctr = @adsTotals["totClicks"].to_i * 100 / @adsTotals["totImpressions"].to_i
+	totctr = 0
+   elsif
+	totctr = 0
+   end
+   if @adsTotals["totConversions"].to_i != 0
+	totcpa = @adsTotals["totCost"].to_i / @adsTotals["totConversions"].to_i
+   elsif
+	totcpa = 0
+   end
+%>
+    <td>Total </td>
+    <td> <%= @adsTotals["totImpressions"] %> </td>
+    <td> <%= @adsTotals["totClicks"] %> </td>
+    <td> <%= @adsTotals["totCTC"] %> </td>
+    <td> <%= @adsTotals["totCPM"] %> </td>
+    <td> <%= @adsTotals["totCPC"] %>  </td>
+    <td> <%= @adsTotals["totCPA"] %></td>
+   <!-- <td> <%= "Ctc" %> </td>
+    <td> <%= "Ctc %" %> </td>
+    <td> <%= "Vtc" %> </td>
+    <td> <%= "Vtc %" %> </td>-->
+    <td> <%= @adsTotals["totConversions"] %> </td>
+    <td> <%= @adsTotals["totCost"] %> </td>
+			</tr>
+			<% else %>
+			<tr><td colspan="13">No ads present ! </td></tr>
+			<% end %>
+
+	</table>

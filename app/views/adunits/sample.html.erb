@@ -1,0 +1,128 @@
+
+		<style type="text/css">
+			.table th {
+			    line-height: 18px;
+			    text-align: center;
+			}
+		</style>
+		<script type="text/javascript">
+			function approveAd(id,divId){
+				loadingImage();
+				$.ajax({
+					type: "GET",
+					url: "/placements/adApproval",
+					data: "adId=" + id + "&status=approved",
+					success: function(data){
+						setTimeout( function() {
+							closeImage();
+							$("."+divId).parent().parent().remove();
+						}, 2000);
+					}
+				});
+			}
+			function rejectAd(id,divId){
+				loadingImage();
+				$.ajax({
+					type: "GET",
+					url: "/placements/adApproval",
+					data: "adId=" + id + "&status=reject",
+					success: function(data){
+						setTimeout( function() {
+							closeImage();
+							$("."+divId).parent().parent().remove();
+						}, 2000);
+					}
+				});
+			}
+			function closeImage(){
+				$(".block_page").remove();
+			}
+			function loadingImage(){
+				bodyHeight = $("body").height();
+				$('body').append("<div class='block_page' style='min-height:100%;position:absolute;top:0;left:0;height:"+ bodyHeight +"px;width:100%;z-index:10;background-color :rgba(0,0,0,0.6);'></div>");
+				var pop_up = $("<div class='modal_box' style='position:absolute;left: 48%;top: 250px;z-index:50;'><img src='http://www.jlg.com/images/layout/loadingGif.gif' style='width:80px;height:80px;'/></div>");
+				$(pop_up).appendTo('.block_page');
+			}
+			$(document).ready(function () {
+            $('.dropdown-toggle').dropdown(); 
+			});
+
+			$( document.body ).on( 'click', '.dropdown-menu li', function( event ) {
+ 
+			   var $target = $( event.currentTarget );
+			 
+			   $target.closest( '.btn-group' )
+			      .find( '[data-bind="label"]' ).text( $target.text() )
+			         .end()
+			      .children( '.dropdown-toggle' ).dropdown( 'toggle' );
+			 
+			   return false;
+			 
+			});
+
+			$('input[type="checkbox"].style3').checkbox({
+			    buttonStyle: 'btn-danger',
+				buttonStyleChecked: 'btn-success',
+			    checkedClass: 'icon-check',
+			    uncheckedClass: 'icon-check-empty'
+			});
+		</script> 
+		
+		<div class="">
+			<h4 style="margin-top:0;margin-bottom:0;" id="notice" class="alert-header"> </h4>
+			<div class="row12">
+				<div class="row12">
+					<h3>
+						<a href="" style="color:#333;"><i class="icon-exchange"> </i> Order Approval </a>						
+					</h3>
+				</div>
+				<div class="row12">
+					<div style="margin:0 3% 0 16%;">
+					<table class="table table-striped table-bordered sortable" id="conversions-table">
+						<thead class="widget-header">
+							<tr>
+								<th>Advertiser Name</th>
+								<th>Size of Placement</th>
+								<th>Start Time</th>
+								<th>End Time</th>
+								<th>Bid Type</th>
+								<th>Price</th>
+								<th>Volume</th>
+								<th width="1%" class="sorttable_nosort">Status</th>
+							</tr>
+						</thead>
+						<tbody>
+						<%
+							@adunitsData.each do |key,ad|
+						%>
+							<tr class="active">
+								<% siteId = ad["advertisementDetails"]["siteId"].to_i %>
+								<% adunitId = ad["advertisementDetails"]["adUnitId"].to_i %>
+								<% adId = ad["advertisementDetails"]["adId"].to_i %>
+								<td> <a href='<%= $sitesDetails[siteId]["url"] %>' target="_blank"><%= $sitesDetails[siteId]["name"] %> </a></td>
+								<td><%= @adunitsDetails["#{adunitId}"]["format"] %> </td>
+								<td><%= ad["campaignDetails"]["campaignStartDate"] %> </td>
+								<td><%= ad["campaignDetails"]["campaignEndDate"] %> </td>
+								<td><%= ad["campaignDetails"]["bidType"] %> </td>
+								<td><%= ad["campaignDetails"]["price"] %> </td>
+								<td><%= ad["campaignDetails"]["volume"] %> </td>
+								<td>
+									<div class="btn-group btn-input clearfix div<%= adId %>" style="width: 125px;">
+									  	<button type="button" class="btn btn-default dropdown-toggle btn-success active" data-toggle="dropdown">
+									   		<span data-bind="label">Pending Approval</span> <span class="caret"></span>
+									 	</button>
+									  	<ul class="dropdown-menu" role="menu">
+												<li><a href="#" onclick="approveAd('<%= adId %>' , 'div<%= adId %>')">Approve</a></li>
+												<li><a href="#" onclick="rejectAd('<%= adId %>' , 'div<%= adId %>')">Reject</a></li>
+									  	</ul>
+									</div>
+								</td>
+							</tr>
+							<% end %>
+						</tbody>
+					</table>
+					</div>					
+				</div>
+			</div>
+		</div>
+		

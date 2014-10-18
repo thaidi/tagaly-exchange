@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  website_title: MyString
+  website_url: MyString
+  description: MyText
+  channel: MyString
+  language: MyString
+  avg_mon_imps: MyString
+
+two:
+  website_title: MyString
+  website_url: MyString
+  description: MyText
+  channel: MyString
+  language: MyString
+  avg_mon_imps: MyString

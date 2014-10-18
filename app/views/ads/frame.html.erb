@@ -1,0 +1,102 @@
+<!--
+Page to create ad in campaigns page -->
+<script>
+
+window.onload=function()
+{
+            var table = window.parent.document.getElementById("ads_table");
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+ 	    row.setAttribute("class","selected");
+            var cell1 = row.insertCell(0);
+             cell1.style.textAlign='center';
+            var element1 = document.createElement("input");
+            element1.type = "checkbox";//Ad Checkbox
+            element1.name="campaign[ads][]";
+            element1.value="<%= @adDetails['adId'] %>";
+            element1.id="campaign_ads_" + "<%= @adDetails['adId'] %>";
+            element1.setAttribute("class","ads");
+            element1.style.display="none";
+            var aTag = document.createElement('a');
+	    aTag.setAttribute('href',"javascript:void(0);");
+	   
+	    aTag.setAttribute('onclick',"toggleAdSelection(this,this.innerHTML)");
+	    aTag.setAttribute('class',"btn btn-mini btn-primary");
+	    aTag.innerHTML = "Add";
+            cell1.appendChild(element1);
+            cell1.appendChild(aTag);
+ 
+            /*var cell2 = row.insertCell(1);
+            cell2.innerHTML = "<%= @adDetails['adId'] %>";*/
+ 
+            var cell3 = row.insertCell(1);
+            var aTag = document.createElement('span');
+	    aTag.innerHTML = "<%= @adDetails['adName'] %><div style='float:right;'>&nbsp<button class='btn btn-mini btn-inverse' disabled style='cursor:default'>&nbsp;<%= @adDetails['version'] %>&nbsp;</button>&nbsp;<a data-animation='fade' id='zoom<%= @adDetails['adId'] %>' class='adZoom' data-reveal-id='adPreview' href='#'><i style='display: inline-block;'  class='icon-zoom-in adZoom'></i></a></div>";
+
+	    var ele='<div id="div<%= @adDetails["adId"] %>" style="position: absolute; background-color: white; border-radius: 10px 10px 10px 10px; border: 4px solid rgb(239, 239, 239); margin-top: -53px; left: 233px; display: none;"><div><b><h6><%= @adDetails["adName"] %></h6></b></div><div style="height:7px"></div>';
+	    <% if @adDetails['adType'] == 'TextAd' %>
+	    	ele += '<ul style="width: 234px; height: 60px; margin-left: 5px;"><li style="float: none; color: rgb(34, 34, 34); "><a href="<%= @adDetails["adDestinationUrl"] %>" target="_blank"><%= @adDetails["adHeadline"] %></a></li><li class="adunits-innerli" style="float: none; color: rgb(0, 128, 0); "> <%= @adDetails["adDisplayUrl"] %> </li><li class="adunits-innerli" style="float: none; color: rgb(51, 51, 51); "> <%= @adDetails["adText"] %> </li></ul></div>';
+	    	<% else %>
+	    		<%
+					my_string = @adDetails['adImageUrl']
+					if my_string.include? ".swf"
+					adSizes = @adDetails['adSize'].split('x') 
+					%>
+					ele += '<a href="<%= @adDetails["adDestinationUrl"] %>" target="_blank">';
+					ele += '<embed width="<%= adSizes[0] %>" height="<%= adSizes[1] %>" id="img<%= @adDetails["adId"] %>" src="/uploads/<%= @adDetails["adImageUrl"] %>">';
+					ele += '</a>';
+					<%		
+					elsif my_string.include? ".fla"
+
+					else
+					%>
+					ele +='<a href="<%= @adDetails["adDestinationUrl"] %>" target="_blank">';
+					ele += '<img src="/uploads/<%= @adDetails["adImageUrl"] %>" id="img<%= @adDetails["adId"] %>"/>';
+					ele += '</a>';
+					<%
+					end
+					%>
+	    	//ele += '<img src="http://'+window.location.hostname+':3000/uploads/<%= @adDetails["adImageUrl"] %>" id="img<%= @adDetails["adId"] %>"/></div>' ;
+	    	<% end %>
+	    var dive=document.createElement("span");
+	    dive.innerHTML=ele ;
+            cell3.appendChild(aTag);
+            cell3.appendChild(dive);
+            
+            var cell4=row.insertCell(2);
+            cell4.innerHTML="-";
+            
+            var cell5=row.insertCell(3);
+            cell5.innerHTML="-";
+            
+            var cell6=row.insertCell(4);
+            cell6.innerHTML="-";
+            
+			var cell6=row.insertCell(5);
+            cell6.innerHTML="-";
+			
+            var cell7=row.insertCell(6);
+            cell7.innerHTML="<div id='statusmsg<%= @adDetails['adId'] %>' align='center' style='color: green; display: none;'>Status set !</div><select style='width:83px;' disabled onchange='setStatus(this.value,<%= @adDetails['adId'] %>, <%= "'"+@adDetails['adName'].to_s+"'" %>)' name='status' id='status'><option value='Active' selected='selected'>Active</option><option value='Paused'>Pause</option><option value='Deleted'>Delete</option></select>";
+            
+            var cell8=row.insertCell(7);
+            var aTag = document.createElement('a');
+            <% if @adDetails['adType'] == 'TextAd' %>
+                              <%
+                            displayurl=@adDetails["adDisplayUrl"] ; 
+                            %>
+             <% else %>
+             <%
+                            displayurl=@adDetails["adDestinationUrl"] ; 
+                            %>
+             <% end %>
+             <% if displayurl.length > 35 %> <% display=displayurl[0,35].to_s + "..." %> <% else %> <% display=displayurl %> <% end %>
+	    			aTag.setAttribute('href',"<%= @adDetails['adDestinationUrl'] %>");
+	    			aTag.innerHTML = "<%= display %>";
+            cell8.appendChild(aTag);
+            window.parent.document.getElementById("closeadFrame").click();
+            window.parent.document.getElementById("adnewads").src=window.parent.document.getElementById("adnewads").src
+}
+</script>
+
+
+

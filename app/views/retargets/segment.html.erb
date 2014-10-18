@@ -1,0 +1,70 @@
+<% $parsed %>
+<script src="/assets/validateretarget.js"></script>
+
+<link rel="stylesheet" type="text/css" media="all" href="/assets/daterangepicker-bs3.css" />
+<script type="text/javascript" src="/assets/moment.js"></script>
+<script type="text/javascript" src="/assets/daterangepicker.js"></script>
+
+<div class="pcontent">
+  <h4 style="margin-top:0;margin-bottom:0;" id="notice" class="alert-header">  </h4>
+     <div class="widget">
+    	<div class="widget-header">
+    		<div class="pull-right">
+        <a data-toggle="modal" class="btn btn-success btn-mini" href="/retargets/new"><i class="icon-plus-sign icon-white"></i> Create new list</a>
+    		</div>
+    		<h3><a href="" style="color:#333;"><i class="icon-group"> </i> 
+        Retargeting Lists </a>
+        <small>Create and manage "lists" of web site visitors to retarget. </small>
+    		</h3>
+    	</div>
+    	<div class="widget-content">
+    		<h3> 
+<% if @retarget['retargetName'] != "All Visitors" %>
+    		  <%= link_to '<i class="icon-trash"></i>Delete list'.html_safe, retarget_path(@retarget),method: :delete, data: { confirm: 'Are you sure?' } , :class => 'pull-right btn' %>&nbsp;
+         <a style="margin-right:5px;" class="btn pull-right" href="/retargets/<%= @retarget.id %>/edit"> <i style="margin-top: 3px" class="icon-edit"></i> Edit list </a>  <%= @retarget['retargetName'] %>&nbsp;
+<% end %>
+    		</h3>
+    		<hr>
+    		<div class="campaign-attachments">
+<!--
+        <div class="alert alert-block">
+        	<button data-dismiss="alert" class="close" type="button">×</button>
+        	This segment is not yet included in any campaigns.
+        </div>
+-->
+    		</div>
+    		<div class="row">
+<!--
+        <div style="background:#efefef;padding-top:0;padding-bottom:0;" class="span3 well">
+        	<p> </p><h1 style="margin:0;">1,939</h1> <b>Loads</b> <p></p>        	
+        </div>
+-->
+        <div style="background:#efefef;padding-top:0;padding-bottom:0;" class="span3 well">  		    
+        	<p>	 </p><h1 style="margin:0;"><% if $parsed["#{params[:id]}"].present? %> <%= $parsed["#{params[:id]}"] %> <% else %> 0 <% end %></h1> <b>Uniques in <%= @retarget['duration'] %> days</b> <p></p>
+        </div>
+        <div class="span3">
+        	<p> <b>Date Created:</b> <%= @retarget['created_at'] %> </p> <p> <b>Retargeting type:</b> <%= @retarget['retargetType'] %> </p>
+        	<p> <b>Text:</b> <%= 
+              @rtype=@retarget.retargetType ;
+              @retarget['retargetValue'] %> </p> <p> <b>Duration:</b> <%= @retarget['duration'] %> </p>
+        </div>        
+    		</div>  		
+    		<hr>
+    		<div class="chart-container pull-left">
+        <h3> Total Cumulative Loads </h3>
+        <div id="total_loads_chart" style="position: relative;">
+        	 	<iframe src="/retargets/segmentgraph?type=cumulative" scrolling="no" style="width:575px; border: 1px solid #C7C7C7;  border-radius: 7px; height:320px;overflow:hidden;"></iframe>
+      	
+        </div>
+    		</div>
+    		<div class="chart-container pull-right">
+        <h3> New Uniques Per Day </h3>
+        <div id="chartdivsda" style="position: relative;">
+        		<iframe src="/retargets/segmentgraph?type=perday" scrolling="no" style="width:575px; border: 1px solid #C7C7C7;  border-radius: 7px; height:320px;overflow:hidden;"></iframe>
+        </div>
+        <div class="clearfix"></div>
+    		</div>
+    	</div>
+    </div>
+</div>
+

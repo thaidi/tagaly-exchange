@@ -1,0 +1,161 @@
+<script src="/assets/jquery.reveal.js"  type="text/javascript"></script>
+<script src="https://js.stripe.com/v1/" type="text/javascript"></script>
+<link rel="stylesheet" href="/assets/reveal.css"/>
+<div style="margin:20px 0px 20px 0px;background: none repeat scroll 0 0 #FFE4C4;color: green;height:15px;display:none;" class="flashnotice"></div>
+<div id="adPreview" class="reveal-modal" style="position:absolute; background-color: white; top: 110px; border-radius: 10px; top:100px;"></div>
+
+<script>
+	$(document).on('click','.adZoom', function(e){
+
+		var idOfZoomClass = $(this).attr("id");
+		var adId = String(idOfZoomClass).substring(4);
+		var adDivId = "div" + adId;
+		var toset = $("#"+adDivId).html();
+		
+		var html = "<a class='close-reveal-modal' id='closeadPreview'>&#215;</a> Placement's Ad Preview";
+		$("#adPreview").html(html+toset);
+		var width = $("#adDisplayFrame").width();
+		var height = $("#adDisplayFrame").height();
+		if($("#img"+adId).attr('src')) {
+			$("#adPreview").css("width", '');
+			$("#adPreview").css("height", '');
+		} else {
+			$("#adPreview").css("width", width);
+			$("#adPreview").css("height", height);
+			$("#adPreview").css("top", "0px");
+		}
+	});
+
+	$(document).ready(function () {
+
+    $('#selectallTextAds').click(function () {
+        $('.selectedTextAdId').prop('checked', isChecked('selectallTextAds'));
+    });
+});
+$(document).ready(function () {
+    $('#selectallDisplayAds').click(function () {
+        $('.selectedDisplayAdId').prop('checked', isChecked('selectallDisplayAds'));
+    });
+});
+$(document).ready(function () {
+    $('#selectallTextDisplayAds').click(function () {
+        $('.selectedTextDisplayAdId').prop('checked', isChecked('selectallTextDisplayAds'));
+    });
+});
+function isChecked(checkboxId) {
+    var id = '#' + checkboxId;
+    return $(id).is(":checked");
+}
+		function changeStatus(id,status,adUnitName) {
+			$.ajax({
+				type: "GET",
+				//url: hostname,
+				url: "updateStatus/" + id + "/" + status ,
+				success: function(data){
+					$(".flashnotice").show();
+					$(".flashnotice").html("<center>" + adUnitName + " status changed to " + status + "</center>");
+				}
+			});
+		}
+function resetSelectAll() {
+    // if all checkbox are selected, check the selectall checkbox
+    // and viceversa
+    if ($(".selectedId").length == $(".selectedId:checked").length) {
+        $("#selectall").attr("checked", "checked");
+    } else {
+        $("#selectall").removeAttr("checked");
+    }
+
+    if ($(".selectedId:checked").length > 0) {
+        $('#edit').attr("disabled", false);
+    } else {
+        $('#edit').attr("disabled", true);
+    }
+}
+function toggle(obj)
+{
+	var classname=obj.className ;
+	var elements = document.getElementsByClassName(classname);
+	var allId=obj.id;
+	
+	for (var i = 0; i < elements.length; i++) 
+	{
+
+		if((obj.checked==true) && (allId=='selectallNativeAds' || allId=='selectallTextNDisplayAds' || allId=='selectallDisplayAds' || allId=='selectallTextAds' || elements.length==2))
+		{
+			
+			elements[i].checked = true;
+		}
+		else
+		{
+			if(obj.checked != true)
+			elements[i].checked = false;
+		}
+	}
+}
+</script>
+<style>
+	.nav-tabs { 	border-bottom: 0px solid ; } 
+	h1 { margin:20px 0 10px 20px; }
+	.contentwrap  { 	max-width: 100%; }
+	ul.balance li { 	border-left: 1px solid #E1E1E1; }
+	ul.balance li:first-child  { 	border-left: medium none; }	
+	ul.balance li { 	border-right: medium none; }
+	ul.balance li:first-child  { 	border-right: medium none; }
+	.contentwrap .content { 	padding-right: ; }
+	.browsecontainer .bcpad  { 	margin: 0 0 0 0px; 	padding: 20px; 	width: 1018px; }
+	h3 a  {  	font-size: 18px;  }
+	h3 a:hover { 	text-decoration: none; }
+	.myads-beta  { 	color: #B31308; 	font-size: 10px; 	font-weight: normal; 	padding-left: 4px; 	position: relative; 	top: -3px; }
+	.pcontent { 	width: 1195px; }
+	.span9  { 	width: 98%; }
+	.pull-right  { 	float: left; }			
+	.myads-title-bar-button  { 	font-weight: bolder; 	padding: 0 7px 0 15px; }
+	.gwt-Anchor  { 	display: inline; }
+</style>
+<div class="span12">
+	<%= csrf_meta_tag %>
+	<div style='float:right;padding:5px'> <a href="/preview/jsonParse" class="btn btn-success">Create new Style</a>	</div>
+	<table style="background:#fff;" class="table table-striped table-bordered">
+		<thead class="widget-header">
+			<tr>
+				<th>
+					<input type="checkbox" id='selectallTextAds' class="selectedTextAdId" onclick="toggle(this)">
+				</th>
+				<th> Name </th>
+				<th> Ad Size </th>
+				<th> View Preview </th>
+				<th> Actions </th>
+			</tr>
+		</thead>
+		<tbody>
+			<% if @allNativestyles.present? && @allNativestyles.count > 0 %>
+				<% @allNativestyles.each do | key , array | %>
+					<tr>
+						<td>
+							<input type="checkbox" id='selectallTextAds' class="selectedTextAdId" onclick="toggle(this)">
+						</td>
+						<td> <a href="#"> <%= array["styleName"] %> </a> </td>
+						<td> <%= array["format"] %> </td>
+						<td><a href="#" data-reveal-id="adPreview" class="adZoom" id="zoom<%= key %>" data-animation="fade"><i class="icon-zoom-in adZoom" style="margin-top: 2px;float:right;"></i></a>
+<% sizes = array['format'].split(/x/) %>
+<% width = sizes[0].to_i + 25 %>
+<% height = sizes[1].to_i + 25 %>
+		<div id="div<%= key %>" style="display:none;padding:10px;width:<%= width %>px;height:<%= height %>px">
+			<iframe src="/preview/nativeStyleDisplay/<%= key %>" width="<%= width %>" scrolling="no"  height="<%= height %>" id='adDisplayFrame' frameBorder="0"></iframe>
+		</div>
+						</td>
+						<td>
+							<a href="/preview/<%= key %>/jsonParseEdit" target="_blank">
+								<i  class="icon-edit" data-original-title="All Visitors segments cannot be edited"></i>
+							</a>
+						</td>
+					</tr>
+				<% end %>
+			<% else %>
+				<tr><td colspan='5'> <div> You havn't created a native style yet. <a href='/preview/jsonParse'>Click here</a> to create a native ad.</div> </td></tr>
+			<% end %>
+		</tbody>
+	</table>
+	<!-- @allNativestyles -->
+</div>

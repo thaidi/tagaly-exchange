@@ -1,0 +1,61 @@
+
+<!-- ############ LOGIN PAGE ############# -->
+<!DOCTYPE html> 
+<html>
+	<head>
+		<title>Login Form</title>
+		<link rel="stylesheet" href="/assets/login.css">
+		<style>
+		.alert-success{
+		background-color: #DFF0D8;
+    		border-color: #D6E9C6;
+    		color: #468847;
+    		border-radius: 4px 4px 4px 4px;
+    		padding: 8px 35px 8px 14px;
+    		text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    		}
+    		html{
+    			overflow:hidden;
+    		}
+    		</style>
+		<script>
+		function setAuthenticityToken()
+		{
+			document.getElementById("authenticity_token").value="<%= form_authenticity_token() %>"
+			return true ;
+		}
+		</script>
+	</head>
+	
+	<body>
+	  
+	  <section class="container">
+		<div class="login">
+		<% if flash[:notice] %>
+		<div style="width:264px;margin:30px auto;" class="alert-success">
+		  <%= flash[:notice] %>
+	  	</div>
+		<% end %>
+		<h1> Login </h1>
+		  
+		<div style="color:red;text-align=center;"> <%= flash[:error] %></div>
+		  <% #### Login form starts here %>
+		  <%= form_tag sessions_path  do %>
+			<p><%= text_field_tag :email, params[:email] , :placeholder=>"Email"%></p>
+			<p><%= password_field_tag :password ,nil,:placeholder=>"Password"%></p>	
+		<!--	<p><%= radio_button_tag(:usertype, "advertiser",true) %>&nbsp;Advertiser
+			<%= radio_button_tag(:usertype, "publisher") %>&nbsp;Publisher	</p>		-->	
+			<input type="hidden" name="authenticity_token" id="authenticity_token" value="<%= form_authenticity_token() %>" />
+			<p class="submit"><%= submit_tag "Log in", :name => "commit",:onclick=>"return setAuthenticityToken()" %></p>
+		  <% end %>
+		  <% #### Login form ends here %>
+		</div>
+
+		<div class="login-help">
+		  <p>Forgot your password? <a href="/forgotpassword">Click here to reset it</a>.</p>
+		  <p>Signup as a new user <a href='/users/new'>Signup?</a></p>
+		</div>
+	  </section>
+	  
+	</body>
+</html>

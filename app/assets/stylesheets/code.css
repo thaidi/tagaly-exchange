@@ -1,0 +1,56 @@
+#codeCreator {
+    background: url(/assets/getcodebg.png) no-repeat;
+}
+
+.settings {
+    float: left;
+    width: 30%;
+    margin-left: 20px;
+}
+
+.settings:first-child {
+    margin-left: 0;
+}
+
+#preview {
+    clear: both;
+
+}
+
+.small {
+    width: 275px !important;
+}
+
+#dPreview {
+    margin: auto auto;
+    min-height: 250px;
+}
+
+#code {
+    display: none;
+}
+
+#code textarea {
+    resize: none;
+}
+
+.save {
+    margin-top: 88px;
+    text-align: right;
+}
+#basic-modal-content {display:none;}
+
+/* Overlay */
+#simplemodal-overlay {
+    background-color:#fff; 
+    filter: alpha(opacity=75);
+    -moz-opacity: .75;
+    opacity: .75;
+}
+
+#simplemodal-container {height:350px; width:490px; background-color:#fff; border:1px solid #cccccc; padding:12px; box-shadow: 0 4px 16px rgba(0, 0, 0, .2)}
+#simplemodal-container .simplemodal-data {padding:8px;}
+#simplemodal-container code {background:#141414; border-left:3px solid #65B43D; color:#bbb; display:block; font-size:12px; margin-bottom:12px; padding:4px 6px 6px;}
+#simplemodal-container a {color:#ddd;}
+#simplemodal-container a.modalCloseImg {background:url(/images/x.jpg) no-repeat; width:25px; height:29px; display:inline; z-index:3200; position:absolute; top:6px; right:-8px; cursor:pointer;}
+#simplemodal-container a.modalCloseImg:hover {background:url(../../images/rx.jpg) no-repeat; width:25px; height:29px; display:inline; z-index:3200; position:absolute; top:6px; right:-8px; cursor:pointer;}

@@ -1,0 +1,208 @@
+<script>
+	function validate(id,divId) {
+		value = $( "#" + id ).val();
+		if(divId == "titleerror") {
+			msg = "Title field cannot be blank";
+		} else if(divId == "URLerror") {
+			msg = "Please give valid url";
+		} else if(divId == "descerror") {
+			msg = "Please give description";
+		} else if(divId == "impressionseerror") {
+			msg = "Please give valid numbers";
+		} 
+		if($( "#" + id ).hasClass( "req" )) {
+			if(value.trim().length == 0) {
+				document.getElementById(divId).innerHTML = msg;
+				document.getElementById(divId).style.display = "block";
+				return false;
+			} else {
+				document.getElementById(divId).innerHTML = "";
+				document.getElementById(divId).style.display = "none";
+			}
+		}
+		if($( "#" + id ).hasClass( "url" )) {
+			if(!value.match(/((?:https?\:\/\/|www\.)(?:[-a-z0-9]+\.)*[-a-z0-9]+.*)/i)) {
+				document.getElementById(divId).innerHTML = "Please give a valid URL";
+				document.getElementById(divId).style.display = "inline";
+				return false;
+			} else {
+				$.ajax({
+					type: 'GET',
+					url: '/preview/testUrl?url='+value ,
+					success: function(data) {
+						if(data == 'Good' || data == 'NotBad') {
+							document.getElementById(divId).innerHTML = "";
+							document.getElementById(divId).style.display = "none";
+						} else if(data == 'BadURL') {
+							document.getElementById(divId).innerHTML = "Url is broken";
+							document.getElementById(divId).style.display = "inline";
+							return false;
+						}
+					},
+
+				});
+			}
+		}
+		if($( "#" + id ).hasClass( "length" )) {
+			if(value.length > len) {
+				document.getElementById(divId).innerHTML = lenmsg;
+				document.getElementById(divId).style.display = "inline";
+				return false;
+			} else {
+				document.getElementById(divId).innerHTML = "";
+				document.getElementById(divId).style.display = "none";
+			}
+		}
+		if($( "#" + id ).hasClass( "numeric" )) {
+			if(isNaN(value)){
+				document.getElementById(divId).innerHTML = "Please give only numbers";
+				document.getElementById(divId).style.display = "block";
+				return false;
+			} else {
+				if(value < 0){
+					document.getElementById(divId).innerHTML = "Please give only positive numbers";
+					document.getElementById(divId).style.display = "block";
+					return false;
+				} else {
+					document.getElementById(divId).innerHTML = "";
+					document.getElementById(divId).style.display = "none";
+				}
+			}
+		}
+	}
+		var allUrls = Array();
+		var allNames = Array();
+		<%
+			if @allsites.present?
+				@allsites.each do |value|
+					%>
+					allUrls.push("<%= value.website_url %>");
+					allNames.push("<%= value.website_title %>");
+					<%
+				end
+			end
+		%>
+	$( document ).ready(function() {
+		$( "#submitbutton" ).click(function() {
+			returnvalu = publisherSitesValidation(allUrls,allNames);
+			if (returnvalu ==  false){ return false; }
+		});
+	});
+</script>
+		<style>
+				
+			select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input 
+				{
+					height: 25px;
+					line-height: 14px;
+					padding: 5px 8px;
+				}
+		</style>
+		<script>
+			function displaynocleft(len)
+			{
+				noclft=27-len;
+				document.getElementById("nocleft").innerHTML=noclft;
+			}
+		</script>
+		<div id="realpage" >
+			<div class="span12">
+				<div class="breathablewrap">
+					<div class="content nobg cf" style="width:100%;">
+						<div class="pad cf" style="width:100%;">
+							<div class="seventyleft" style="width:50%;float:left;">
+								<h3>Add Property</h3>
+								
+								<%= form_for @publishersite,:html => {:class => "form standard"} do |u| %>
+								<input type="hidden" name="usertype" value="<%= params[:type] %>"/>
+<input type='hidden' id='edit' value='no'>
+								<%= u.text_field :created_by ,:type=>"hidden",:value=>session[:user_id]  %>
+								<!--<%= u.text_field :csrftoken ,:type=>"hidden",:value=>"5d0e1a7d6d345bc8aafbf900d7c5144a"  %>-->
+									<!--<input type="hidden" value="5d0e1a7d6d345bc8aafbf900d7c5144a" name="_csrftoken">-->
+									<div class="reg">
+										<label for="titleid">Website Title</label>
+										<div class="inputpad cf">
+											<%= u.text_field :website_title , :id=>"website_title" ,:autofocus => "autofocus" ,:required=>"required", :value=>session[:website_title] ,:maxlength=>"27",:onkeyup => "displaynocleft(this.value.length)" ,:class=>"infield large maxlengthme errbottom text req" ,:onblur=>"validate(this.id,'titleerror')",:onchange=>"funvalidateName(this.value) ; " %>
+											<!--<input type="text" maxlength="27" label="Website Title" class="infield large maxlengthme errbottom text " value="" name="title" id="titleid">-->
+											<div class="limit"><span id="nocleft" class="remaining good">27</span> characters remaining</div>
+										</div>
+<div class="error" style="margin-left:0px;" id="titleerror"></div>
+
+									</div>
+									<div class="alt">
+										<label for="addressid">Website URL </label>
+										<div class="inputpad cf">
+										<%= u.text_field :website_url , :id=>"website_url" ,:required=>"required", :value=>session[:website_url] , :onchange=>"funvalidateUrl(this.value) ; " , :class=>"large errbottom text req url" ,:onblur=>"validate(this.id,'URLerror')" %>
+<div class="error" style="margin-left:0px;" id="URLerror"></div>
+											<div class="fdesc" id='fdesc'>Please only enter a URL in the form of http[s]://domain.tld or http[s]://subdomain.domain.tld</div>
+
+										</div>
+									</div>
+									<div class="reg">
+										<label for="descriptionid">Description</label>
+										<div class="inputpad cf">
+										<!--<%= u.text_area :description , :id=>"description" ,:required=>"required",:cols => 56, :rows => 3  %>-->
+<textarea rows="3" required="required" name="publishersite[description]" id="description" cols="56" class="req" onblur="validate(this.id,'descerror')"><%= session[:description] %></textarea>
+											<!--<textarea class="large errbottom" name="description" cols="56" rows="3"></textarea>-->
+										</div>
+<div class="error" style="margin-left:0px;" id="descerror"></div>
+									</div>
+									<div class="alt">
+										<label for="channelid">Channel</label>
+										<div class="inputpad cf">
+										<%= select(:publishersite,:channel,options_for_select([['Select any Channel', 0],['All Things Apple', 22],['Automotive', 121],['Business And Finance', 20],['Education', 137],['Entertainment', 47],['Family And Parenting', 128],['Gaming', 120],['Food And Drink', 129],['Government And Politics', 131],['Home And Architecture', 138],['Pets', 130],['Sports', 124],['Style And Beauty', 123],['Technology', 5],['Travel', 105],['Web Design And Development', 1],['Weddings', 102],['Visual Arts And Design', 139]],session[:channel])  ) %>
+										</div>
+<div class="error" style="margin-left:0px;" id="channelerror"></div>
+									</div>
+									<div class="reg">	
+										<label for="languageid">Language</label>
+										<div class="inputpad cf">
+										<%= select(:publishersite,:language, options_for_select([['Select any Language', 0],['English', 1],['German', 2],['French', 3],['Italian', 4],['Dutch', 5],['Japanese', 6],['Korean', 7],['Chinese', 8],['Romanian', 9],['Spanish', 10],['Portuguese', 11]],session[:language])) %>
+											<div class="fdesc">Please select the primary language of your site. If your site is in more than one language, you should select the language for which you get the most traffic.</div>
+<div class="error" style="margin-left:0px;" id="languageeerror"></div>
+										</div>
+									</div>
+									<div class="alt">
+										<label for="impressionsid">Average Monthly Impressions</label>
+										<div class="inputpad cf">
+<div><%= u.text_field :avg_mon_imps , :id=>"avg_mon_imps" , :value=> session[:avg_mon_imps] , :required=>"required" , :class=>"req numeric" ,:onblur=>"validate(this.id,'impressionseerror')" %></div>
+										
+			<%= u.text_field :authenticity_token , :type=>"hidden",:value=>form_authenticity_token() %>
+											<!--<input type="text" class="medium text " label="Average Monthly Impressions" value="" name="impressions" id="impressionsid">-->
+<div class="error" style="margin-left:0px;" id="impressionseerror"></div>
+											<div class="fdesc">Please give us a rough estimate of how many impressions your site receives in an average month.</div>
+										</div>
+									</div>
+									<div class="submit bcenter cf">
+										<button rel="" id="submitbutton" value="submit" style="background: -moz-linear-gradient(center top , #8DC82C, #60AA24) repeat scroll 0 0 transparent;background-color:#53951D" name="submit1" class="button primary" type="submit"> <span><em> Submit </em></span> </button>
+									</div>
+								<% end %>
+							</div>
+							<div class="thirtyright" style="width:40%;float:right;padding:30px;">
+								<div class="helpnote mtop">
+									<div class="helppad">
+										<h4>Criteria / Suggestions:</h4>
+										<p>There are exceptions to every rule, but here are some general guidelines for sites that are accepted into our inventory.</p>
+										<ul class="text">
+											<li>Greater than 50K impressions per month. For new sites, if you (or your team) have a history of creating really successful websites we will accept you.</li>
+											<li>Your website must be live, finished, and have fresh content.</li>
+											<li>No porn, anything illegal, or containing even remotely *questionable* content.</li>
+											<li>If you have a ton of untargeted ads on your site already, we're not going to approve you.</li>
+											<li>Getting denied does not mean that we will not approve you at a future date.</li>
+										</ul>
+									</div>
+								</div>
+							</div><!-- END div.pad -->
+						</div><!-- END div.content -->
+					</div>
+				</div>
+			</div>
+				<script>
+				$(function () {
+					$('form').submit(function () {
+						$(this).find('#submitbutton').attr('disabled', 'disabled');
+						$('&lt;input type="hidden" name="submit1" value="submit"&gt;').appendTo(this);
+					});
+				})
+				</script>
+		</div>

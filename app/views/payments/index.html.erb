@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> sample page </title>
+		<style>
+			html body 
+				{
+					background: none repeat scroll 0 0 #ffffff;
+				}
+			.nav-tabs 
+				{
+					border-bottom: 0px solid ;
+				}
+			.contentwrap 
+				{
+					max-width:100%;
+				}
+			ul.balance li
+				{
+					border-left: 1px solid #E1E1E1;
+					border-right: medium none;
+					width: 254px;
+				}
+			ul.balance li:first-child 
+				{
+					border-left: medium none;				
+					border-right: medium none;
+				}
+			.contentwrap .content
+				{
+					padding-right: 0px;
+				}
+			.browsecontainer 
+				{
+					border-left: 1px dotted #FFFFFF;
+					display: block;
+					float: left;
+					margin: 0 -182px 0 auto;
+					padding: 0;
+					position: relative;
+					width: 1040px;
+				}
+			.browsecontainer .bcpad 
+				{
+					margin: 0 0 0 0px;
+					padding: 20px;
+				}
+			h3 a 
+				{
+					float: right; 
+					font-size: 18px; 
+					margin-right: 20px;
+				}
+			.nopad
+				{
+				/*	border-bottom: 1px solid #5085D3;*/
+				}
+			
+			.content h3 
+				{
+					font-size: 15px;
+				}
+			
+			.form-horizontal .control 
+				{
+					margin-right: 20px;
+					padding-bottom: 10px;
+					padding-right: 20px;
+					padding-top: 8px;	
+					float: left;
+				}
+			.controls1
+				{
+					height: 122px; 
+					width: 213px; 
+					margin-left: 160px;
+				}
+			.form-horizontal .control1
+				{
+					margin-right: 20px;
+					padding-right: 20px;
+					padding-top: 8px;	
+					float: left;
+					width: 140px;
+				}
+			
+			.form-horizontal .control-group 
+			{
+				margin-bottom: 5px;
+			}
+			
+			.tooltip 
+			{
+				display: block;
+				font-size: 11px;
+				opacity: 0;
+				padding: 5px;
+				position: absolute;
+				visibility: visible;
+			}
+			.tooltip-inner {
+				background-color: #000000;
+				border-radius: 4px;
+				color: #FFFFFF;
+				max-width: 205px;
+				padding: 3px 8px;
+				text-align: center;
+				text-decoration: none;
+			}
+			html{
+				overflow-x:hidden;
+			}
+			
+		</style>
+		
+	</head>
+	
+	<body>
+		<div class="contentwrap cf " >
+			<div class="breathablewrap">
+				<div id="realpagetitle"></div>
+				<div class="content cf" style="width:90%;">
+					<div class="sidebar">
+						<ul class="sidenav">							
+							<li class=""> <a href=""><em>Payments</em></a> </li>
+							<li class=""> <a href=""><em>Payment settings</em></a> </li>
+							<li class="separator"></li>								
+						</ul>
+					</div>
+					<div class="browsecontainer cf">
+						<div class="bcpad cf">
+							<div class=" cf"></div>
+							<div class="modpad nopad cf" style="height: 30px;" >
+								<h3> <a style="float: left;" href="#paymentsettings">  Payment settings </a> </h3>								
+							</div>
+						</div><!-- END div.browsercontainer -->
+						
+						<div id="paymentsettings" style="width: 1040px;">
+							<form accept-charset="UTF-8" action="dashboard.html" class="form-horizontal" id="edit_user" method="post">
+								<div class="control-group">
+									<label class="control-label" rel="tooltip" data-original-title="Payee name <br> The name to which payments will be made" >Payee name <i class="icon-question-sign">  </i> </label>
+									<div class="controls">
+										<span class="control" > test </span>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" style="height: 120px;" >Address</label>
+									 <div class="controls1">
+										<span class="control1" > test <a href="Payeeinfo.html" > edit address </a> </span>
+										<span class="control1" > 24-90 </span>
+										<span class="control1" > Ranga Reddy Nagar </span>
+										<span class="control1" > Hyderabad 500037 </span>
+										<span class="control1" > Andhra Pradesh </span>
+										<span class="control1" > INDIA <a href="" > change country </a> </span>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" rel="tooltip" data-original-title="" > Account type <i class="icon-question-sign">  </i> </label>
+									<div class="controls">
+										<span class="control" > Individual </span>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Phone</label>
+									<div class="controls">
+										<span class="control" > 096 18 275149 <a href="Payeeinfo.html" > edit phone </a> </span>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Payment method</label>
+									<div class="controls">
+										<span class="control" > <a href="" > edit payment method </a> </span>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Tax information</label>
+									<div class="controls">
+										<span class="control" > Not submitted <a href="" > update tax Information </a> </span>
+									</div>
+								</div><div class="control-group">
+									<label class="control-label" rel="tooltip" data-original-title="" > Self-hold <i class="icon-question-sign">  </i></label>
+									<div class="controls">
+										<span class="control" > Please send my payments monthly <a href="" > edit self-hold </a> </span>
+									</div>
+								</div>
+							</form>
+						</div>
+						
+					</div><!-- END div.content -->
+						<div class="separator mtop cf"></div>
+				</div>
+			</div>
+		</div>			
+		
+	</body>
+</html>
+

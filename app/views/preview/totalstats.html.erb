@@ -1,0 +1,62 @@
+<div id="body">
+<ul style="text-align:left;  margin-left:40px;margin-bottom:0px; width:1186px;" class="nav nav-tabs sego trust">
+			<li style="margin-left:180px;" class="span3 active" id='Impressions'>
+				<a data-toggle="tab" href="#tab1">
+					<h2 id="stat-impression-total"><%= session[:dashboardTotalImpressions] %></h2>
+					<h4><small><b>IMPRESSIONS SERVED</b></small></h4>
+					<div class="spark">
+						<div class="substat">
+							<div class="substat-head">eCPM</div>
+							<div id="stat-ecpm" class="substat-stat">---</div>
+						</div>
+						<div class="sparks" id="sparkline1"><canvas style="display: inline-block; width: 76px; height: 18px; vertical-align: top;" width="76" height="18"></canvas></div>
+					</div>
+				</a>
+			</li>
+			<li style="margin-left:0;" class="span3" id='Clicks'>
+				<a data-toggle="tab" href="#tab2">
+					<h2 id="stat-click-total"><%= session[:dashboardTotalClicks] %></h2>
+					<h4><small><b>CLICKS BACK TO YOUR SITE</b></small></h4>
+					<div class="spark">
+						<div class="substat">
+							<div class="substat-head">CTR</div>
+							<div id="stat-ctr" class="substat-stat">---</div>
+						</div>
+						<div class="sparks" id="sparkline2">
+							<canvas style="display: inline-block; width: 76px; height: 18px; vertical-align: top;" width="76" height="18"></canvas>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li style="margin-left:0;" class="span3" id='Conversions'>
+				<a data-toggle="tab" href="#tab4">
+					<h2 id="stat-conversion-total"><%= session[:dashboardTotalConversions] %></h2>
+					<h4><small><b>CONVERSIONS</b> </small></h4>
+					<div class="spark">
+						<div class="substat">
+							<div class="substat-head">Conv. Value</div>
+							<div id="stat-revenue-total" class="substat-stat" data-original-title="Post-Click: $0.00 | Post-View: $0.00">$0.00</div>
+						</div>
+						<div class="sparks" id="sparkline4">
+							<canvas style="display: inline-block; width: 76px; height: 18px; vertical-align: top;" width="76" height="18"></canvas>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li style="margin-left:0;margin-right:0;" class="span3" id='Cost'>
+				<a data-toggle="tab" href="#tab3">
+					<h2 id="stat-cost-total">$<%= number_with_precision(session[:dashboardTotalCost], :precision => 2) %></h2>
+					<h4><small><b>COST</b></small></h4>
+					<div class="spark">
+						<div class="substat">
+							<div class="substat-head">eCPA</div>
+							<div id="stat-ecpa" class="substat-stat">---</div>
+						</div>
+						<div class="sparks" id="sparkline3">
+							<canvas style="display: inline-block; width: 76px; height: 18px; vertical-align: top;" width="76" height="18"></canvas>
+						</div>
+					</div>
+				</a>
+			</li>
+		</ul>
+</div>

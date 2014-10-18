@@ -1,0 +1,30 @@
+<!--
+Page to create conversion in campaigns page -->
+
+<script>
+
+window.onload=function()
+{
+            var table = window.parent.document.getElementById("conversion-chooser");
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+ 	    row.setAttribute("class","targeted");
+            var cell1 = row.insertCell(0);
+            cell1.innerHTML="<%= @conversionDetails['conversionName'] %>";
+            
+            var cell2 = row.insertCell(1);
+            var element1 = document.createElement("input");
+            element1.type = "checkbox";//Conversion Checkbox
+            element1.name="campaign[conversions][]";
+            element1.setAttribute("checked","checked");
+            element1.value="<%= @conversionDetails['conversionId'] %>";
+            element1.id="campaign_conversions_" + "<%= @conversionDetails['conversionId'] %>";
+            element1.setAttribute("class","conversionGoals");
+            
+            cell2.appendChild(element1);
+            window.parent.document.getElementById("closeconversionFrame").click();
+            window.parent.document.getElementById("adnewconversions").src=window.parent.document.getElementById("adnewconversions").src
+}
+</script>
+
+

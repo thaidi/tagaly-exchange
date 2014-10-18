@@ -1,0 +1,155 @@
+
+		<style>
+			.nav-tabs 
+				{
+					border-bottom: 0px solid ;
+				}
+			.contentwrap 
+				{
+					max-width: 100%;
+				}
+			ul.balance li
+				{
+					border-left: 1px solid #E1E1E1;
+				}
+			ul.balance li:first-child 
+				{
+					border-left: medium none;
+				}	
+			ul.balance li
+				{
+					border-right: medium none;
+				}
+			ul.balance li:first-child 
+				{
+					border-right: medium none;
+				}
+			.contentwrap .content
+				{
+					padding-right: ;
+				}
+			.browsecontainer .bcpad 
+				{
+					margin: 0 0 0 0px;
+					padding: 20px;
+					width: 1018px;
+				}
+			h3 a 
+				{ 
+					font-size: 18px; 
+				}
+			h3 a:hover
+				{
+					text-decoration: none;
+				}
+			
+			.myads-beta 
+				{
+					color: #B31308;
+					font-size: 10px;
+					font-weight: normal;
+					padding-left: 4px;
+					position: relative;
+					top: -3px;
+				}
+			.pcontent
+				{
+					width: 1195px;
+				}
+			.span9 
+				{
+					width: 945px;
+				}
+			.pull-right 
+				{
+					float: left;
+				}			
+			.myads-title-bar-button 
+				{
+					font-weight: bolder;
+					padding: 0 7px 0 15px;
+				}
+			.gwt-Anchor 
+				{
+					display: inline;
+				}
+		</style>
+		<div class="container main " style='margin-top:-5px'>
+			<div class="row" style="margin-left: 0px;" >
+				<div class="span12">
+					<div class="pcontent plain"> 
+						<div class="row">
+							<div class="span3">		 
+								<ul class="nav nav-tabs nav-stacked">
+									<li class=""> <a href=""> Content</a> </li> 
+									<ul class="nav nav-tabs nav-stacked" style="margin: 3px 10px; width: 200px;"> 
+										<!-- <li class="active"> -->
+										<li class="active"> <%= link_to "Ad Units", { controller: "publishersites" , action: "myads" } %></li>
+										<li class="">  <%= link_to "Custom channels", { controller: "publishersites" , action: "myads" } %></li>		
+										<li class=""> <%= link_to "URL channels", { controller: "publishersites" , action: "myads" } %></li>
+										<li class="">
+<%= link_to  do %>
+  <span > Experiment</span><span class='myads-beta'> BETA</span> 
+<% end %>
+										</li>
+									</ul> 
+								</ul>
+							</div>
+							<div class="span9">
+								<div class="widget">
+									<div class="widget-header">
+										<h3>
+											<a href="">Content</a> > Ad units
+											<div style="margin-right:20px;display:none;" class="btn-group pull-right">
+												<a class="btn active" href=""><i class="icon-list"></i></a>
+												<a class="btn" href=""><i class="icon-th"></i></a>
+											</div> 
+										</h3>
+									</div>
+									<div class="widget-content">
+										<form novalidate="novalidate" method="post" id="new_user" data-validate="true" class="new_user" action="/users/invite" accept-charset="UTF-8">
+											<fieldset>
+												<div style="background:#efefef; height: 67px" class="control-group well">
+													<div class="controls" style="margin-top: 25px;">
+														<a style="margin: -7px 0px 0px 20px;" class="accordion-toggle nover pull-right btn btn-success" data-toggle="collapse" data-parent="#accordion7" href="#collapseSeven"><i class="icon-plus icon-white" style="margin-top: 3px;"></i> Create new ads</a> 								
+														<span class="myads-title-bar-button" style="">
+															<a class="gwt-Anchor" href="">Import old ad code</a> <i class="icon-question-sign"></i>
+														</span>									
+													</div>									
+												</div>
+											</fieldset> 
+										</form>		
+										<table style="background:#fff;" class="table table-striped table-bordered">
+											<thead class="widget-header">
+												<tr>
+													<th><input type="checkbox" onclick="toggle(this)"></th>
+													<th>Name</th>
+													<th>ID</th>
+													<th>Status</th>
+													<th>Summary</th>
+													<th>Last Edited</th>													
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<!--<td><input type="checkbox" id="chkbox[]" name="foo"></td>
+													<td>&nbsp;</td>
+													<td>&nbsp;</td>
+													<td>&nbsp;</td>
+													<td>&nbsp;</td>
+													<td>&nbsp;</td>	-->		
+
+													<td>No Data</td>	
+													
+												</tr>
+											</tbody>
+										</table>
+										<br>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>

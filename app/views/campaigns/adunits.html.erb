@@ -1,0 +1,44 @@
+<% if params[:frame] == "frame" %>
+<script src="/assets/jquery.js"></script>
+<% end %>
+<script>
+	function clickform(){
+		selectedAdunits = $("#selectedAdunits").val();
+		selectedAdunitsArray = selectedAdunits.split(",");
+		adunitsstring = "";
+		count = 0;
+		$.each( selectedAdunitsArray , function( key , value ) {
+			if(value != "") {
+				count++;
+				if(adunitsstring == "") {
+					adunitsstring = value;
+				} else {
+					adunitsstring = adunitsstring + "," + value;
+				}
+				appendInputTag = "<input type='hidden' name='adunits[]' value='"+ value +"'>";
+				$("#nativeCampaign").append(appendInputTag);
+			}
+		});
+		if(count == 0){
+			$("#selectedAdunits").val(""); 
+			$("#plaErr").css("display","inline-block");
+			$("#plaErr").html("Please select alteast one placement to proceed");
+			$("#plaError").css("display","inline-block");
+			$("#plaError").html("Please select alteast one placement to proceed");
+			return false;
+			
+		} else {
+			$("#adunitsstring").val(adunitsstring);
+			$("#plaErr").css("display","none");
+			$("#plaError").css("display","none");
+			document.getElementById("nativeCampaign").submit();
+		}
+	}
+</script>
+<% @adunitChannelId = session[:displayAdunitChannelId] %>
+<% @adunitType = "display" %>
+<%= render "sites" %>
+<form action="/campaigns/saveAdunits" method="post" id="nativeCampaign">
+	<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token() %>" />
+	<input type='hidden' name='adunitsstring' id='adunitsstring' value="">
+</form> 

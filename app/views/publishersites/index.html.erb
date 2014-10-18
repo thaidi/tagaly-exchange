@@ -1,0 +1,277 @@
+<!--
+<script src='/assets/tooltip.js'></script>
+<script>
+	$(document).ready(function(){
+	    $('.help-target').tooltip({ 'title': 'tooltip message', 'placement': 'top'});
+	});
+</script>
+ <a href="#" class="help-target" title='edit' data-toggle="tooltip" data-toggle="popover" data-content="This is the help content" >Accounts</a>
+-->
+<script src="https://js.stripe.com/v1/" type="text/javascript"></script>
+<style>
+.edit {
+background-color: black;
+color: white; 
+border-radius: 5px 5px 5px 5px; 
+margin-top: -32px; 
+position: relative; 
+right: -5px; 
+top: -5px; 
+transition: opacity 0.5s ease 0s;
+width: 40px; 
+margin-left: 0px;
+}
+.span9{
+	width:100%;
+}
+.delete {
+background-color: black;
+color: white; 
+border-radius: 5px 5px 5px 5px; 
+margin-top: -36px; 
+position: relative; 
+right: -30px; 
+top: -5px;
+transition: opacity 0.5s ease 0s;
+width: 40px; 
+margin-left: 4px;
+padding: 2px;
+}
+			.pcontent.plain {
+			    border-top: 5px solid rgb(96, 82, 69);
+			    }
+			.row {
+			    margin-left: -20px;
+			}
+			.pcontent {
+			    background: none repeat scroll 0px 0px rgb(221, 221, 221);
+			    border-top: medium none rgb(255, 255, 255);
+			    padding: 15px 14px 1px;
+			    width: 940px;
+			}
+			html body {
+			    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+			}
+			body {
+			    color: rgb(51, 51, 51);
+			    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+			    font-size: 13px;
+			    line-height: 18px;
+			    background: none repeat scroll 0 0 #95999C;
+			}
+			.widget-header h3 {
+			    color: rgb(69, 69, 69);
+			    display: inline;
+			    font-size: 14px;
+			    font-weight: 800;
+			    left: 15px;
+			    line-height: 18px;
+			    margin-right: 0px;
+			    position: relative;
+			    text-shadow: 0px 1px rgb(255, 255, 255);
+			    text-transform: uppercase;
+			    top: 2px;
+			}
+			a {
+			    color: rgb(0, 136, 204);
+			    text-decoration: none;
+			}
+			.widget-header h3 small {
+			    text-transform: none;
+			}
+			h3 small {
+			    font-size: 13px;
+			}
+			h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
+			    color: rgb(153, 153, 153);
+			    font-weight: normal;
+			}
+			.widget-header h3 {
+			    color: rgb(69, 69, 69);
+			    font-size: 14px;
+			    font-weight: 800;
+			    line-height: 18px;
+			    text-shadow: 0px 1px rgb(255, 255, 255);
+			    text-transform: uppercase;
+			}
+			#new_site_button{
+				margin-left:20px;
+			}
+
+/*
+.hover {
+    position:relative;
+    top:50px;
+    left:50px;
+}
+
+.tooltip { 
+width:0px;
+height:0px;
+  top:10px;
+  bottom:0px;
+  background-color:black;
+  color:white;
+  border-radius:5px;
+  opacity:0;
+  position:absolute;
+  -webkit-transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  -ms-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+	
+}
+
+.hover:hover .tooltip { 
+    opacity:1;
+}
+.edit {
+background-color: black;
+color: white; 
+border-radius: 5px 5px 5px 5px; 
+margin-top: -40px; 
+position: relative; 
+right: 3px; 
+top: -4px; 
+transition: opacity 0.5s ease 0s;
+width: 40px; 
+margin-left: 10px;
+}
+*/
+			</style>
+
+<script>
+$(document).ready(function(){
+  $(".adZoomEdit").mouseover(function(e) {
+	var div = $(this).parent(".adZoomer");
+	div.append("<div class='edit'>Edit</div>");
+  });
+  $(".adZoomEdit").mouseout(function() {
+	$(this).parent(".adZoomer").children(".edit").remove();
+  });
+  $(".adZoomDelete").mouseover(function(e) {
+	var div = $(this).parent(".adZoomer");
+	div.append("<div class='delete'>Delete</div>");
+  });
+  $(".adZoomDelete").mouseout(function() {
+	$(this).parent(".adZoomer").children(".delete").remove();
+  });
+});
+</script>
+<div align="center" style="background: none repeat scroll 0 0 #FFE4C4;color: green;">
+	<%= raw flash[:notice] %>
+</div>
+<div class="container main">
+  <div class="row">
+    <div class="span12">
+      <div class="pcontent plain" style="width:855px;background:none;border-top:none;">
+        <div class="row">
+          <div class="span12">
+            <h2 style="text-shadow:0 1px white;"> My Account</h2> 
+          </div>
+        </div> 
+        <div class="row">
+          <div class="span9">
+            <div class="widget" style='overflow:inherit;'>
+              <div class="widget-header">
+                <div class="pull-right">
+
+                  <a id="new_site_button" class="btn btn-success btn-mini" href="/publishersites/new" style=":hover {text-decoration: none}" data-original-title="Click to create new site"><i class="icon-plus-sign icon-white"></i> Add new property</a>
+                </div>
+                <h3>
+                <i class="icon-hdd" style="margin-top:1px;"></i> Your Properties
+                <small>Create new properties to manage campaigns for new clients <!-- or businesses.</small>-->
+                <div style="margin-right:20px;display:none;" class="btn-group pull-right">
+                  <a class="btn active" href=""><i class="icon-list"></i></a>
+                  <a class="btn" href=""><i class="icon-th"></i></a>
+                </div> 
+                </h3>
+              </div>
+	<%= csrf_meta_tag %>
+              <div class="widget-content">
+<div style="margin-bottom:10px;" class="btn-group pull-right">
+                        <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+                          <i class="icon-globe"></i>&nbsp; <%= @status %>
+								All
+                          <span class="caret"></span>
+                        </a>
+		 <ul class="dropdown-menu">
+			<li><a href="/publishersites?type=all"><i class="icon-globe"></i>&nbsp;All</a></li>
+			<li><a href="/publishersites?type=active"><i class="icon-play"></i>&nbsp;Active</a></li>
+			<li><a href="/publishersites?type=inactive"><i class="icon-stop"></i>&nbsp;Inactive</a></li>
+		 </ul>
+		 </div>
+                <table style="background:#fff;display:marker;word-break: break-all;" class="table table-striped table-bordered">
+                  <thead class="widget-header">
+<div class="">
+<div class="">
+                    <tr>  
+											<th width="10%"> Name </th>  
+											<th width="40%"> URL </th>
+											<th width="20%"> Description </th> 
+											<th width="10%"> Status </th> 
+											<th width="20%"> Actions </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% @pubSites.each do |site| %>
+                    <tr>
+                      <td>
+                        <a href="/publishers/dashboard/<%= site.id %>"><%= site.website_title %></a> 
+                      </td>
+                      <td>
+                        <a href="<%= site.website_url %>"><%= site.website_url %></a> 
+                      </td>
+                      <td style="text-align:center;">
+                        <%= site.description %>
+                      </td>
+                      <td style="text-align:center;">
+<% if site.status == "Paused" %>
+	Deactive
+<% elsif site.status == "Active" %>
+	Active
+<% end %>
+                      </td>
+                      <td style="text-align:center;">
+<div class="btn-group pull-right">
+	<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+		<i class="icon-cog"></i> Options <span class="caret"></span>
+	</a>
+	<ul class="dropdown-menu">
+		<li class="site-edit">
+			<a target="_blank" href="/publishersites/<%= site.id %>/edit"><i class="icon-edit"></i> Edit Settings</a>
+		</li>
+		<li>
+<% if site.status != 'Active'%>
+	<a href="/publishersites/changestatus/<%= site.id %>/active"><i class="icon-play"></i><span style="margin-right:26px"> Activate </span></a>
+<% else %>
+	<a  href="/publishersites/changestatus/<%= site.id %>/deactive" data-confirm="Are you sure? This site will be removed from the account navigation, but you can always reactivate it here."><i data-original-title="deactivate"class="icon-stop"></i> <span style="margin-right:13px"> Deactivate </span></a>
+<% end %>
+		</li>
+<!--<% if site.status != 'Deleted'%>
+		<!--<li>
+			<a rel="nofollow" href="/publishersites/<%= site.id %>" data-method="delete" data-confirm="Are you sure? Any placements , channels in this site will also be deleted. This action cannot be undone.?"><i data-original-title="delete" rel="tooltip" class="icon-trash"></i> <span  style="margin-right:13px" > Delete Site </span></a>
+		</li>
+<% end %>-->
+	</ul>
+</div>
+                      </td>
+                    </tr>
+                    <% end %>
+<% if @pubSites.count == 0 %>
+	<tbody> <tr><td colspan='5' > No <%= @status %> sites are present. </td></tr> </tbody>
+<% end %>
+                  <tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+

@@ -1,0 +1,58 @@
+<% #### Reset Password Page %>
+<link href="/assets/app.css" rel="stylesheet" type="text/css" />
+<style>
+.logodisplay{
+	margin-top:10px;
+	margin-left:30px;
+}
+</style>
+<script>
+function checkpwd(){
+	if(document.getElementById("pwd").value==document.getElementById("cpwd").value)
+	{
+		return true;
+	}
+	else
+	{
+		alert("Confirm password not matching your password !");
+		document.getElementById("cpwd").focus();
+		return false ;
+		
+	}
+}
+</script>
+<div class="logodisplay">
+  <img src="http://www.tagaly.com/images/logo4.png?1384128788" />
+</div>
+<div class="container main">
+    	<div class="row">
+    		<div class="span12">					
+
+<div class="pcontent">
+<div style="margin-bottom:4px;margin-top:4px;" class="well">
+<h1>Change your password </h1>
+<%= form_tag("/forgotpassword/new", method: "post") do %>
+<%
+userid="";
+ @userflds.each do |userf| %>
+
+<% userid = userf.id %>
+<% end %>
+<%= text_field_tag(:id,userid,:type=>"hidden",:id=>"id") %>
+
+  <div><label for="user_password">New password</label>
+  <%= text_field_tag(:password,nil,:id=>"pwd",:placeholder=>"Password",:type=>"password",:style=>"height:30px;",:required=>"required") %>
+  </div>
+
+  <div><label for="user_password_confirmation">Confirm new password</label>
+   <%= text_field_tag(:password_field,nil,:id=>"cpwd",:placeholder=>"Confirm Password",:type=>"password",:style=>"height:30px;",:required=>"required",:onchange=>"checkpwd()") %>
+  </div>
+
+  <div><input type="submit" value="Change my password" name="commit" class="btn btn-success btn-large" onclick="return checkpwd()"></div>
+<% end %></div>
+</div>
+
+          
+        </div>
+      </div>
+    </div>

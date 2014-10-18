@@ -1,0 +1,423 @@
+<script src="/assets/jquery.reveal.js"  type="text/javascript"></script>
+<script src="https://js.stripe.com/v1/" type="text/javascript"></script>
+<link rel="stylesheet" href="/assets/reveal.css"/>
+<div style="margin:20px 0px 20px 0px;background: none repeat scroll 0 0 #FFE4C4;color: green;height:15px;display:none;" class="flashnotice"></div>
+<div id="adPreview" class="reveal-modal" style="position:absolute; background-color: white; top: 110px; border-radius: 10px; top:100px;"></div>
+
+<script>
+	$(document).on('click','.adZoom', function(e){
+		var idOfZoomClass = $(this).attr("id");
+		var adId = String(idOfZoomClass).substring(4);
+		var adDivId = "div" + adId;
+		var toset = $("#"+adDivId).html();
+		var xPosition = e.clientX;
+    var yPosition = e.clientY;
+		var html = "<a class='close-reveal-modal' id='closeadPreview'>&#215;</a> Placement's Ad Preview";
+		$("#adPreview").html(html+toset);
+		var width = $("#adDisplayFrame").width();
+		var height = $("#adDisplayFrame").height();
+		if($("#img"+adId).attr('src')) {
+			$("#adPreview").css("width", '');
+			$("#adPreview").css("height", '');
+		} else {
+			$("#adPreview").css("width", width);
+			$("#adPreview").css("height", height);
+			$("#adPreview").css("top", "0px");
+			// $("#adPreview").css("height", height);
+			// console.log( $(window).height() + "=======" + $("#adPreview").outerHeight() + "========" + $(window).scrollTop())
+			// console.log( Math.max(0, (($(window).height() - $("#adPreview").outerHeight()) / 2) + $(window).scrollTop()) )
+			$("#adPreview").css("top", Math.max(0, (($(window).height() - $("#adPreview").outerHeight()) / 2) + $(window).scrollTop()) + "px");
+			$("#adPreview").css("position", "absolute");
+			// $("#adPreview").css("top", yPosition);
+		}
+	});
+
+	$(document).ready(function () {
+
+    $('#selectallTextAds').click(function () {
+        $('.selectedTextAdId').prop('checked', isChecked('selectallTextAds'));
+    });
+});
+$(document).ready(function () {
+    $('#selectallDisplayAds').click(function () {
+        $('.selectedDisplayAdId').prop('checked', isChecked('selectallDisplayAds'));
+    });
+});
+$(document).ready(function () {
+    $('#selectallTextDisplayAds').click(function () {
+        $('.selectedTextDisplayAdId').prop('checked', isChecked('selectallTextDisplayAds'));
+    });
+});
+function isChecked(checkboxId) {
+    var id = '#' + checkboxId;
+    return $(id).is(":checked");
+}
+		function changeStatus(id,status,adUnitName) {
+			$.ajax({
+				type: "GET",
+				//url: hostname,
+				url: "updateStatus/" + id + "/" + status ,
+				success: function(data){
+					$(".flashnotice").show();
+					$(".flashnotice").html("<center>" + adUnitName + " status changed to " + status + "</center>");
+				}
+			});
+		}
+function resetSelectAll() {
+    // if all checkbox are selected, check the selectall checkbox
+    // and viceversa
+    if ($(".selectedId").length == $(".selectedId:checked").length) {
+        $("#selectall").attr("checked", "checked");
+    } else {
+        $("#selectall").removeAttr("checked");
+    }
+
+    if ($(".selectedId:checked").length > 0) {
+        $('#edit').attr("disabled", false);
+    } else {
+        $('#edit').attr("disabled", true);
+    }
+}
+function toggle(obj)
+{
+	var classname=obj.className ;
+	var elements = document.getElementsByClassName(classname);
+	var allId=obj.id;
+	
+	for (var i = 0; i < elements.length; i++) 
+	{
+
+		if((obj.checked==true) && (allId=='selectallNativeAds' || allId=='selectallTextNDisplayAds' || allId=='selectallDisplayAds' || allId=='selectallTextAds' || elements.length==2))
+		{
+			
+			elements[i].checked = true;
+		}
+		else
+		{
+			if(obj.checked != true)
+			elements[i].checked = false;
+		}
+	}
+}
+</script>
+<style>
+	html body { 	background: none repeat scroll 0 0 #ffffff; }
+	.nav-tabs { 	border-bottom: 0px solid ; } 
+	h1 { margin:20px 0 10px 20px; }
+	.contentwrap  { 	max-width: 100%; }
+	ul.balance li { 	border-left: 1px solid #E1E1E1; }
+	ul.balance li:first-child  { 	border-left: medium none; }	
+	ul.balance li { 	border-right: medium none; }
+	ul.balance li:first-child  { 	border-right: medium none; }
+	.contentwrap .content { 	padding-right: ; }
+	.browsecontainer .bcpad  { 	margin: 0 0 0 0px; 	padding: 20px; 	width: 1018px; }
+	h3 a  {  	font-size: 18px;  }
+	h3 a:hover { 	text-decoration: none; }
+	.myads-beta  { 	color: #B31308; 	font-size: 10px; 	font-weight: normal; 	padding-left: 4px; 	position: relative; 	top: -3px; }
+	.pcontent { 	width: 1195px; }
+	.span9  { 	width: 98%; }
+	.pull-right  { 	float: left; }			
+	.myads-title-bar-button  { 	font-weight: bolder; 	padding: 0 7px 0 15px; }
+	.gwt-Anchor  { 	display: inline; }
+</style>
+<div class="span12">
+	<%= csrf_meta_tag %>
+	<div style='float:right;padding:5px'>
+<a href="/placements/creatingadunits" class="btn btn-success">Create new placement</a>
+	</div>
+
+<%
+ 	selectBoxId = 1
+	textadsIndex = 1
+	printTextTable = 'no'
+	@adunitsData.each do |key,adunit| 
+		if adunit['adType'].to_s == 'TextAd'
+			if textadsIndex == 1 
+				printTextTable = 'yes'
+			textadsIndex += 1	
+%>
+<div id="textAdUnits"> 
+	<h1>Text Ads</h1>
+	<table style="background:#fff;" class="table table-striped table-bordered">
+		<thead class="widget-header">
+			<tr>
+				<th>
+					<input type="checkbox" id='selectallTextAds' class="selectedTextAdId" onclick="toggle(this)">
+				</th>
+				<th> Name </th>
+				<th> Ad Size </th>
+				<th> Channel Name</th>
+				<th style="width:100px"> View Preview </th>
+				<th>Status</th>
+				<th> Actions </th>
+			</tr>
+		</thead>
+		<tbody>
+			<% end %>
+	<tr>
+		<td><input type="checkbox" class="selectedTextAdId" id="selectBox<%= selectBoxId %>"  onclick="toggle(this)" ></td>
+		<td><%= adunit['adUnitName'] %></td>
+		<td><%= adunit['format'] %></td>
+		<td><a href="/channels/edit/<%= adunit['placementId'][0] %>"> <%= adunit['placementName'] %></a></td>
+<td><a href="#" data-reveal-id="adPreview" class="adZoom" id="zoom<%= adunit['adUnitId'] %>" data-animation="fade"><i class="icon-zoom-in adZoom" style="margin-top: 2px;float:right;"></i></a>
+<% sizes = adunit['format'].split(/x/) %>
+<% width = sizes[0].to_i + 25 %>
+<% height = sizes[1].to_i + 25 %>
+
+<div id="div<%= adunit['adUnitId'] %>" style="display:none;padding:10px;width:<%= width %>px;height:<%= height %>px">
+
+	<iframe src="/preview/?size=<%= adunit['format'] %>&styleId=<%= adunit['styleId']%>" width="<%= width %>" scrolling="no"  height="<%= height %>" id='adDisplayFrame' frameBorder="0"></iframe>
+</div>
+</td>
+<td>
+<% adunitName = Rack::Utils.unescape(adunit['adUnitName']) %>
+	<select id="sel<%= key %>" class='adunitStatus' autocomplete='off' onchange="changeStatus('<%= key %>', this.value ,'<%= adunit['adUnitName'] %>')">
+		<option <% if adunit['status'] == "Active" %> selected='selected' <% end %>>Active</option>
+		<option <% if adunit['status'] == "Pause" %> selected='selected' <% end %>>Pause</option>
+		<!--<option <% if adunit['status'] == "Delete" %> selected='selected' <% end %>>Delete</option>-->
+	</select>
+</td>
+		<td width="7%" style="text-align:center;">
+			<a href="/placements/<%= key %>/edit" target="_blank">
+				<i  class="icon-edit" data-original-title="All Visitors segments cannot be edited"></i>
+			</a>
+			<a rel="tooltip" href="/placements/getcode?placementId=<%= key %>" data-original-title="clone">
+         <i class="icon-share" data-original-title="You can get Adunit code here."></i>
+			</a>
+			<!--<a href="/adunits/<%= key %>" data-method="delete" data-confirm="Are you sure you want to delete?" >
+					<i class="icon-trash"></i>
+			</a>-->
+	</tr>
+<%
+		end
+			selectBoxId += 1 	
+	end
+%>
+<% if printTextTable == 'yes' %>
+		</tbody>
+	</table>
+</div>
+<% end %>
+
+<%
+ 	selectBoxId = 1
+	displayadsIndex = 1
+	printDisTable = 'no'
+	@adunitsData.each do |key,adunit| 
+		if adunit['adType'].to_s == 'DisplayAd'
+			if displayadsIndex == 1 
+				printDisTable = 'yes'
+				displayadsIndex += 1
+%>
+<div id="displayAdUnits"> 
+	<h1>Display Ads</h1>
+	<table style="background:#fff;" class="table table-striped table-bordered">
+		<thead class="widget-header">
+			<tr>
+				<th>
+					<input type="checkbox" class="selectallDisplayAds" id='selectallDisplayAds' onclick="toggle(this)">
+				</th>
+				<th> Name </th>
+				<th> Ad Size </th>
+				<th> Channel Name</th>
+				<th style="width:100px"> View Preview </th>
+				<th>Status</th>
+				<th> Actions </th>
+			</tr>
+		</thead>
+		<tbody>
+			<% end %>
+	<tr>
+		<td><input type="checkbox" class="selectallDisplayAds" id="selectDisBox<%= selectBoxId %>"  onclick="toggle(this)" ></td>
+		<td><%= adunit['adUnitName'] %></td>
+		<td><%= adunit['format'] %></td>
+		<td><a href="/channels/edit/<%= adunit['placementId'][0] %>"> <%= adunit['placementName'] %></a></td>
+		<td>
+			<a href="#" data-reveal-id="adPreview" class="adZoom" id="zoom<%= adunit['adUnitId'] %>" data-animation="fade"><i class="icon-zoom-in adZoom" style="margin-top: 2px;float:right;"></i></a>
+<% sizes = adunit['format'].split(/x/) %>
+<% width = sizes[0].to_i + 20 %>
+<% height = sizes[1].to_i + 25 %>
+<div id="div<%= adunit['adUnitId'] %>" style="display:none;padding:10px;width:<%= width %>px;height:<%= height %>px">
+	<iframe src="/preview/?img=<%= adunit['format'] %>" scrolling="no" width="<%= width %>" height="<%= height %>" id='adDisplayFrame' frameBorder="0"></iframe>
+</div>
+		</td>
+<td>
+<% adunitName = Rack::Utils.unescape(adunit['adUnitName']) %>
+	<select id="sel<%= key %>" class='adunitStatus' autocomplete='off' onchange="changeStatus('<%= key %>' ,this.value ,'<%= adunit['adUnitName'] %>')">
+		<option <% if adunit['status'] == "Active" %> selected='selected' <% end %>>Active</option>
+		<option <% if adunit['status'] == "Pause" %> selected='selected' <% end %>>Pause</option>
+		<!--<option <% if adunit['status'] == "Delete" %> selected='selected' <% end %>>Delete</option>-->
+	</select>
+</td>
+		<td width="7%" style="text-align:center;">
+			<a href="/placements/<%= key %>/edit" target="_blank">
+				<i  class="icon-edit" data-original-title="All Visitors segments cannot be edited"></i>
+			</a>
+			<a rel="tooltip" href="/placements/getcode?placementId=<%= key %>" data-original-title="clone">
+         <i class="icon-share" data-original-title="You can get Adunit code here."></i>
+			</a>
+			<!--<a href="/adunits/<%= key %>" data-method="delete" data-confirm="Are you sure you want to delete?" >
+					<i class="icon-trash"></i>
+			</a>-->
+	</tr>
+<%
+		end
+			selectBoxId += 1
+	end
+%>
+<% if printDisTable == 'yes' %>
+		</tbody>
+	</table>
+</div>
+<% end %>
+<%
+ 	selectBoxId = 1
+	tndadsIndex = 1
+	printTnDTable = 'no'
+	@adunitsData.each do |key,adunit| 
+		if adunit['adType'].to_s == 'TextAndDisplayAd'
+			if tndadsIndex == 1 
+				printTnDTable = 'yes'
+				tndadsIndex += 1
+%>
+<div id="textAndDisplayAdUnits"> 
+	<h1>Text and Display Ads</h1>
+	<table style="background:#fff;" class="table table-striped table-bordered">
+		<thead class="widget-header">
+			<tr>
+				<th>
+					<input type="checkbox" id='selectallTextNDisplayAds' class="selectallTextNDisplayAds" onclick="toggle(this)">
+				</th>
+				<th> Name </th>
+				<th> Ad Size </th>
+				<th> Channel Name</th>
+				<th style="width:100px"> View Preview </th>
+				<th>Status</th>
+				<th> Actions </th>
+			</tr>
+		</thead>
+		<tbody>
+			<% end %>
+	<tr>
+		<td><input type="checkbox" class="selectallTextNDisplayAds" id="selectTnDBox<%= selectBoxId %>"  onclick="toggle(this);" ></td>
+		<td><%= adunit['adUnitName'] %></td>
+		<td><%= adunit['format'] %></td>
+		<td><a href="/channels/edit/<%= adunit['placementId'][0] %>"> <%= adunit['placementName'] %></a></td>
+		<td>
+<a href="#" data-reveal-id="adPreview" class="adZoom" id="zoom<%= adunit['adUnitId'] %>" data-animation="fade"><i class="icon-zoom-in adZoom" style="margin-top: 2px;float:right;"></i></a>
+<% sizes = adunit['format'].split(/x/) %>
+<%
+		if sizes[0].to_i == 728 || sizes[0].to_i == 1024 || sizes[0].to_i == 468
+			width = sizes[0].to_i + 35
+			height = sizes[1].to_i + sizes[1].to_i + 48
+		else
+			width = sizes[0].to_i * 2 + 25
+			height = sizes[1].to_i + 25
+		end
+%>
+<div id="div<%= adunit['adUnitId'] %>" style="display:none;padding:10px;width:<%= width %>px;height:<%= height %>px;max-width:1024px;">
+	<iframe src="/preview/?size=<%= adunit['format'] %>&styleId=<%= adunit['styleId'] %>&img=<%= adunit['format'] %>" style="width:<%= width %>px;height:<%= height %>px;max-width:1024px;" scrolling="no" id='adDisplayFrame' frameBorder="0"></iframe>
+</div>
+		</td>
+<td>
+<% adunitName = Rack::Utils.unescape(adunit['adUnitName']) %>
+	<select id="sel<%= key %>" class='adunitStatus' autocomplete='off' onchange="changeStatus('<%= key %>' ,this.value ,'<%= adunit['adUnitName'] %>')">
+		<option <% if adunit['status'] == "Active" %> selected='selected' <% end %>>Active</option>
+		<option <% if adunit['status'] == "Pause" %> selected='selected' <% end %>>Pause</option>
+		<!--<option <% if adunit['status'] == "Delete" %> selected='selected' <% end %>>Delete</option>-->
+	</select>
+</td>
+		<td width="7%" style="text-align:center;">
+			<a href="/placements/<%= key %>/edit" target="_blank">
+				<i  class="icon-edit" data-original-title="All Visitors segments cannot be edited"></i>
+			</a>
+			<a rel="tooltip" href="/placements/getcode?placementId=<%= key %>" data-original-title="clone">
+         <i class="icon-share" data-original-title="You can get Adunit code here."></i>
+			</a>
+			<!--<a href="/adunits/<%= key %>" data-method="delete" data-confirm="Are you sure you want to delete?" >
+					<i class="icon-trash"></i>
+			</a>-->
+	</tr>
+<%
+		end
+			selectBoxId += 1
+	end
+%>
+<% if printTnDTable == 'yes' %>
+		</tbody>
+	</table>
+</div>
+<% end %>
+
+
+<%
+ 	selectBoxId = 1
+	nativeadsIndex = 1
+	printnativeTable = 'no'
+	@adunitsData.each do |key,adunit| 
+		if adunit['adType'].to_s == 'NativeAd'
+			if nativeadsIndex == 1 
+				printnativeTable = 'yes'
+				nativeadsIndex += 1
+%>
+<div id="nativeAdUnits"> 
+	<h1>Native Ads</h1>
+	<table style="background:#fff;" class="table table-striped table-bordered">
+		<thead class="widget-header">
+			<tr>
+				<th>
+					<input type="checkbox" id='selectallNativeAds' class="selectallNativeAds" onclick="toggle(this)">
+				</th>
+				<th> Name </th>
+				<th> Ad Size </th>
+				<th> Channel Name </th>
+				<th style="width:100px"> View Preview </th>
+				<th> Status </th>
+				<th> Actions </th>
+			</tr>
+		</thead>
+		<tbody>
+			<% end %>
+	<tr>
+		<td><input type="checkbox" class="selectallNativeAds" id="selectnativeBox<%= selectBoxId %>"  onclick="toggle(this);" ></td>
+		<td><%= adunit['adUnitName'] %></td>
+		<td><%= adunit['format'] %></td>
+		<td><a href="/channels/edit/<%= adunit['placementId'][0] %>"> <%= adunit['placementName'] %></a></td>
+		<td>
+<a href="#" data-reveal-id="adPreview" class="adZoom" id="zoom<%= adunit['adUnitId'] %>" data-animation="fade"><i class="icon-zoom-in adZoom" style="margin-top: 2px;float:right;"></i></a>
+<% sizes = adunit['format'].split(/x/) %>
+<% width = sizes[0].to_i + 20 %>
+<% height = sizes[1].to_i + 25 %>
+<div id="div<%= adunit['adUnitId'] %>" style="display:none;padding:10px;width:<%= width %>px;height:<%= height %>px;max-width:1024px;">
+	<iframe src="/preview/nativeStyleDisplay/<%= adunit['styleId'] %>" style="width:<%= width %>px;height:<%= height %>px;max-width:1024px;" scrolling="no" frameBorder="0" id='adDisplayFrame'></iframe>
+</div>
+		</td>
+<td>
+<% adunitName = Rack::Utils.unescape(adunit['adUnitName']) %>
+	<select id="sel<%= key %>" class='adunitStatus' autocomplete='off' onchange="changeStatus('<%= key %>' ,this.value ,'<%= adunit['adUnitName'] %>')">
+		<option <% if adunit['status'] == "Active" %> selected='selected' <% end %>>Active</option>
+		<option <% if adunit['status'] == "Pause" %> selected='selected' <% end %>>Pause</option>
+		<!--<option <% if adunit['status'] == "Delete" %> selected='selected' <% end %>>Delete</option>-->
+	</select>
+</td>
+		<td width="7%" style="text-align:center;">
+			<a href="/placements/<%= key %>/edit" target="_blank">
+				<i  class="icon-edit" data-original-title="All Visitors segments cannot be edited"></i>
+			</a>
+			<a rel="tooltip" href="/placements/getcode?placementId=<%= key %>" data-original-title="clone">
+         <i class="icon-share" data-original-title="You can get Adunit code here."></i>
+			</a>
+			<!--<a href="/adunits/<%= key %>" data-method="delete" data-confirm="Are you sure you want to delete?" >
+					<i class="icon-trash"></i>
+			</a>-->
+	</tr>
+<%
+		end
+			selectBoxId += 1
+	end
+%>
+<% if printnativeTable == 'yes' %>
+		</tbody>
+	</table>
+</div>
+<% end %>

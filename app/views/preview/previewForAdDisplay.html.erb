@@ -1,0 +1,204 @@
+<script></script>   
+<style></style>  
+<style>
+	.tagalyAdUnits ul {
+		list-style-type: none;
+		padding:0px;
+		margin:0px;
+	}
+</style>
+<a href='previewForAdDisplay?size=468x60'>468x60</a>
+<a href='previewForAdDisplay?size=728x90'>728x90</a>
+<a href='previewForAdDisplay?size=1024x90'>1024x90</a>
+<a href='previewForAdDisplay?size=88x31'>88x31</a>
+<a href='previewForAdDisplay?size=120x60'>120x60</a>
+<a href='previewForAdDisplay?size=120x20'>120x20</a>
+<a href='previewForAdDisplay?size=168x28'>168x28</a>
+<a href='previewForAdDisplay?size=216x36'>216x36</a>
+<a href='previewForAdDisplay?size=234x60'>234x60</a>
+<a href='previewForAdDisplay?size=300x50'>300x50</a>
+<a href='previewForAdDisplay?size=320x50'>320x50</a>
+<a href='previewForAdDisplay?size=250x250'>250x250</a>
+<a href='previewForAdDisplay?size=240x400'>240x400</a>
+<a href='previewForAdDisplay?size=160x600'>160x600</a>
+<a href='previewForAdDisplay?size=300x250'>300x250</a>
+<%
+	if params[:size] == '160x600'
+		adType = 'horizontal'
+		lineHeight = '16px'
+		noOfAds = 5
+		totalwidth = '160px'
+		secondUlwidth = '156px'
+		totalHeight = '600px'
+		secondUlHeight = '116px'
+	elsif params[:size] == '250x250'
+		adType = 'horizontal'
+		lineHeight = '18px'
+		noOfAds = 3
+		totalwidth = '250px'
+		secondUlwidth = '246px'
+		totalHeight = '250px'
+		secondUlHeight = '78px'
+	elsif params[:size] == '240x400'
+		adType = 'horizontal'
+		lineHeight = '16px'
+		noOfAds = 4
+		totalwidth = '240px'
+		secondUlwidth = '236px'
+		totalHeight = '400px'
+		secondUlHeight = '95px'
+	elsif params[:size] == '300x250'
+		adType = 'horizontal'
+		lineHeight = '18px'
+		noOfAds = 3
+		totalwidth = '300px'
+		secondUlwidth = '296px'
+		totalHeight = '250px'
+		secondUlHeight = '78px'
+	elsif params[:size] == '216x36'
+		adType = 'headlines'
+		lineHeight = '14px'
+		noOfAds = 2
+		totalwidth = '216px'
+		secondUlwidth = '212px'
+		totalHeight = '32px'
+		secondUlHeight = '14px'
+	elsif params[:size] == '300x50'
+		adType = 'headlines'
+		lineHeight = '18px'
+		noOfAds = 2
+		totalwidth = '300px'
+		secondUlwidth = '296px'
+		totalHeight = '50px'
+		secondUlHeight = '23px'
+	elsif params[:size] == '320x50'
+		adType = 'headlines'
+		lineHeight = '18px'
+		noOfAds = 2
+		totalwidth = '320px'
+		secondUlwidth = '316px'
+		totalHeight = '50px'
+		secondUlHeight = '23px'
+	elsif params[:size] == '234x60'
+		adType = 'vertical'
+		lineHeight = '15px'
+		displayUrl = 'none'
+		noOfAds = 1
+		totalwidth = '234px'
+		secondUlwidth = '230px'
+		totalHeight = '60px'
+		secondUlHeight = '60px'
+	elsif params[:size] == '468x60'
+		adType = 'vertical'
+		lineHeight = '15px'
+		displayUrl = 'none'
+		noOfAds = 2
+		totalwidth = '468px'
+		secondUlwidth = '230px'
+		totalHeight = '60px'
+		secondUlHeight = '56px'
+	elsif params[:size] == '728x90'
+		adType = 'vertical'
+		lineHeight = '14px'
+		displayUrl = 'notNone'
+		noOfAds = 4
+		totalwidth = '728px'
+		secondUlwidth = '178px'
+		totalHeight = '90px'
+		secondUlHeight = '86px'
+	elsif params[:size] == '1024x90'
+		adType = 'vertical'
+		lineHeight = '15px'
+		displayUrl = 'notNone'
+		noOfAds = 5
+		totalwidth = '1024px'
+		secondUlwidth = '200px'
+		totalHeight = '90px'
+		secondUlHeight = '86px'
+	end
+%>
+<% if adType == 'horizontal' %>
+<div class="tagalyAdUnits" style="width:<%= totalwidth %>;border:1px solid black;height:<%= totalHeight %>;position:relative;">
+	<ul style="width:<%= totalwidth %>;">
+		<li>
+<%
+	i = 1
+	while i <= noOfAds do
+%>
+	<ul style="width:<%= secondUlwidth %>;margin:2px 2px;height:<%= secondUlHeight %>;font-size:small;line-height:<%= lineHeight %>;word-wrap:break-word;">
+		<li style='font-size:medium;color:blue;'>HeadLine For Ad 12345678 <%= i %></li>
+		<li style='font-size:13px;color:green;'>www.example.com <%= i %></li>
+		<li>Discription line 1 for ad <%= i %>. Discription line 2 for ad <%= i %>. 123456890 123456</li>
+	</ul>
+<%
+	i +=1
+	end
+%>
+		</li>
+	</ul>
+	<div style="position: absolute; right: 4px; bottom: 4px; color: grey; font-size: 9px;">Tagaly Ads</div>
+</div>
+
+<% elsif adType == 'vertical' %>
+<div class="tagalyAdUnits" style="width:<%= totalwidth %>;border:1px solid black;height:<%= totalHeight %>;position:relative;">
+	<ul style="width:<%= totalwidth %>;">
+		<li>
+<%
+	i = 1
+	while i <= noOfAds do
+%>
+	<ul style="width:<%= secondUlwidth %>;margin:2px 2px;height:<%= secondUlHeight %>;font-size:small;line-height:<%= lineHeight %>;word-wrap:break-word;float:left;">
+		<% if displayUrl != 'none'%>
+			<li style='font-size:small;color:blue;'>HeadLine For Ad 12345678 <%= i %></li>
+			<li style='font-size:13px;color:green;'>www.example.com <%= i %></li>
+			<li>Discription line 1 for ad <%= i %>. Discription line 2 for ad <%= i %>. 123456890 123456</li>
+		<% else %>
+		<% headline = "HeadLine For Ad 12345678" %>
+		<% discription = "Discription line 1 for ad " + i.to_s + ". Discription line 2 for ad " + i.to_s + ". 123456890 123456" %>
+			<li style='font-size:small;color:blue;'> <%= headline[0,20] %> <%= i %></li>
+			<li> <%= discription[0,60] %></li>
+		<% end %>
+	</ul>
+<%
+	i +=1
+	end
+%>
+		</li>
+	</ul>
+	<div style="position: absolute; right: 4px; bottom: 4px; color: grey; font-size: 9px;">Tagaly Ads</div>
+</div>
+
+<% elsif adType == 'headlines' %>
+<div class="tagalyAdUnits" style="width:<%= totalwidth %>;border:1px solid black;height:<%= totalHeight %>;position:relative;">
+	<ul style="width:<%= totalwidth %>;">
+		<li>
+<%
+	i = 1
+	while i <= noOfAds do
+%>
+	<ul style="width:<%= secondUlwidth %>;margin:2px 2px;height:<%= secondUlHeight %>;font-size:small;line-height:<%= lineHeight %>;word-wrap:break-word;">
+		<li style='color:blue;'>HeadLine For Ad <%= i %>  12345678</li>
+	</ul>
+<%
+	i +=1
+	end
+%>
+		</li>
+	</ul>
+	<div style="position: absolute; right: 4px; bottom: 4px; color: grey; font-size: 9px;">Tagaly Ads</div>
+</div>
+<% end %>
+<%
+if params[:img]
+  sizes = params[:img].split("x")
+  imgwidth = sizes[0].to_i
+  imgheight = sizes[1].to_i
+%>
+	<fieldset style="border:1px solid #cccccc; ">
+		<div style="display:inline-block;padding:10px" id="display_preview">
+			<img src='/assets/<%= params[:img]%>.png' width='<%= imgwidth %>' height='<%= imgheight %>'>
+		</div>
+	</fieldset>
+<%
+  end
+%>

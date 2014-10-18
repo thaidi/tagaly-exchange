@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  listname: MyString
+  duration: 
+  retargeting_type: MyString
+  rtype_text: MyString
+  advertiseris: 
+
+two:
+  listname: MyString
+  duration: 
+  retargeting_type: MyString
+  rtype_text: MyString
+  advertiseris: 

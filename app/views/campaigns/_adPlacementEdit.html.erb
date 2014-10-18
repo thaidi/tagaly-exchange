@@ -1,0 +1,581 @@
+<script>
+		window.myfunction = function (adunit,url) {
+			var myModalId = "#myModal" + adunit;
+			var myModelDiv = $(myModalId);
+			var aMyModalId = "#aMyModal" + adunit;
+			var cfId = "#cf" + adunit;
+			var revealModalBg = $(".reveal-modal-bg");
+			aMyModal = $(aMyModalId);
+			myModelDiv.css("visibility" , "hidden");
+			myModelDiv.children("iframe").attr("src" , "/campaigns/uploadEdit?id=" + adunit);
+			aMyModal.children("span").children("em").html("Edit Creative");
+			aMyModal.removeClass("green");
+			revealModalBg.css("display" , "none");
+			adsValue = $("#ads").val();
+			$(cfId).children(".cartbanner").children("img").attr("src","/uploads/"+url);
+			if(adsValue.indexOf(adunit) < 0) {
+				adsValue = adunit + "," + adsValue ;
+				$("#ads").val(adsValue);
+			}
+		}
+
+if (window.addEventListener) {
+    window.addEventListener ("message", receive, false);        
+}
+else {
+    if (window.attachEvent) {
+        window.attachEvent("onmessage",receive, false);
+    }
+}
+
+function receive(event) {
+    var data = event.data;
+    if(typeof(window[data.func]) == "function"){
+        window[data.func].call(null, data.params[0]);
+    }
+}
+
+function alertMyMessage(msg) {
+		var res = msg.split(",");
+		var adunits = "";
+		var mymodaldiv = "";
+		for (i = 0; i < res.length; i++) {
+		  if(res[i] != "") {
+				adunitId = res[i];
+				mymodaldiv += "<div id='myModal" + adunitId + "' class='reveal-modal' style='width:1150px;height:635px;'>";
+					mymodaldiv += "<a class='close-reveal-modal' id='closeadFrame'>&#215;</a>";
+					mymodaldiv += "<iframe src='/campaigns/uploadEdit?id="+ adunitId +"' width='1150px' frameBorder='0' height='100%' ></iframe>";
+				mymodaldiv += "</div>";
+			}
+		}
+		$.ajax({
+			type: "GET",
+			url: "/campaigns/getAdPlacementsEdit",
+			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+			data: "adunits=" + msg,
+			success: function(data) {
+				$("#adPlacement").css({"opacity": "1", "visibility" : "hidden" });
+				$(".reveal-modal-bg").css("display" , "none");
+				$("#allcart").children("table").children("tbody").append(data);
+				$("#mymodalFrames").html(mymodaldiv);
+			}
+		});
+}
+$(document).ready(function(){	
+  $(".removeicon").on("click",function(){
+		var id = this.id;
+		cfid = "cf" + id;
+		cfidDiv = $("#" + cfid);
+		$.ajax({
+			type: "GET",
+			url: "/campaigns/getAdPlacementsEdit",
+			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+			data: "adunitdeleted=" + id ,
+			success: function(data) {
+/*
+				var distotalCost = document.getElementById("distotalCost").innerHTML.trim();
+				var adunitid = id;
+				var price = parseFloat(document.getElementById("price_"+id).innerHTML);
+				var qty = document.getElementById("qty_"+id).value;
+				var cost = price * qty;
+				var totalCost = parseFloat(distotalCost) - parseFloat(cost);
+				document.getElementById("distotalCost").innerHTML = totalCost.toFixed(2);
+				if (totalCost == 0) {
+					$("#emptycart").show();
+					$("#allcart").hide(); 
+				}
+*/
+				cfidDiv.parent().parent().remove();
+			}
+		});
+  });
+});
+</script>
+		<script src="/assets/jquery.reveal.js"  type="text/javascript"></script>
+		<link rel="stylesheet" href="/assets/adblock.css" type="text/css" />
+		<link rel="stylesheet" href="/assets/skinny.css" type="text/css" media="screen and (max-width: 1100px)" />
+		<link rel="stylesheet" href="/assets/reveal.css"/>
+		<link href="/assets/smaple.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+		<link rel="stylesheet" href="/assets/bsa.min.css" type="text/css" />
+		<style>
+			select { margin-left: 10px; }
+		</style>
+<div style="" class="pcontent">
+  <div class="row">
+    <div style="margin-bottom:5px;" class="span12">
+      <h2 style="text-shadow:0 1px white;margin:5px 0 10px 20px;"> <i style="margin-top:0px;" class="icon-facebook-sign"> </i> Ad placement type of Campaign
+ 
+ </h2>
+    </div>  
+  </div>
+<div id="adPreview" class="reveal-modal" style="position:absolute; background-color: white; border-radius: 10px; ">
+		<a class="close-reveal-modal" id="closeadPreview">&#215;</a>
+		Ad Preview
+	</div>
+	<div class='campaignDiv'>
+		<% sectionCount = 1 %>
+    <%= form_for :campaign,:html => {:class => "form-horizontal campaign-form-stripe"}, :url=> { :action => "saveAdPlacementData" } do |f| %>
+	    <%= f.text_field :siteid , :type=>"hidden",:id=>"siteid",:value=>session[:site_id] %>
+	    <%= f.text_field :authenticity_token , :type=>"hidden",:value=>form_authenticity_token() %>
+        <fieldset id="fboo">
+					<div class="widget">
+						<div class="widget-header"> <h3> <span class="sectionnumeral"><%= sectionCount %></span> &nbsp; Set up your ads </h3> </div>
+						<div style="padding:0;" class="widget-content">
+							<div class="" style="border-top:0;padding:15px;">
+								<div style="margin-bottom:0;margin-top:1px;clear:both;" id="accordion7" class="accordion">
+									<div class="accordion-body  collapse admake-group" id="collapseSeven">
+										<div style="border:0;padding-left:0;padding-right:0;padding-top:0;" class="accordion-inner">
+											<div style="margin-left:0;" class="controls">
+												<div style="margin-left:0;margin-right:0;" class="fbmake">
+													<h4>Add New Placement</h4>
+													<div style="position:relative;margin-left:0;margin-right:0;margin-bottom:0px;" class="well" id="new-ad-form">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div style="min-height:255px; min-width:500px;" class="modal hide image-resize-modal"></div>
+									<div class="selectable" id="ads-table-container">
+										<div class="selectable-container">
+											<h5> Select add new placement </h5>
+											<a data-animation="fade" data-reveal-id="adPlacement" id="creatNewAd" href="#" class="pull-right btn btn-success big-link" style="margin: 0px;"> <i style="margin-top: 3px;" class="icon-plus icon-white"></i> Add New Placement </a>    
+											<div style="margin-right:148px;" class="ad-search-container pull-right">
+												<div class="form-search">
+													<div class="input-append"> </div>
+												</div>
+											</div>
+											<div style="clear:both;max-height:500px;" class="table-scrollable">
+												<div id="aderrorText" class="error" colspan="3" style="margin-left:0px;"></div>
+												<div id="statusmsg" style="display:none;text-align:left;color:green;padding-bottom:10px;">
+													Status has been changed to "<span id="statustext"></span>" for the Ad "<span id="adname"></span>"
+												</div>
+											</div>
+							<div id="allcart">
+
+								<table class="data">
+									<tr>
+										<th scope="col"><div>Placement</div></th>
+										<th class="restrict" scope="col"><div>Details</div></th>
+										<th class="restrict" scope="col"><div>Est. Impressions</div></th>
+										<th class="restrict" scope="col"><div>Qty</div></th>
+										<th class="restrict" scope="col"><div>Cost</div></th>
+										<th scope="col"><div>&nbsp;</div></th>
+									</tr>
+										<% @totalCost = 0 %>
+										<% if @campaignAllAds.present? %>
+										<% @campaignAllAds.each do | eachAdId , campaign | %>
+										<%
+											adName = campaign['adName']
+											adType = campaign['adType']
+											adSize = campaign['adSize']
+											adStatus = campaign['adStatus']
+											adUnitId = campaign['adUnitId'].to_s
+											adImageUrl = campaign['adImageUrl']
+											approvalStatus = campaign['approvalStatus']
+											adServerImpressions = campaign['adServerImpressions']
+											volume = campaign['volume'].to_f / 1000
+											@adunitDetails = @placementDetails[adUnitId]
+											if @adunitDetails.present?
+											else
+												@adunitDetails = @placementDetails[adUnitId.to_i]
+											end
+											if @adunitDetails.present?
+												price = @adunitDetails['price']
+												cost = volume.to_f * price.to_f
+										%>
+											<tr>
+													<td>
+														<div class="cf" id='cf<%= adUnitId %>' >
+															<span class="cartbanner">
+																<img src="/uploads/<%= adImageUrl %>">
+															</span>
+															<a class="title" title="<%= @adunitDetails['adUnitName'] %>" href="#">
+																<%= @adunitDetails['adUnitName'] %>
+															</a>
+															<%= @adunitDetails['description'] %>
+														</div>
+													</td>
+													<td>
+														<div>
+															<span class="location"><%= @adunitDetails['format'] %></span><br>
+															<span id="price_<%= adUnitId %>"><%= @adunitDetails['price'] %></span> per 1K Imps
+															<input type='hidden' name="price[<%= adUnitId %>]" value="<%= @adunitDetails['price'] %>" />
+														</div>
+													</td>
+													<td>
+														<div> <%= adServerImpressions %> </div>
+													</td>
+													<td>
+															<select name="qty[<%= adUnitId %>]" class="qty" id="qty_<%= adUnitId %>" name="qty">
+																<option value="50">50,000</option>
+																<option value="60">60,000</option>
+																<option value="70">70,000</option>
+																<option value="80">80,000</option>
+																<option value="90">90,000</option>
+																<option value="100">100,000</option>
+															</select> Impressions
+													</td>
+													<td>
+														<% 
+															@totalCost = @totalCost.to_f + cost.to_f
+														%>
+														 $ <span id="cost_<%= adUnitId %>" class="costs"><%= number_with_precision(cost, precision: 2) %> </span>
+													</td>
+													<td>
+														<div class="cf">
+																<a class="button small" id="aMyModal<%= adUnitId %>" style="background-color:#53951D;" title="Upload banner for: Premium Rectangle" data-animation="fade" data-reveal-id="myModal<%= adUnitId %>" href="#" ><span><em>Edit Creative</em></span></a>
+														</div>
+													</td>
+											</tr>
+										<% end %>
+										<% end %>
+										<% end %>
+
+										<% if $adunitsEdit.present? %>
+										<% $adunitsEdit.each do |eachAdunit| %>
+											<tr>
+													<td>
+														<div class="cf" id='cf<%= eachAdunit %>' >
+															<span class="cartbanner">
+															<% if $banneradDetailsEdit.present? %>
+																<img src="/uploads/<%= $banneradDetailsEdit[eachAdunit]['imgUrl'] %>">
+															<% else %>
+																<img src="/assets/nocreative.png">
+															<% end %>
+															</span>
+															<a class="title" title="<%= @placementDetails[eachAdunit]['adUnitName'] %>" href="#"><%= @placementDetails[eachAdunit]['adUnitName'] %></a>
+																	<%= @placementDetails[eachAdunit]['description'] %>							
+														</div>
+													</td>
+													<td>
+														<div>
+															<span class="location"><%= @placementDetails[eachAdunit]['format'] %></span><br> <span id="price_<%= eachAdunit %>"><%= @placementDetails[eachAdunit]['price'] %></span> per 1K Imps
+															<input type='hidden' name="price[<%= eachAdunit %>]" value="<%= @placementDetails[eachAdunit]['price'] %>" />
+														</div>
+													</td>
+													<td>
+														<div> - </div>
+													</td>
+													<td>
+														<%
+															if session[:imps].present?
+																@imps=session[:imps]
+															else
+																@imps=""
+															end
+														%>
+															<select name="qty[<%= eachAdunit %>]" class="qty" id="qty_<%= eachAdunit %>" name="qty">
+																<option value="50" <% if session[:imps].present? %><% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]=="50" %> Selected <% end %><% end %>>50,000</option>
+																<option value="60" <% if session[:imps].present? %><% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]=="60" %> Selected <% end %><% end %>>60,000</option>
+																<option value="70" <% if session[:imps].present? %><% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]=="70" %> Selected <% end %><% end %>>70,000</option>
+																<option value="80" <% if session[:imps].present? %><% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]=="80" %> Selected <% end %><% end %>>80,000</option>
+																<option value="90" <% if session[:imps].present? %><% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]=="90" %> Selected <% end %><% end %>>90,000</option>
+																<option value="100" <% if session[:imps].present? %><% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]=="100" %> Selected <% end %><% end %>>100,000</option>
+														
+															</select> impressions
+													</td>
+													<td>
+										<% if session[:imps].present? %>
+											<% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]!="" 
+													cost=(@placementDetails[eachAdunit]['price'].to_f * @imps[eachAdunit].to_f)
+											else
+												cost=@placementDetails[eachAdunit]['price'].to_f * 50 
+											end
+											%>
+										<% 
+										else
+											cost = @placementDetails[eachAdunit]['price'].to_f * 50 
+										end
+										%>
+										<% 
+											@totalCost=@totalCost.to_f + cost.to_f
+										%>
+										 $<span id="cost_<%= eachAdunit %>" class="costs"><%= number_with_precision(cost, precision: 2) %> </span> </td>
+													</td>
+													<td>
+														<div class="cf">
+															<% if $banneradDetailsEdit.present? %>
+																<% if $banneradDetailsEdit[eachAdunit].present? %>
+																	<a class="button small" id="aMyModal<%= eachAdunit %>" style="background-color:#53951D;" title="Upload banner for: Premium Rectangle" data-animation="fade" data-reveal-id="myModal<%= eachAdunit %>" href="#" ><span><em>Edit Creative</em></span></a>
+																<% else %>
+																	<a class="button green small" id="aMyModal<%= eachAdunit %>" style="background-color:#53951D;" title="Upload banner for: Premium Rectangle" data-animation="fade" data-reveal-id="myModal<%= eachAdunit %>" href="#" ><span><em>Upload Creative</em></span></a>
+																<% end %>
+															<% else %>
+																<a class="button green small" id="aMyModal<%= eachAdunit %>" style="background-color:#53951D;" title="Upload banner for: Premium Rectangle" data-animation="fade" data-reveal-id="myModal<%= eachAdunit %>" href="#" ><span><em>Upload Creative</em></span></a>
+															<% end %>
+															<a id="<%= eachAdunit %>" class="removeicon" href="javascript:void(0)"><span>X</span></a>
+															<div class="error" id="error<%= eachAdunit %>" style="display: none; margin-top: 36px; width: 145px; padding: 5px;">Please Upload Creative</div>
+														</div>
+													</td>
+											</tr>
+										<% end %>
+										<% end %>
+
+
+								</table>
+								<div style='height: 50px;'>
+									<span class="carttotal"> Total: 
+										<span class="cart-total">
+											$ <span id="distotalCost"> <%= number_with_precision(@totalCost, precision: 2) %> </span>
+										</span>
+									</span>
+								</div>
+										</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+									<br>
+
+
+<div class="widget">
+	<div class="widget-header">
+		<h3>
+			<span class="sectionnumeral"><%= sectionCount=sectionCount+1 %></span> Campaign, Pricing, Schedule
+		</h3>
+	</div>
+	<div style="padding:15px;" class="widget-content ">
+		<div class="control-group">
+			<div class="control-label">
+				Campaign Name: <a rel="tooltip" data-original-title="Give your campaign a descriptive name so you remember what it does.">[?]</a>
+				<div class="helpform"></div>
+			</div>
+			<input type="hidden" id="campaignoldName" value="<%= @campaignDetails["campaignName"] %>"/>
+			<%= f.text_field :campaign_name , :id=>"campaign_name" ,:placeholder=>"My Campaign",:value=>@campaignDetails["campaignName"],:onchange=>"checkCampaignName(this.value)",:maxlength=>"200", :class=>"req", :onchange=>"validate(this.id,'campaignNameerrorText')" %>
+			<div id="campaignNameerrorText" class="error" style="width:210px;margin-left:162px;"></div>
+			<%= f.text_field :campaign_type ,:type=>"hidden", :id=>"campaign_type" ,:value=>@campaignDetails["campaignType"], :class=>"req numeric", :onchange=>"validate(this.id,'budgeterrorText')" %>
+		</div>
+
+		<div class="control-group">
+			<div class="control-label">
+				Daily Budget: <a rel="tooltip" data-original-title="Campaigns are prepaid on a Daily basis and budgets refill every Monday.  You will be billed this amount at the beginning of the campaign and each Monday will be billed when the budget refills to full.  You can transfer or withdraw funds at any time.">[?]</a>
+			</div>
+			<div class="controls">
+				<div class="input-prepend">
+					<span style="" class="add-on">$</span>
+					<%= f.text_field :weekly_budget ,:size=>"30", :id=>"weekly_budget" ,:value=>number_with_precision(@campaignDetails["budget"], precision: 2) ,:class=>"req numeric", :onchange=>"validate(this.id,'budgeterrorText')"%> 
+					<small style="color:#999;font-size:11px;">($25 minimum) 
+						<a rel="tooltip" data-original-title="Your retargeting budget should scale based on your web traffic.  Here are some budget guidelines:&lt;br/&gt;-10k-25k visitors: $350-700/week&lt;br/&gt;-25k-50k visitors: $700-1500/week&lt;br/&gt;-50k-100k visitors: $1500-3000/week&lt;br/&gt;-100k-350k+ visitors: $3k-10k/week">Recommendations</a>
+					</small>
+					<br>
+					<div id="budgeterrorText" class="error" style="width:240px;margin-left:30px;"></div>
+				</div>
+			</div>
+		</div>
+
+		<div style="margin-bottom:18px;" class="control-group schedule">
+			<div class="control-label">
+				Campaign Schedule: <a rel="tooltip" data-original-title="Your campaign is set to run continuously starting today. If you want to set a specific start and end day, uncheck the box.">[?]</a>
+			</div>
+			<%
+				checkRunCampaign="false"
+				if @campaignDetails["campaignEndDate"]==""
+					checkRunCampaign="checked"
+				end
+			%>
+			<%= check_box("campaign", "runcampaigncontinuously" ,{:checked=>checkRunCampaign,:id=>"run-campaign-continuously"}, "ongoing") %>
+			Run my campaign continuously starting today.
+			<div data-today="11/29/2013" class="hide" id="start-end-schedule-picker" <% if checkRunCampaign=="false" %> style="display:block;" <% end %>>
+				<div style="margin-bottom:18px;" class="control-group datefields" rel="tooltip" title="Once Campaign is created, you can't edit Campaign start date!">	
+					<div style="width:50px;" class="control-label"> Start: </div>
+					<%= f.text_field :campaign_startdate ,:size=>"30" ,:id=>"campaign_start_date" ,:style=>"background-color: rgb(255, 255, 255); cursor: pointer;" , :readonly=>"readonly",:disabled=>"disabled",:value=>@campaignDetails["campaignStartDate"]  , :onchange=>"validateDate(this.id)" %>
+					<div id="startDateerrortext" class="error"></div>
+				</div>
+				<div style="margin-bottom:5px;" class="control-group datefields">
+					<div style="width:50px;" class="control-label"> End: </div>
+					<%= f.text_field :campaign_enddate ,:size=>"30" ,:id=>"campaign_end_date" ,:style=>"background-color: rgb(255, 255, 255); cursor: pointer;" , :class=>"datepicker",:readonly=>"readonly",:value=>@campaignDetails["campaignEndDate"]  , :onchange=>"validateDate(this.id)"  %>
+					<div id="endDateerrortext" class="error"></div>
+					<small style="font-size:12px;position:relative;top:11px;">
+						<a style="margin-top:-15px;line-height:15px;" onclick="$('#campaign_end_date').val(''); return false;" href="#" class="btn btn-mini">
+							<i class="icon-minus-sign"></i> clear date
+						</a>
+					</small>
+				</div>
+			</div>
+		</div>
+		<input type="hidden" value="12" name="campaign[max_day_imps]" id="campaign_max_day_imps">
+
+		<div class="control-group" id="conversionsDiv" >
+			<label class="control-label">
+				Conversion Goals <a rel="tooltip" data-original-title="Choose a conversion goal to track for this campaign">[?]</a> 
+			</label>
+			<div class="controls">
+				<div id="conversionGoalerrorText" class="error" style="margin-left:0px;width:720px;"></div>
+					<table style="clear:none;width:720px;" class="table table-striped table-bordered" id="conversion-chooser">
+						<thead>
+							<tr>
+								<th>
+									<i class="icon-exchange"></i>
+									Select up to 3 Conversion Goals to track 
+									<a rel="tooltip" href="" style="color:#888;font-weight:normal;display:inline;" data-original-title="The ad networks may block your ads from serving if you attach more than 3 conversion goals.">[?]</a>
+								</th>
+								<th width="1%">Track</th>
+							</tr>
+						</thead>
+						<tbody>
+							<%
+								if @conversionsList.present?
+									@conversionsList.each do |key , conversion| 
+										checkConversion=""
+										if @campaignDetails["coversionGoals"].include?(key.to_s)
+											checkConversion="checked"
+										else
+											checkConversion="false"
+										end
+							%>
+								<tr>
+									<td> <%= conversion["conversionName"] %> </td>
+									<td> <%= check_box("campaign", "conversions" ,{:multiple=>"true",:class=>"conversionGoals",:checked=>checkConversion},key,nil) %> </td>
+								</tr>
+							<% 
+									end 
+								end
+							%>
+						</tbody>
+					</table>
+					<span class="pull-right">
+						<a data-animation="fade" data-reveal-id="newConversion" href="#" style="clear:both;text-align:right;margin:5px 30px 10px 0;color:#fff;" id="new-conversion-button" class="btn btn-mini btn-success" ><i style="margin-top:3px;" class="icon-plus icon-white"></i> Create new conversion goal</a>
+					</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="control-label">
+					Campaign Status <a rel="tooltip" data-original-title="Check this box to set campaign 'inactive'.  Ads will not serve until it is unchecked and the campaign is saved again.">[?]</a>
+					<div class="helpform"> </div>
+				</div>
+				<% status = @campaignDetails["campaignStatus"] %>
+				<%= select(:campaign,:state, options_for_select([['Active', 'active'],['Pause', 'pause'],['Delete','delete']] , status )) %>
+			</div>
+	</div>
+</div>
+
+
+<div class="widget">
+            <div class="widget-header">
+              <h3>
+              <span class="sectionnumeral">3</span> &nbsp; Billing Information <span style="color:red;">*</span>
+              </h3>
+            </div>
+            <div class="widget-content in collapse" style="padding:0;">
+              <div class="" style="border-top:0;padding:15px;">
+                <p>You campaign budget will refill weekly, every Monday, to minimize charges.  Billing information is required during free trials to verify identity and ensure seamless transition to live campaigns. 24 hours before your free trial expires we will notify you and your campaign will seamlessly shift into full active mode. </p>
+                <div class="control-group">
+                  <div class="control-group">
+                    <div class="controls">
+                      <div class="radio" style="margin-bottom: 4px">
+                        <input type="radio" name="cc_chooser" id="cc_chooser_1" value="old" disabled="disabled">
+                          Use existing card
+                         <br>
+                        <input type="radio" name="cc_chooser" id="cc_chooser_2" value="new" checked="checked" disabled="disabled">
+                        <!-- If using new card -->
+                        <input type="hidden" id="cc_stripe_card_token" name="cc[stripe_card_token]">
+                        <input type="hidden" id="cc_last_four" name="cc[last_four]">
+                        <input type="hidden" id="cc_expiration_month" name="cc[expiration_month]">
+                        <input type="hidden" id="cc_expiration_year" name="cc[expiration_year]">
+                        <input type="hidden" id="cc_type" name="cc[type]">  Pay with new card
+                        <div class="cc" style="margin-top:5px;">              
+                          <h4 style="padding:8px 10px;line-height:20px;font-size:16px;background:#ddd;text-shadow:0 1px 0px #fff;">Card Details</h4>  
+                          <div style="padding:0px 10px;"> 
+                            <div class="field" style="margin-bottom:5px;">
+                              <label for="cc_card_number">CREDIT CARD NUMBER</label>
+                              <img alt="Ccard" class="pull-right" src="/assets/ccard.png">
+                              <input type="text" class="ccnum" id="cc_card_number" placeholder="" style="width:131px">
+                            </div>
+                            <div class="field pull-left" style="width:50%; margin-bottom:5px;">
+                              <label for="card_code">CV CODE</label>
+                              <input type="text" id="cc_card_code" placeholder="" style="width:50px;">
+                            </div>
+                            <div class="field pull-right" style="width:50%; margin-bottom:5px;">
+                              <label for="cc_card_month">EXPIRY DATE</label>
+                              <select id="cc_card_month">
+                                <option value="1">1 - January</option>
+                                <option value="2">2 - February</option>
+                                <option value="3">3 - March</option>
+                                <option value="4">4 - April</option>
+                                <option value="5">5 - May</option>
+                                <option value="6">6 - June</option>
+                                <option value="7">7 - July</option>
+                                <option value="8">8 - August</option>
+                                <option value="9">9 - September</option>
+                                <option value="10">10 - October</option>
+                                <option value="11">11 - November</option>
+                                <option value="12">12 - December</option>
+                              </select>
+                              <select id="cc_card_year">
+                                <option value="2013">2013</option>
+                                <option value="2014">2014</option>
+                                <option value="2015">2015</option>
+                                <option value="2016">2016</option>
+                                <option value="2017">2017</option>
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                              </select>
+                            </div>
+                            <div class="field" style="width:50%">
+                              <label for="cc_nickname">CARD NICKNAME</label>
+                              <input type="text" id="cc_nickname" name="cc[nickname]" placeholder="" style="width:131px">
+                            </div>
+                          </div>
+                        </div>
+                        <div id="stripe_error" class="alert alert-danger alert-block" style="padding:0px;margin-top:10px;border:0;">             
+                          <noscript>JavaScript is not enabled and is required for this form. First enable it in your web browser settings.</noscript>              
+                        </div>
+                        <div style="color:#999;margin-left:90px;margin-top:-10px;">
+                          Secure billing powered by<a href="http://stripe.com"><img alt="Stripelogo" src="/assets/stripe.png"></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="span12">
+              <div style="margin-top:0;border:0px solid #ccc;" class="actions">
+                <input type="submit" value="Save and submit campaign" style="margin-top:0px;" name="commit" data-portion="0.2857142857142857" data-invoiced="false" data-id="52986238da46178dab000034" data-credits="0.0" onclick="return validateCampaign() " class="next-button btn btn-success btn-large">
+              </div>
+            </div>
+          </div>
+
+						</div>
+					</div>
+				</fieldset>
+    <% end %>
+  </div>  
+</div>  
+<div id='mymodalFrames'>
+	<% if @campaignAllAds.present? %>
+		<% @campaignAllAds.each do | campId , campaign | %>
+			<div id="myModal<%= campaign['adUnitId'] %>" class="reveal-modal" style="width:1150px;height:635px;">
+				<a class="close-reveal-modal" id="closeadFrame">&#215;</a>
+				<iframe src="/campaigns/uploadEdit?id=<%= campaign['adUnitId'] %>" id="adnewads" width="1150px" frameBorder="0" height="100%" ></iframe>
+			</div>
+		<% end %>
+	<% end %>
+	<% if $adunitsEdit.present? %>
+		<% $adunitsEdit.each do | adUnitId | %>
+			<div id="myModal<%= adUnitId %>" class="reveal-modal" style="width:1150px;height:635px;">
+				<a class="close-reveal-modal" >&#215;</a>
+				<iframe src="/campaigns/uploadEdit?id=<%= adUnitId %>" width="1150px" frameBorder="0" height="100%" ></iframe>
+			</div>
+		<% end %>
+	<% end %>
+	
+</div>
+<div id='adPlacement' class="reveal-modal" style="width: 1150px;height: 480px;">
+	<a class="close-reveal-modal" id="closeadFrame">&#215;</a>
+	<iframe src="/campaigns/<%= params[:id] %>/addDisplayAds" style='width: 100%; height: 100%;' frameBorder="0" ></iframe>
+</div>

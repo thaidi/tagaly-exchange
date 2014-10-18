@@ -1,0 +1,641 @@
+<script>
+
+	$(document).ready(function () {
+		$("#Clicks").click(function () {
+			document.getElementById("graphData").src = "/preview/graph?graphType=Clicks";
+		});
+	});
+	$(document).ready(function () {
+		$("#Impressions").click(function () {
+			document.getElementById("graphData").src = "/preview/graph?graphType=Impressions";
+		});
+	});
+	$(document).ready(function () {
+		$("#Conversions").click(function () {
+			document.getElementById("graphData").src = "/preview/graph?graphType=Conversions";
+		});
+	});
+	$(document).ready(function () {
+		$("#Cost").click(function () {
+			document.getElementById("graphData").src = "/preview/graph?graphType=Cost";
+		});
+	});
+	$(document).ready(function () {
+	
+		$(".dropdown-menu li a").click(function () {
+			var value = $(this).attr('id');
+			var hostname = "http://"+window.location.hostname+":3000/preview/setdates";
+			$.ajax({
+				type: "GET",
+				url: hostname,
+				data: "value=" + value,
+				success: function(data){
+					location.reload()
+				}
+			});
+		});
+		$("#showGraph").click(function () {
+			var fromDate = document.getElementById("fromdate").value;
+			var toDate = document.getElementById("todate").value;
+			alert(fromDate);
+			alert(toDate);
+			var hostname = "http://"+window.location.hostname+":3000/preview/setdates";
+			$.ajax({
+				type: "GET",
+				url: hostname,
+				data: "fromDate=" + fromDate + "&toDate=" + toDate + "&value=14",
+				success: function(data){
+					location.reload()
+				}
+			});
+		});
+		
+	});
+function sizeframe()
+{
+
+document.getElementById("adslink").click() ;
+}
+function setframesize()
+{
+document.getElementById("adsData").src=document.getElementById("adsData").src;
+document.getElementById("campaignsfilter").style.display="none";
+document.getElementById("adsfilter").style.display="block";
+//document.getElementById("adsData").style.height=document.getElementById("adsData").contentWindow.innerHeight + 'px';
+}
+
+	//for light box
+	$(document).ready(function($) {
+	// DOM Ready
+		$(function() {
+			$('#datesel-popup').bind('click', function(e) {
+				// Prevents the default action to be triggered. 
+				e.preventDefault();
+				// Triggering bPopup when click event is fired		
+				$('#datesel').bPopup();
+				return false;
+			});
+		});
+	});
+	function isValidDate(date)
+	{
+	    var matches = /^(\d{4})[-](\d{2})[-](\d{2})$/.exec(date);
+	    if (matches == null) return false;
+	    var d = matches[3];
+	    var m = matches[2] - 1;
+	    var y = matches[1];
+	    var composedDate = new Date(y, m, d);
+	    return composedDate.getDate() == d &&
+		    composedDate.getMonth() == m &&
+		    composedDate.getFullYear() == y;
+	}
+	$(document).ready(function($) {
+		$("#startdate").keyup(function(){
+			var startdate = document.getElementById("startdate").value;
+			if(startdate != "" ){
+				isValidDateOrNot = isValidDate();
+				if(!isValidDateOrNot){
+					document.getElementById("dateError").innerHTML = "Not a valid date";
+					document.getElementById("dateError").style.display = "inline";
+				} else {
+					document.getElementById("dateError").innerHTML = "";
+					document.getElementById("dateError").style.display = "none";
+				}
+			}
+		});
+		$("#startdate").keydown(function(){
+			var startdate = document.getElementById("startdate").value;
+			if(startdate != "" ){
+				isValidDateOrNot = isValidDate();
+				if(!isValidDateOrNot){
+					document.getElementById("dateError").innerHTML = "Not a valid date";
+					document.getElementById("dateError").style.display = "inline";
+				} else {
+					document.getElementById("dateError").innerHTML = "";
+					document.getElementById("dateError").style.display = "none";
+				}
+			}
+		});
+	});
+	$(document).ready(function($) {
+		$("#enddate").keyup(function(){
+			var startdate = document.getElementById("enddate").value;
+			if(startdate != "" ){
+				isValidDateOrNot = isValidDate();
+				if(!isValidDateOrNot){
+					document.getElementById("dateError").innerHTML = "Not a valid date";
+					document.getElementById("dateError").style.display = "inline";
+				} else {
+					document.getElementById("dateError").innerHTML = "";
+					document.getElementById("dateError").style.display = "none";
+				}
+			}
+		});
+	});
+	$(document).ready(function($) {
+		$("#enddate").keydown(function(){
+			var startdate = document.getElementById("enddate").value;
+			if(startdate != "" ){
+				isValidDateOrNot = isValidDate();
+				if(!isValidDateOrNot){
+					document.getElementById("dateError").innerHTML = "Not a valid date";
+					document.getElementById("dateError").style.display = "inline";
+				} else {
+					document.getElementById("dateError").innerHTML = "";
+					document.getElementById("dateError").style.display = "none";
+				}
+			}
+		});
+	});
+	
+
+</script>
+<script language="javascript" type="text/javascript">
+
+  function resizeIframe(obj) {
+     obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+  }
+</script>
+<!--<link rel="stylesheet" href="/assets/bsa.min.css" type="text/css" />
+<link href="/assets/bootstrap.min.css" rel="stylesheet">-->
+<link rel="stylesheet" type="text/css" media="all" href="/assets/daterangepicker-bs3.css" />
+<script type="text/javascript" src="/assets/moment.js"></script>
+<script type="text/javascript" src="/assets/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/assets/main.css">
+<% 
+	if session[:datetype] == '1'
+		dateType = "Today"
+	elsif session[:datetype] == '2'
+		dateType = "Yesterday"
+	elsif session[:datetype] == '3'
+		dateType = "This Week(Sun - Today)"
+	elsif session[:datetype] == '4'
+		dateType = "This Week(Mon - Today)"
+	elsif session[:datetype] == '5'
+		dateType = "Last 7 Days"
+	elsif session[:datetype] == '6'
+		dateType = "Last Week(Sun - Sat)"
+	elsif session[:datetype] == '7'
+		dateType = "Last Week(Mon - Sun)"
+	elsif session[:datetype] == '8'
+		dateType = "Last Business week(Mon - Fri)"
+	elsif session[:datetype] == '9'
+		dateType = "Last 14 Days"
+	elsif session[:datetype] == '10'
+		dateType = "This Month"
+	elsif session[:datetype] == '11'
+		dateType = "Last 30 Days"
+	elsif session[:datetype] == '12'
+		dateType = "Last Month"
+	elsif session[:datetype] == '13'
+		dateType = "All time"
+	elsif session[:datetype] == '14'
+		dateType = "Custom Date"
+	end
+%>
+		<!--<link href="/assets/app.css" rel="stylesheet" type="text/css" />-->
+		<style>
+			html body 
+				{
+					background: none repeat scroll 0 0 #ffffff;
+				}
+			.nav-tabs 
+				{
+					border-bottom: 0px solid ;
+				}
+			
+			.daterangepicker dropdown-menu opensleft .calendar left{
+			  width:230px;
+			}
+			.daterangepicker dropdown-menu opensleft .calendar right{
+			  width:230px;
+			}
+			
+		</style>
+		
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$('.dropdown-toggle').dropdown();
+			});
+			function setStatus(status,campaignid)
+		      {
+		      var hostname=window.location.hostname;
+		      //alert("http://"+hostname+":3000/campaigns/updatestatus?campaignid="+campaignid+"&status="+status);
+		      //alert("http://myappone.com:3000/campaigns/updatestatus?campaignid="+campaignid+"&status="+status);
+		      if (window.XMLHttpRequest)
+		      {// code for IE7+, Firefox, Chrome, Opera, Safari
+			  xmlhttp=new XMLHttpRequest();
+		      }
+		      else
+		      {// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		      }
+		      xmlhttp.onreadystatechange=function()
+		      {
+		      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		      {
+		      //alert(xmlhttp.responseText);
+			if(xmlhttp.responseText=="success")
+			{
+			 //alert("#statusmsg"+campaignid.text());
+			  $("#statusmsg"+campaignid).fadeIn()
+			  $("#statusmsg"+campaignid).fadeOut(500)
+			}
+			}
+			}
+	
+			xmlhttp.open("GET","http://"+hostname+":3000/campaigns/updatestatus?campaignid="+campaignid+"&status="+status,true);
+			xmlhttp.send();
+			}
+		</script>
+		<% if flash[:notice] %>
+		  <div align="center" class="alert-success">
+          	<%= flash[:notice] %>
+  		</div>
+  		<% else %>
+  		  <div style="color:red;text-align=center;"> <%= flash[:error] %></div>
+		<% end %>
+		
+				<!--<ul style="float:right" class="nav nav-pills dash campaign-selector">
+					<li class="dropdown " style='width:250px;'>
+						<a data-toggle="dropdown" style="color:#444;font-size:18px;font-weight:normal;line-height:26px;padding:5px 15px;height:36px;" class="dropdown-toggle btn" href="">
+							<div class="selected-campaign" style='float:right;width:100%'>
+								<i style="margin-top:4px;" class="icon-time"></i>
+		<div style='float:right'><b style="margin-top:12px;" class="caret"></b></div>
+		<div style='float:right;font-size:15px'><span class="campaign-name" ><%= dateType %></span></div>
+		<div style='float:left;font-size:8px;margin-top:-10px;'>( <%= session[:startdate] %> To <%= session[:enddate] %> )</div>
+							</div>
+						</a>
+						<ul class="dropdown-menu" style='float:right;width:250px;'>
+							<li role="presentation">
+								<a href='#'><div id="datesel-popup" class="datesel">Custom Date</div></a>
+							</li>
+							<li role="presentation" class="divider"></li>
+							<li role="presentation"><a href='#' id='1'> Today</a></li>
+							<li role="presentation"><a href='#' id='2'> Yesterday</a></li>
+							<li role="presentation"><a href='#' id='3'> This Week(Sun - Today)</a></li>
+							<li role="presentation"><a href='#' id='4'> This Week(Mon - Today)</a></li>
+							<li role="presentation"><a href='#' id='5'> Last 7 Days</a></li>
+							<li role="presentation"><a href='#' id='6'> Last Week(Sun - Sat)</a></li>
+							<li role="presentation"><a href='#' id='7'> Last Week(Mon - Sun)</a></li>
+							<li role="presentation"><a href='#' id='8'> Last Business week(Mon - Fri)</a></li>
+							<li role="presentation"><a href='#' id='9'> Last 14 Days</a></li>
+							<li role="presentation"><a href='#' id='10'> This Month</a></li>
+							<li role="presentation"><a href='#' id='11'> Last 30 Days</a></li>
+							<li role="presentation"><a href='#' id='12'> Last Month</a></li>
+							<li role="presentation"><a href='#' id='13'> All time</a></li>
+
+							<li> <a data-campaign-id="" href="">Today</a> </li>
+							<li> <a data-campaign-id="" href="">Yesterday</a> </li>
+							<li> <a data-campaign-id="" href="">Last 7 days</a> </li>
+							<li> <a data-campaign-id="" href="">Last week</a> </li>
+							<li> <a data-campaign-id="" href="">Last business week</a> </li>
+							<li> <a data-campaign-id="" href="">This month</a> </li>
+							<li> <a data-campaign-id="" href="">Last 30 days</a> </li>
+							<li> <a data-campaign-id="" href="">Last month</a> </li>
+							<li> <a data-campaign-id="" href="">Last 90 days</a> </li>
+							<li> <a data-campaign-id="" href="">All time</a> </li>
+							<li> <a hrf="" data-campaign-id="" href="">Custom Range</a> </li>
+							<li class="divider"></li>
+
+						</ul>
+					</li>
+				</ul>			  
+			</h2>    
+		</div>-->
+		
+		
+		
+		
+		
+		<div class="well">
+		   <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+				<i class="glyphicon glyphicon-calendar icon-calendar icon-large"></i>
+				<span></span> <b style="vertical-align: middle;" class="caret"></b>
+		   </div>
+			<script type="text/javascript">
+			    $(document).ready(function() 
+					{
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1;
+var yyyy = today.getFullYear();
+var alltoget = yyyy+"-"+mm+"-"+dd
+
+jsStartDate = "<%= session[:startdate] %>";
+						jsEndDate = "<%= session[:enddate] %>";
+						syy = jsStartDate.substr(0,4);
+						smm = jsStartDate.substr(5,2);
+						sdd = jsStartDate.substr(8,2);
+						eyy = jsEndDate.substr(0,4);
+						emm = jsEndDate.substr(5,2);
+						edd = jsEndDate.substr(8,2);
+						var setStartDate = new Date();
+						var setEndDate = new Date();
+						setStartDate.setDate(sdd);
+						setStartDate.setMonth(smm -1);
+						setStartDate.setYear(syy);
+						setEndDate.setDate(edd);
+						setEndDate.setMonth(emm -1);
+						setEndDate.setYear(eyy);
+						var today = new Date();
+						var dd = today.getDate();
+						var mm = today.getMonth()+1;
+						var yyyy = today.getFullYear();
+						var alltoget = yyyy+"-"+mm+"-"+dd;
+//alert(startdate);
+					$('#reportrange').daterangepicker(
+						{
+							startDate: setStartDate,     //moment().subtract('days', 29),
+							endDate:  setEndDate,
+							minDate: '2012-01-01',
+							maxDate: '2014-12-31',
+							dateLimit: { days: 60 },
+							showDropdowns: true,
+							showWeekNumbers: true,
+							timePicker: false,
+							timePickerIncrement: 1,
+							timePicker12Hour: true,
+							ranges: {
+							   'Today': [moment(), moment()],
+							   'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+							   'Last 7 Days': [moment().subtract('days', 6), moment()],
+							   'Last 30 Days': [moment().subtract('days', 29), moment()],
+							   'This Month': [moment().startOf('month'), moment().endOf('month')],
+							   'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+						},
+						opens: 'left',
+						buttonClasses: ['btn btn-default'],
+						applyClass: 'btn-small btn-primary',
+						cancelClass: 'btn-small',
+						format: 'YYYY-MM-DD',
+						separator: ' to ',
+						locale: {
+							applyLabel: 'Submit',
+							fromLabel: 'From',
+							toLabel: 'To',
+							customRangeLabel: 'Custom Range',
+							daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr','Sa'],
+							monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+							firstDay: 1
+						}
+					 },
+					 function(start, end) {
+					  console.log("Callback has been called!");
+					  $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+					 }
+				  );
+				  //Set the initial state of the picker label
+				  //$('#reportrange span').html(moment().subtract('days', 29).format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+				  $('#reportrange span').html(jsStartDate + ' - ' + jsEndDate);
+			   });
+			</script>
+		</div>
+		
+		<ul style="text-align:left;  margin-left:40px;margin-bottom:0px; width:1186px;" class="nav nav-tabs sego trust">
+			<li style="margin-left:180px;" class="span3 active" id='Impressions'>
+				<a data-toggle="tab" href="#tab1">
+					<h2 id="stat-impression-total">0</h2>
+					<h4><small><b>IMPRESSIONS SERVED</b></small></h4>
+					<div class="spark">
+						<div class="substat">
+							<div class="substat-head">eCPM</div>
+							<div id="stat-ecpm" class="substat-stat">---</div>
+						</div>
+						<div class="sparks" id="sparkline1"><canvas style="display: inline-block; width: 76px; height: 18px; vertical-align: top;" width="76" height="18"></canvas></div>
+					</div>
+				</a>
+			</li>
+			<li style="margin-left:0;" class="span3" id='Clicks'>
+				<a data-toggle="tab" href="#tab2">
+					<h2 id="stat-click-total">0</h2>
+					<h4><small><b>CLICKS BACK TO YOUR SITE</b></small></h4>
+					<div class="spark">
+						<div class="substat">
+							<div class="substat-head">CTR</div>
+							<div id="stat-ctr" class="substat-stat">---</div>
+						</div>
+						<div class="sparks" id="sparkline2">
+							<canvas style="display: inline-block; width: 76px; height: 18px; vertical-align: top;" width="76" height="18"></canvas>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li style="margin-left:0;" class="span3" id='Conversions'>
+				<a data-toggle="tab" href="#tab4">
+					<h2 id="stat-conversion-total">0</h2>
+					<h4><small><b>CONVERSIONS</b> </small></h4>
+					<div class="spark">
+						<div class="substat">
+							<div class="substat-head">Conv. Value</div>
+							<div id="stat-revenue-total" class="substat-stat" data-original-title="Post-Click: $0.00 | Post-View: $0.00">$0.00</div>
+						</div>
+						<div class="sparks" id="sparkline4">
+							<canvas style="display: inline-block; width: 76px; height: 18px; vertical-align: top;" width="76" height="18"></canvas>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li style="margin-left:0;margin-right:0;" class="span3" id='Cost'>
+				<a data-toggle="tab" href="#tab3">
+					<h2 id="stat-cost-total">$0.00</h2>
+					<h4><small><b>COST</b></small></h4>
+					<div class="spark">
+						<div class="substat">
+							<div class="substat-head">eCPA</div>
+							<div id="stat-ecpa" class="substat-stat">---</div>
+						</div>
+						<div class="sparks" id="sparkline3">
+							<canvas style="display: inline-block; width: 76px; height: 18px; vertical-align: top;" width="76" height="18"></canvas>
+						</div>
+					</div>
+				</a>
+			</li>
+		</ul>
+ <iframe src="/preview/graph?graphType=Impressions" id='graphData' style="width:1186px; border: 1px solid #C7C7C7;  border-radius: 0 0 7px 7px; margin-left:40px; height:320px;"></iframe> 
+		
+		<div style="margin-top: 15px; width: 1186px; margin-left: 40px;" class="span12">
+			<div class="tabbable widget">
+				<div style="border-bottom:0;" class="widget-header ">				
+					
+					<div style="margin-top:6px;" class="btn-group pull-right">
+						<a rel="tooltip" href="#" data-toggle="dropdown" style="color:#333;" class="btn dropdown-toggle" data-original-title="Export dashboard data filtered using the global settings above.">
+							<i style="margin-top:2px;color:#333;" class="icon-download"></i> Export
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu csv-export-links">
+							<li><a href="/dashboard/<%= session[:site_id] %>?exportType=campaigns&status=<%= @status %>"><i class="icon-list-alt"></i> CSV by Campaign</a></li>
+							<li><a data-by="ad" href="/dashboard/<%= session[:site_id] %>?exportType=ads&status=<%= @status %>"><i class="icon-list-alt"></i> CSV by Ad</a></li>
+							<li><a data-by="day" href="/preview/graph?exportType=byday"><i class="icon-list-alt"></i> CSV by Day</a></li>
+							<li><a href=""><i class="icon-code"></i> Reporting API</a></li>
+						</ul>
+					</div>
+					
+					<div style="margin-top:6px;" id="campaignsfilter" class="btn-group pull-right">
+						<a rel="tooltip" href="#" data-toggle="dropdown" style="color:#333;" class="btn dropdown-toggle" data-original-title="">
+							<i style="margin-top:2px;color:#333;" class="icon-filter"></i> Filter
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu csv-export-links">
+							<li><a href="/dashboard/<%= session[:site_id] %>?displayType=campaigns&status=all" target="campaignsframe"><i class="icon-list-alt"></i> Show All</a></li>
+							<li><a data-by="ad" href="/dashboard/<%= session[:site_id] %>?displayType=campaigns&status=active" target="campaignsframe"><i class="icon-list-alt"></i> Show Active</a></li>
+							<li><a data-by="day" href="/dashboard/<%= session[:site_id] %>?displayType=campaigns&status=pause" target="campaignsframe"><i class="icon-list-alt"></i> Show Paused</a></li>
+							<li><a data-by="day_campaign" href="/dashboard/<%= session[:site_id] %>?displayType=campaigns&status=delete" target="campaignsframe"><i class="icon-list-alt"></i> Show Deleted</a></li>
+						</ul>
+					</div>
+					
+					
+					<div style="margin-top:6px;display:none;" id="adsfilter" class="btn-group pull-right">
+						<a rel="tooltip" href="#" data-toggle="dropdown" style="color:#333;" class="btn dropdown-toggle" data-original-title="">
+							<i style="margin-top:2px;color:#333;" class="icon-filter"></i> Filter
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu csv-export-links">
+							<li><a href="/dashboard/<%= session[:site_id] %>?displayType=ads&status=all" target="adsframe"><i class="icon-list-alt"></i> Show All</a></li>
+							<li><a data-by="ad" href="/dashboard/<%= session[:site_id] %>?displayType=ads&status=active" target="adsframe"><i class="icon-list-alt"></i> Show Active</a></li>
+							<li><a data-by="day" href="/dashboard/<%= session[:site_id] %>?displayType=ads&status=paused" target="adsframe"><i class="icon-list-alt"></i> Show Paused</a></li>
+							<li><a data-by="day_campaign" href="/dashboard/<%= session[:site_id] %>?displayType=ads&status=deleted" target="adsframe"><i class="icon-list-alt"></i> Show Deleted</a></li>
+						</ul>
+					</div>
+					
+					<ul style="padding-left:15px;margin-top:5px;" class="nav nav-tabs">
+						<li class="active">
+							<a class="table-tab-toggle" data-toggle="tab" href="#campaign_summary_table"><i class="icon-flag"></i> Campaigns</a>
+						</li>
+						<li>
+							<a class="table-tab-toggle" onclick=setframesize() data-toggle="tab" href="#ads_summary_table" id="ads_summary_table_link"><i class="icon-eye-open"></i> Ads</a>
+							<div style="display:none;"><a href="/dashboard/<%= session[:site_id] %>?displayType=ads&accessType=site" target="adsframe" id="adslink"></a></div>
+						</li>
+						<li>
+							<a class="table-tab-toggle" data-toggle="tab" href="#conversion_summary_table" id="conversion_summary_table_link"><i class="icon-shopping-cart"></i> Conversions</a>
+						</li>
+						<li>
+							<a class="table-tab-toggle" data-toggle="tab" href="#sites_summary_table" id="sites_summary_table_link"><i class="icon-globe"></i> Domain Report</a>
+						</li>
+						<!--<li>
+							<a class="table-tab-toggle" data-toggle="tab" href="#sittings" id="settings_link"><i class="icon-wrench"></i> Settings </a>
+						</li>-->
+					</ul>
+				</div>
+				<div style="border-bottom-left-radius:5px;border-bottom-right-radius:5px;width:97.3%" class="tab-content widget-content stattables"> 
+					<div data-url="campaign_summaries" id="campaign_summary_table" <% if params[:accessType] == nil %>class="tab-pane active loaded" <% else %> class="tab-pane" <% end %>>
+
+	 <iframe src="/dashboard/<%= session[:site_id] %>?displayType=campaigns&status=All" id='graphData' style="width:100%;" frameborder="0" name="campaignsframe" onload='javascript:resizeIframe(this);'></iframe> 
+					</div>
+					<div data-url="ad_summaries" id="ads_summary_table" class="tab-pane" >
+					  <iframe src="/dashboard/<%= session[:site_id] %>?displayType=ads&accessType=site" id='adsData' style="width:100%;" frameborder="0" name="adsframe" ></iframe> 
+	                                 </div>
+					<div data-url="domain_summaries" id="sites_summary_table" class="tab-pane">
+						<h3> 
+							<small> Stats from the top 100 domains that served your ads during the chosen time period. </small>
+						</h3>
+					<iframe src="/dashboard/<%= session[:site_id] %>?displayType=domains&accessType=site" id='domainsData' style="width:100%;" frameborder="0" name="adsframe" ></iframe> 
+						<h3>
+							<small>
+								Site stats are reported for 'Yesterday', 'Last 7 days', 'Last 30 days', and 'Lifetime'. Please adjust the time range above to see data here.
+							</small>
+						</h3>
+					</div>
+					<div data-url="conversion_summaries" id="conversion_summary_table" class="tab-pane">
+<iframe src="/dashboard/<%= session[:site_id] %>?displayType=conversions&accessType=site" id='domainsData' style="width:100%;" frameborder="0" name="adsframe" ></iframe> 
+					</div>
+			</div>
+		</div>
+		
+		<script>
+  //<![CDATA[
+    Mousetrap.bind('?', function() { $('#keybindingTips').modal('toggle') });
+    // graphs
+    Mousetrap.bind('g i', function() { $('[href=#tab1]').tab('show') });
+    Mousetrap.bind('g k', function() { $('[href=#tab2]').tab('show') });
+    Mousetrap.bind('g s', function() { $('[href=#tab3]').tab('show') });
+    Mousetrap.bind('g c', function() { $('[href=#tab4]').tab('show') });
+    // tables
+    Mousetrap.bind('t c', function() { $('[href=#campaign_summary_table]').tab('show').trigger('click') });
+    Mousetrap.bind('t a', function() { $('[href=#ads_summary_table]').tab('show').trigger('click') });
+    Mousetrap.bind('t s', function() { $('[href=#sites_summary_table]').tab('show').trigger('click') });
+    Mousetrap.bind('t g', function() { $('[href=#conversion_summary_table]').tab('show').trigger('click') });
+    // date ranges
+    Mousetrap.bind('d t', function() { $('.interval').text('Today'); PANS.changeState({interval: 'today', start_date: null, end_date: null});});
+    Mousetrap.bind('d y', function() { $('.interval').text('Yesterday'); PANS.changeState({interval: 'yesterday', start_date: null, end_date: null});});
+    Mousetrap.bind('d 7', function() { $('.interval').text('Last 7 days'); PANS.changeState({interval: '7day', start_date: null, end_date: null});});
+    Mousetrap.bind('d 3', function() { $('.interval').text('Last 30 days'); PANS.changeState({interval: '30day', start_date: null, end_date: null});});
+    Mousetrap.bind('d l', function() { $('.interval').text('Lifetime'); PANS.changeState({interval: 'lifetime', start_date: null, end_date: null});});
+    // nav
+    // Mousetrap.bind('n d', function() { window.location.href = "/sites/5255ab4c343a8340350001d1" });
+    // Mousetrap.bind('n d', function() { window.location.href = "/sites/5255ab4c343a8340350001d1" });
+    // Mousetrap.bind('n d', function() { window.location.href = "/sites/5255ab4c343a8340350001d1" });
+    // Mousetrap.bind('n d', function() { window.location.href = "/sites/5255ab4c343a8340350001d1" });
+  //]]>
+</script>
+		
+		<script id="IntercomSettingsScriptTag">
+  var intercomSettings = {
+    app_id: '4xhgpvez',
+    email: 'blueberriessf@gmail.com',
+    created_at: 1381334788, // Unix timestamp
+    custom_data: {
+      'tag found': true,
+      'site url': 'http://www.zady.com',
+      'site_id': '5255ab4c343a8340350001d1',
+      'site_brand_id': '98279',
+      'site_category': 'Retail',
+      'budget': 0,
+      'campaigns': 0,
+      'ads': 1,
+      'segments': 5,
+      'trial started': 0,
+      'newsfeed_campaigns': 0,
+      'sidebar_campaigns': 0,
+      'web_campaigns': 0,
+      'public_data_campaigns': 0,
+      'fb_setup_complete': false,
+      'origin': '',
+      'is_organization_owner': true
+    }
+  };
+
+  (function() {
+    function async_load() {
+      var s = document.createElement('script');
+      s.type = 'text/javascript'; s.async = true;
+      s.src = 'https://api.intercom.io/api/js/library.js';
+      var x = document.getElementsByTagName('script')[0];
+      x.parentNode.insertBefore(s, x);
+    }
+    if (window.attachEvent) {
+      window.attachEvent('onload', async_load);
+    } else {
+      window.addEventListener('load', async_load, false);
+    }
+  })();
+</script>
+
+	<div id="datesel" style="display:none;background-color:white;padding:60px 60px 60px 60px;border:0px solid #FFFFFF;border-radius:20px">
+		<table>
+			<tr>
+				<td>From date: </td>
+				<td>
+					<input type='text' maxlength='10' value='<%= session[:startdate] %>' name='startdate' id='startdate'/> 
+					<script type="text/javascript">
+						new datepickr('startdate', { dateFormat: 'Y-m-d', maxDate: '+0d' });
+					</script>
+				</td>
+			</tr>
+			<tr>
+				<td>To date: </td>
+				<td>
+					<input type='text' maxlength='10' value='<%= session[:enddate] %>' name='enddate' id='enddate'/><br> 
+					<div class='error' id='dateError'></div>
+					<script type="text/javascript">
+						new datepickr('enddate', { dateFormat: 'Y-m-d' });
+					</script>
+				</td>
+			</tr>
+			<tr>
+				<td colspan='2' align='center' >
+					<button type="button" id='gofordate' class="btn btn-primary" data-toggle="button">Go</button>
+				</td>
+			</tr>
+		</table>
+	</div>

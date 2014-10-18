@@ -1,0 +1,356 @@
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script type="text/javascript" src="/assets/moment.js"></script>
+<script type="text/javascript" src="/assets/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/bootstrap-dropdown.js"></script>
+<link rel="stylesheet" type="text/css" media="all" href="/assets/daterangepicker-bs3.css" />
+<link href="/assets/app.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+<link rel="stylesheet" href="/assets/bsa.min1.css" type="text/css" />
+<link href="/assets/bootstrap.min.css" rel="stylesheet">
+<style>
+body{
+font-size:12px;
+}
+</style>
+<div class="well">
+		   <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+				<i class="glyphicon glyphicon-calendar icon-calendar icon-large"></i>
+				<span></span> <b style="vertical-align: middle;" class="caret"></b>
+		   </div>
+<script type="text/javascript">
+    $(document).ready(function()  {
+			$( ".span3" ).click(function() {
+				if($(this).hasClass( "impressions" )) {
+					$( ".span3" ).removeClass( "active" );
+					$(this).addClass("active");
+					$( "iframe" ).attr('src','/mycampaign/<%= params[:campaignId] %>/graph/impressions');
+				}
+				if($(this).hasClass( "click" )) {
+					$( ".span3" ).removeClass( "active" );
+					$(this).addClass("active");
+					$( "iframe" ).attr('src','/mycampaign/<%= params[:campaignId] %>/graph/click');
+				}
+				if($(this).hasClass( "ctr" )) {
+					$( ".span3" ).removeClass( "active" );
+					$(this).addClass("active");
+					$( "iframe" ).attr('src','/mycampaign/<%= params[:campaignId] %>/graph/ctr');
+				}
+			});
+		});
+</script>
+			<script type="text/javascript">
+			    $(document).ready(function()  {
+						jsStartDate = "<%= session[:startdate] %>";
+						jsEndDate = "<%= session[:enddate] %>";
+						syy = jsStartDate.substr(0,4);
+						smm = jsStartDate.substr(5,2);
+						sdd = jsStartDate.substr(8,2);
+						eyy = jsEndDate.substr(0,4);
+						emm = jsEndDate.substr(5,2);
+						edd = jsEndDate.substr(8,2);
+						var setStartDate = new Date();
+						var setEndDate = new Date();
+						setStartDate.setDate(sdd);
+						setStartDate.setMonth(smm -1);
+						setStartDate.setYear(syy);
+						setEndDate.setDate(edd);
+						setEndDate.setMonth(emm -1);
+						setEndDate.setYear(eyy);
+						var today = new Date();
+						var dd = today.getDate();
+						var mm = today.getMonth()+1;
+						var yyyy = today.getFullYear();
+						var alltoget = yyyy+"-"+mm+"-"+dd;
+					$('#reportrange').daterangepicker({
+							startDate: setStartDate,
+							endDate:  setEndDate,
+							minDate: "2012-01-01",
+							maxDate: '2014-12-31',
+							dateLimit: { days: 60 },
+							showDropdowns: true,
+							showWeekNumbers: true,
+							timePicker: false,
+							timePickerIncrement: 1,
+							timePicker12Hour: true,
+							ranges: {
+							   'Today': [moment(), moment()],
+							   'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+							   'Last 7 Days': [moment().subtract('days', 6), moment()],
+							   'Last 30 Days': [moment().subtract('days', 29), moment()],
+							   'This Month': [moment().startOf('month'), moment().endOf('month')],
+							   'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+						},
+						opens: 'left',
+						buttonClasses: ['btn btn-default'],
+						applyClass: 'btn-small btn-primary',
+						cancelClass: 'btn-small',
+						format: 'YYYY-MM-DD',
+						separator: ' to ',
+						locale: {
+							applyLabel: 'Submit',
+							fromLabel: 'From',
+							toLabel: 'To',
+							customRangeLabel: 'Custom Range',
+							daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr','Sa'],
+							monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+							firstDay: 1
+						}
+					 },
+					 function(start, end) {
+					  console.log("Callback has been called!");
+					  $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+					 }
+				  );
+				  //Set the initial state of the picker label
+
+				  $('#reportrange span').html(jsStartDate + ' - ' + jsEndDate);
+			   });
+			</script>
+		</div>
+
+<style>
+			html body  { background: none repeat scroll 0 0 #ffffff; }
+			.nav-tabs  { border-bottom: 0px solid ; }
+			.well { border: 0px solid #ffffff; }
+			.navb { margin: 0px 0px 0px 40px;  width: 1186px;  overflow: hidden; background: #F6F6F6; }
+			.navb li { width:393px; margin-left:0px; margin-right:0px; border-right: 1px solid #DFDFDF; display: block; float: left; text-align: center; border-left: 1px solid white; border-right: 1px solid #DFDFDF; }
+			.navb li a { margin-right:0px;  border-radius:0px; }
+			.navb li a h4 { padding: 0px; }
+			.trust li.impressions h4 small { border-radius: 2px; font-size: 10px; letter-spacing: 0; margin-bottom: 0; padding: 2px 6px 1px; }
+			.trust li.clicks h4 small  { background: #63A625; border-radius: 2px; color: #FFFFFF; font-size: 10px; letter-spacing: 0; margin-bottom: 0; padding: 2px 6px 1px; text-shadow: 1px 1px 0 #007C00; }	
+			.trust li.rate h4 small  { background: #ECE129; border-radius: 2px; color: #FFFFFF; font-size: 10px; letter-spacing: 0; margin-bottom: 0; padding: 2px 6px 1px; text-shadow: 1px 1px 0 #EAE254; }
+			.trust li h2  {	 display: block; margin: 0 0 6px; font-size: 33px; color: #434343; line-height: 100%; letter-spacing: -.5px; text-shadow: 1px 1px 0 white; }
+			.tbllft p {padding-bottom: 0px; margin-bottom: 0px; }
+			.img { margin: 0 6px 0 0;display: block;float: left;padding: 1px;border: 1px solid #E1E1E1;border-radius: 2px;line-height: 8px;width: 25px; }
+			.button span em  { background: #63A625; }
+		</style>	
+		<ul class="nav nav-tabs sego trust navb">
+			<li class="span3 impressions active">
+				<a data-toggle="tab">
+					<h2 id="stat-impression-total"> <%= @adsDetailsByCampIdTotals["totImpressions"] %> </h2>
+					<h4><small><b>TOTAL IMPRESSIONS</b></small></h4>					
+				</a>
+			</li>			
+			<li class="span3 click">
+				<a data-toggle="tab">
+					<h2 id="stat-conversion-total"> <%= @adsDetailsByCampIdTotals["totClicks"] %> </h2>
+					<h4><small><b>CLICKS</b> </small></h4>					
+				</a>
+			</li>
+			<li class="span3 ctr">
+				<a data-toggle="tab">
+<%
+	if @adsDetailsByCampIdTotals["totImpressions"].to_i != 0
+		ctr = (100 * @adsDetailsByCampIdTotals["totClicks"].to_i) / @adsDetailsByCampIdTotals["totImpressions"].to_i
+	else
+		ctr = 0
+	end
+%>
+					<h2 id="stat-cost-total"><%= ctr %></h2>
+					<h4><small><b>CLICK THROUGH RATE</b></small></h4>					
+				</a>
+			</li>
+		</ul>
+
+		<iframe src="/mycampaign/<%= params[:campaignId] %>/graph/impressions" id="campGraph" style="width:1186px; border: 1px solid #C7C7C7;  border-radius: 0 0 7px 7px; margin-left:40px; height:320px;"></iframe>
+<div style="margin-top: 15px; width: 1186px; margin-left: 40px; margin-bottom:15px;" data-url="campaign_summaries" id="campaign_summary_table" class="tab-pane active loaded">
+			<table style="margin-bottom:0;" class="table table-striped table-bordered summary-table sortable" id="dashboard-campaigns-table">
+				<thead class="widget-header">
+					<tr>
+						<th style="padding-left:25px;" rel="tooltip" data-original-title=""> Advertisement Details </th>
+						<th rel="tooltip" data-original-title="">Status</th>
+						<th rel="tooltip" data-original-title="">Conversions</th>
+						<th rel="tooltip" data-original-title="">Impressions</th>
+						<th rel="tooltip" data-original-title="">Clicks</th>
+						<th rel="tooltip" data-original-title="">Cost</th>
+						<th rel="tooltip" data-original-title="">CTR</th>					
+					</tr>
+				</thead>
+<% @adsDetailsByCampIdStats.each do |key,camps| %>
+<!-- CTR = 100 x Total clicks / Total impressions -->
+				<tbody>
+					<tr>
+						<td class="tbllft">
+<% if @adsDetailsByCampIdStats[key]["advertisementDetails"]["adType"] == "TextAd" %>
+<span> <%= @adsDetailsByCampIdStats[key]["advertisementDetails"]["adName"] %>	</span>
+<div>
+	<ul style="width: 240px;">
+		<li style="float: none;color:blue;"><a href="<%= @adsDetailsByCampIdStats[key]['advertisementDetails']['adDestinationUrl'] %>"><%= @adsDetailsByCampIdStats[key]["advertisementDetails"]["adHeadline"] %></a></li>
+		<li class="adunits-innerli" style="float: none; color: rgb(0, 128, 0);"><%= @adsDetailsByCampIdStats[key]["advertisementDetails"]["adDisplayUrl"] %></li>
+		<li class="adunits-innerli" style="float: none; color: rgb(0, 0, 0);"><%= @adsDetailsByCampIdStats[key]["advertisementDetails"]["adText"] %></li>
+	</ul>
+</div>
+<% elsif @adsDetailsByCampIdStats[key]["advertisementDetails"]["adType"] == "BannerAd" %>
+<img src="/uploads/<%= @adsDetailsByCampIdStats[key]['advertisementDetails']['adImageUrl'] %>" width="50px" height='50px' />
+<% end %>
+							<p> 
+								<a style="float:right;" class="paulund_modal_1" href="#"><i class="icon-pencil"></i></a>
+							</p>
+						</td>
+						<td> <%= @adsDetailsByCampIdStats[key]["advertisementDetails"]["adStatus"] %> </td>
+						<td> <%= @adsDetailsByCampIdStats[key]["conversions"] %>	 </td>
+						<td> <%= @adsDetailsByCampIdStats[key]["impressions"] %> </td>
+						<td> <%= @adsDetailsByCampIdStats[key]["clicks"] %> </td>
+						<td> <%= @adsDetailsByCampIdStats[key]["cost"] %> </td>
+<%
+	if @adsDetailsByCampIdStats[key]["impressions"].to_i != 0
+		ctr = (100 * @adsDetailsByCampIdStats[key]["clicks"].to_i) / @adsDetailsByCampIdStats[key]["impressions"].to_i
+	else
+		ctr = 0
+	end
+%>
+						<td><%= ctr %></td>
+					</tr>
+				</tbody>
+<% end %>
+			<tfoot>
+					<tr>
+						<td colspan='2'> Totals </td>
+						<td> <%= @adsDetailsByCampIdTotals["totConversions"] %>	 </td>
+						<td> <%= @adsDetailsByCampIdTotals["totImpressions"] %> </td>
+						<td> <%= @adsDetailsByCampIdTotals["totClicks"] %> </td>
+						<td> <%= @adsDetailsByCampIdTotals["totCost"] %> </td>
+<%
+	if @adsDetailsByCampIdTotals["totImpressions"].to_i != 0
+		ctr = (100 * @adsDetailsByCampIdTotals["totClicks"].to_i) / @adsDetailsByCampIdTotals["totImpressions"].to_i
+	else
+		ctr = 0
+	end
+%>
+						<td><%= ctr %></td>
+					</tr>
+			</tfoot>
+</table>					
+		</div>
+		
+		<div style="margin-top: 15px; width: 1186px; margin-left: 40px; margin-bottom:15px;" data-url="campaign_summaries" id="campaign_summary_table" class="tab-pane active loaded">
+
+		<% if @campDetails['campaignType']=='ad_placement' %>
+			<table style="margin-bottom:0;" class="table table-striped table-bordered summary-table sortable" id="dashboard-campaigns-table">
+				<thead class="widget-header">
+					<tr>
+						<th style="padding-left:25px;" rel="tooltip" data-original-title=""> Placement Details </th>
+						<th rel="tooltip" data-original-title="">Placement Name</th>
+						<th rel="tooltip" data-original-title="">Ad Size</th>
+						<th rel="tooltip" data-original-title="">Description</th>
+						<th rel="tooltip" data-original-title="">AdType</th>				
+					</tr>
+				</thead>
+				<tbody>
+				<% @adUnitsDetails.each do |key,adunit| %>
+					<tr>
+						<td><%= key %></td>
+						<td><%= adunit['adUnitName'] %></td>
+						<td><%= adunit['format'] %></td>
+						<td><%= adunit['description'] %></td>
+						<td><%= adunit['adType'] %></td>
+					</tr>
+				<% end %>
+				</tbody>
+			</table>
+			
+				
+		
+		<% end %>
+		</div>
+
+<% 
+	if @campDetails["campaignEndDate"] == nil
+		endDate = "-"
+	else
+		endDate = @campDetails["campaignEndDate"]
+	end
+%>
+
+<div class="fullcol contrast cf" style="margin-left: 40px; padding: 40px 50px 15px; width: 1085px;">
+			<div class="seventyleft" style="width: 637px; padding-right: 22px;border:1px solid #E8E8E8">
+				<span class="contrasttitle" style='margin:12px;font-weight:bold'>Campaign Name: <%= @campDetails["campaignName"] %></span> <span> <a href="/campaigns/<%= params[:campaignId] %>/edit">Edit</a></span>
+					<table class="table table-striped table-bordered summary-table sortable" style="margin-left:12px;margin-top:7px">
+						<tbody>
+							<tr>
+								<td><div> Day Parting </div></td>
+								<td><div> 
+<%
+	@campDetails["dayParting"].each do |dayParting|
+%>
+<%= dayParting %>
+<%
+	end
+%>
+ </div></td>
+							</tr>
+							<tr>
+								<td><div> Start Date and End Date </div></td>
+								<td><div> <%= @campDetails["campaignStartDate"].to_s + " to " + endDate.to_s %> </div></td>
+							</tr>
+							<tr>
+								<td><div> Device Preference </div></td>
+								<td><div> <%= @campDetails["devicePreference"] %> </div></td>
+							</tr>
+							<tr>
+								<td> <div> Geo Targeting Type </div> </td>
+								<td> <div> <%= @campDetails["geoTargetingType"] %> </div> </td>
+							</tr>
+							<tr>
+								<td> <div> Geo Targeting </div> </td>
+								<td> <div> 
+<%
+geoTargetingV = ""
+	@campDetails["geoTargeting"].each do |geoTargeting|
+%>
+<% geoTargetingV += geoTargeting+"," %>
+<%
+	end
+%>
+<%= %>
+</div> </td>
+							</tr>
+							<tr>
+								<td> <div> Volume </div> </td>
+								<td> <div> <%= @campDetails["volume"] %> </div> </td>
+							</tr>
+							<tr>
+								<td> <div> Bid Type </div> </td>
+								<td> <div> <%= @campDetails["bidType"] %> </div> </td>
+							</tr>
+							<tr>
+								<td> <div> Retargeting </div> </td>
+								<td> <div>
+<%
+	@campDetails["retargeting"].each do |retargeting|
+		@retargets.each do |retargettotaldata|
+			if retargeting == retargettotaldata.id
+%>
+<div><a href="/retargets/segment?id=<%= retargeting %>"><%= retargettotaldata.retargetName %></a></div>
+<%
+			end
+		end
+	end
+%>
+</div> </td>
+							</tr>
+							<tr>
+								<td> <div> Coversion Goals </div> </td>
+								<td> <div> 
+<%
+	@campDetails["coversionGoals"].each do |conversionGoal|
+		if conversionGoal != ""
+			src =  Tagaly3::SRC
+			@uri = URI.parse(src)
+			http = Net::HTTP.new(@uri.host,@uri.port)
+			request = Net::HTTP::Get.new("/adexchange/advertiser/conversion/#{conversionGoal}")
+			response = http.request(request)
+			@conversionDetails = JSON.parse(response.body) if response.body && response.body.length >= 2
+%>
+			<%= @conversionDetails["conversionName"] %>
+<%
+		end 
+	end
+%>
+
+											</div> </td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>

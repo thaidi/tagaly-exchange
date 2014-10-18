@@ -1,0 +1,9 @@
+<% if @campaignDetails["campaignType"] == 'run_of_network' %>
+	<%= render "runOfNetworkEdit" %>
+<% elsif @campaignDetails["campaignType"] == "ad_placement" %>
+	<%= render "adPlacementEdit" %>
+<% elsif @campaignDetails["campaignType"] == "native_ad_placement" %>
+	<%= render "nativeAdPlacementEdit" %>
+<% else %>
+	<%= render "sites" %>
+<% end %>

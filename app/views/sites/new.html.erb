@@ -1,0 +1,113 @@
+<script src="/assets/validatesite.js"></script>
+<script>
+	function validate(id,divId) {
+		value = $( "#" + id ).val();
+		if(divId == "sitenameerror") {
+			msg = "Please fill in the site name !";
+		} else if(divId == "siteurlerror") {
+			msg = "Please fill in the site url !";
+		} else if(divId == "sitedescerror") {
+			msg = "Please fill in the site description !";
+		} 
+		if($( "#" + id ).hasClass( "req" )) {
+			if(value.trim().length == 0) {
+				document.getElementById(divId).innerHTML = msg;
+				document.getElementById(divId).style.display = "block";
+				return false;
+			} else {
+				document.getElementById(divId).innerHTML = "";
+				document.getElementById(divId).style.display = "none";
+			}
+		}
+		if($( "#" + id ).hasClass( "url" )) {
+			if(!value.match(/((?:https?\:\/\/|www\.)(?:[-a-z0-9]+\.)*[-a-z0-9]+.*)/i)) {
+				document.getElementById(divId).innerHTML = "Please give a valid URL";
+				document.getElementById(divId).style.display = "inline";
+				return false;
+			} else {
+				$.ajax({
+					type: 'GET',
+					url: '/preview/testUrl?url='+value ,
+					success: function(data) {
+						if(data == 'Good' || data == 'NotBad') {
+							document.getElementById(divId).innerHTML = "";
+							document.getElementById(divId).style.display = "none";
+						} else if(data == 'BadURL') {
+							document.getElementById(divId).innerHTML = "Url is broken";
+							document.getElementById(divId).style.display = "inline";
+						}
+					},
+
+				});
+			
+			}
+		}
+	}
+</script>
+<%
+  #### Sites Add page 
+%>
+    <style>
+	 label{
+		 width:110px;
+		 float:left;
+	      }
+	      textarea{
+		 width:73%;
+	       }
+	  .mandatory{
+	    color:red;
+	      }
+.error{
+margin-left:120px;
+}
+    </style>
+    <script>
+			function displaynocleft(len)
+			{
+				noclft=27-len;
+				document.getElementById("nocleft").innerHTML=noclft;
+			}
+		</script>
+
+      <div class="pcontent">
+<div style='color:red;' align='center'><% if flash[:notice] != nil %><%= flash[:notice] %> <% elsif flash[:error] != nil %> <%= flash[:error] %> <% end %></div>
+            <div style="width:596px; margin-left: 280px;" class="well pull-center">
+
+		<h3><i style="margin-top:0px;" class="icon-group"> </i> Add New Site Profile</h3>
+		<hr>
+		<%= form_for :site,url: sites_path , :html => { :id => "sitesform" } do |f| %>
+		<input type="hidden" name="usertype" value="<%= params[:type] %>"/>
+		<fieldset>
+ 		  <div class="control-group">
+ 		  
+		    <label for="segment_name" class="control-label" style="float:left;"> Site Name <span style="color:red;">*</span>	</label> 
+		    <div class="inputpad cf"> 
+			<%= f.text_field :siteName ,:size => "30" , :id=>"sitename" ,:autofocus => "autofocus" ,:required=>"required",:Placeholder=>"Site Name",:rel=>"tooltip",:title=>"Enter Your Site Name" ,:onkeyup => "displaynocleft(this.value.length)" , :onchange=>"funvalidateName(this.value) ; ",:maxlength=>"27" ,:class=>"req" ,:onblur=>"validate(this.id,'sitenameerror')" %>&nbsp;&nbsp;<span id="nocleft" class="remaining good">27</span> characters remaining
+			</div>
+			<div class="error" id="sitenameerror"></div>
+		  </div>
+		  <div class="control-group">
+		   <label for="segment_name" class="control-label" style="float:left;"> Site URL <span style="color:red;">*</span>	</label> 
+
+			<%= f.text_field :siteUrl  ,:size => "30" ,:id=>"siteurl",:required=>"required",:placeholder=>"http://yoursite.com",:rel=>"tooltip",:title=>"Enter Your Site URL <br> eg:http://yoursite.com" , :onchange=>"funvalidateUrl(this.value) ; " ,:class=>"req url" ,:onblur=>"validate(this.id,'siteurlerror')" %>
+<br>			<div class="error" id="siteurlerror"></div>
+		  </div>
+		  <div class="control-group">
+		    <label for="segment_name" class="control-label" style="float:left;"> Site Description <span style="color:red;">*</span>	</label> 
+			<%= f.text_area :description ,:id=>"description",:style=>"width:73%;",:required=>"required",:placeholder=>"Site Description",:rel=>"tooltip",:title=>"Enter Your Site Description" ,:class=>"req" ,:onblur=>"validate(this.id,'sitedescerror')" %>
+			<div class="error" id="sitedescerror"></div>
+		  </div>
+		  <div class="actions form-actions">
+		    <%= f.text_field :advertiserId , :type=>"hidden",:value=>session[:user_id] %>
+		    <%= f.text_field :user_type , :type=>"hidden",:value=>"advertiser" %>
+		    <%= f.text_field :siteStatus , :type=>"hidden",:value=>"active" %>
+		 <%= f.text_field :edit ,:id=>"edit", :type=>"hidden",:value=>"no" %>
+		    <%= f.text_field :authenticity_token , :type=>"hidden",:value=>form_authenticity_token() %>
+		    <%= submit_tag "Add Site", :name => "commit",:class=>"btn btn-primary btn-large" ,:onclick=>"return validateSiteFields(); "%>
+		  </div>
+		</fieldset>
+		<% end %>
+	   </div>
+      </div>
+

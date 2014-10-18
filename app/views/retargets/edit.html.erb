@@ -1,0 +1,251 @@
+<script>
+function trim(el) {
+    el.value = el.value.
+    replace(/(^\s*)|(\s*$)/gi, ""). // removes leading and trailing spaces
+    replace(/[ ]{2,}/gi, " "). // replaces multiple spaces with one space 
+    replace(/\n +/, "\n"); // Removes spaces after newlines
+    return;
+}
+</script>
+<script>
+$(document).ready(function(){
+
+	$(".white").on("keypress", function(e) {
+
+		if (e.which == 32 && !this.value.length){
+			e.preventDefault();
+		}
+
+		var value = this.value;
+		var valueLength = value.length - 1;
+		var substrValue = value.substr(valueLength);
+		if(substrValue == " " && e.which == 32){
+			e.preventDefault();
+		}
+	});
+}); 
+</script>
+<script>
+function validate(id,divId) {
+		value = $( "#" + id ).val();
+		if(divId == "retargetnameerror") {
+			msg = "Name Field cannot be blank";
+		} else if(divId == "durationerror") {
+			msg = " Field cannot be blank";
+		} 
+		else if(divId == "patherror") {
+			msg = " Please fill in path";
+		}
+		else if(divId == "queryerror") {
+			msg = " Please fill in path";
+		}
+else if(divId == "regexerror") {
+			msg = " Please fill in regular expression";
+		}
+		if($( "#" + id ).hasClass( "req" )) {
+		
+			if(value.trim().length == 0) {
+				document.getElementById(divId).innerHTML = msg;
+				document.getElementById(divId).style.display = "-moz-stack";
+return false;
+			} else {
+				document.getElementById(divId).innerHTML = "";
+				document.getElementById(divId).style.display = "none";
+			}
+		}
+		if($( "#" + id ).hasClass( "url" )) {
+				path=value;
+			if(!path.match(/^\/[a-z0-9]*_*-*.*\**$/i)) {
+				document.getElementById("patherror").innerHTML = "Please give a valid URL";
+				document.getElementById("patherror").style.display = "-moz-stack";
+return false;
+			} else {
+				document.getElementById("patherror").innerHTML = "";
+				document.getElementById("patherror").style.display = "none";
+			}
+		}
+if($( "#" + id ).hasClass( "url" )) {
+				query=value;
+			if(!query.match(/^[a-z0-9\/&=_]*$/i )) {
+				document.getElementById("queryerror").innerHTML = "Please give a valid URL";
+				document.getElementById("queryerror").style.display = "-moz-stack";
+return false;
+			} else {
+				document.getElementById("queryerror").innerHTML = "";
+				document.getElementById("queryerror").style.display = "none";
+			}
+		}
+if($( "#" + id ).hasClass( "url" )) {
+				regexp=value;
+			if(document.getElementById("regexp").value.indexOf(' ') >= 0) {
+				document.getElementById("regexerror").innerHTML = "Please give a valid URL";
+				document.getElementById("regexerror").style.display = "-moz-stack";
+return false;
+			} else {
+				document.getElementById("regexerror").innerHTML = "";
+				document.getElementById("regexerror").style.display = "none";
+			}
+		}
+if($( "#" + id ).hasClass( "numeric" )) {
+			Duration = value;
+			if(isNaN(Duration)){
+				document.getElementById("durationerror").innerHTML = "Please give only integer values";
+				document.getElementById("durationerror").style.display = "-moz-stack";
+				return false;
+			} else if (Duration < 0){
+				document.getElementById("durationerror").innerHTML = "Please give only positive integer values";
+				document.getElementById("durationerror").style.display = "-moz-stack";
+				return false;
+			} else if(Duration > 1000){
+				document.getElementById("durationerror").innerHTML = "Value should be below 1000";
+				document.getElementById("durationerror").style.display = "-moz-stack";
+				return false;
+			}
+		}
+}
+</script>
+<script src="/assets/validateretarget.js"></script>
+<%
+#### Retargets edit file
+%>
+
+    <script>
+      function showtag(siteid,sitename,siteurl)
+      {
+        document.getElementById("siteid").value=siteid;
+      }
+    </script>
+ 
+    <div class="pcontent">
+      <div class="row">
+	<div class="span12">
+	  <a style="margin-bottom:9px;" class="btn btn-large" href="/retargets">« Back to retargeting lists</a>
+	</div>
+      </div>
+      <div style="width:596px; margin-left: 130px;" class="well pull-left">
+      <div class="form-horizontal ">
+        <h3><i style="margin-top:0px;" class="icon-group"> </i> Edit Existing list</h3>
+	 <hr>
+	 <% #### Retargets edit form starts here %>			
+	 <%= form_for @retarget do |f| %>
+	   <fieldset>
+             <div class="control-group">
+		<label for="segment_name" class="control-label"> List Name <span style="color:red;margin-right:-10px;">*</span>	</label>      
+		<div class="controls">
+			<input type="hidden" id="retargetoldName" value="<%= @retarget.retargetName %>"/>
+		  <%= f.text_field :listname , :id=>"listname" ,:autofocus => "autofocus" ,:required=>"required",:value=>@retarget.retargetName,:rel=>"tooltip",:title=>"Retarget List Name",:onchange=>"checkRetargetName()",:maxlength=>"200",  :class=>"req url", :onblur=>"validate(this.id,'retargetnameerror')"  %>
+		  <div class="error" id="retargetnameerror"></div>
+		</div>
+	     </div>
+	     <div class="control-group" >
+		<label for="segment_duration" class="control-label">
+		  Duration
+		  <div class="helpform" >
+		    Number of days to keep a visitor in this list. Leave blank to keep them indefinitely.
+		  </div>
+		</label>     
+		<div class="controls">
+		  <%= f.text_field :duration , :style => "width:20px;" ,:size => "30" ,:id=>"duration",:value=>@retarget.duration,:rel=>"tooltip",:title=>"Duration (Should be a valid number)",  :class=>"req numeric", :onblur=>"validate(this.id,'durationerror')" %>
+			days
+			<br>
+		  <div class="error" id="durationerror"></div>
+		  
+		</div>
+	     </div>
+	     <div id="goal_picker" class="control-group">
+		<div class="control-label">Retargeting Type <span style="color:red;margin-right:-10px;">*</span>
+		  <div class="helpform"></div>  
+		 </div>
+		<div style="padding-left:25px;" class="controls">
+		  <div style="margin-bottom: 4px" class="radio">
+		    <% if @retarget.retargetType=='query' %>
+		      <%= radio_button("retarget", "retargetType","path") %>
+		    <% else %>
+		      <%= radio_button("retarget", "retargetType","path",:checked => true,:id=>"retarget_retargeting_type_path") %>
+		    <% end %>
+		    <label for="optionsRadios1">
+		      <b>Path:</b> Track based on what pages are visited <a rel="tooltip"  data-original-title="Add user to segment based on path of the current page."><i class="icon-question-sign"></i></a> 
+		    </label>     
+		    <div id="path"  <% if @retarget.retargetType == 'path' %> class="input-prepend segq goal-choice hidestyle="display:block;" <% else %> class="input-prepend segpath goal-choice hide" <% end %>>
+			<span class="add-on">http://domain.com</span>
+			<% if @retarget.retargetType == 'path' %>
+				<%= f.text_field :path , :style => "width:135px;" ,:placeholder=>"/your_path" , :size => "30" ,:id=>"path_value",:rel=>"tooltip",:title=>"/your_path",:value=>@retarget.retargetValue, :onchange=>"return trim(this)", :class=>"req url", :onblur=>"validate(this.id,'patherror')"%>
+			<% else %>
+				<%= f.text_field :path , :style => "width:135px;" ,:placeholder=>"/your_path" , :size => "30" ,:id=>"path_value",:rel=>"tooltip",:title=>"/your_path",:value=>"", :onchange=>"return trim(this)",  :class=>"req url", :onblur=>"validate(this.id,'patherror')"%>
+			<% end %>
+			<div class="error" id="patherror"></div>
+			<div class="helpform">* functions as a wildcard. Ex. "/campaigns*" vs. "/campaigns/"</div>   
+		    </div>
+		  </div>
+		  <br>
+		<div class="radio">
+		  <%= radio_button("retarget", "retargetType", "query",:id=>"retarget_retargeting_type_query") %>
+		  <label for="optionsRadios2">
+		    <b>Querystring:</b> Track based on a word in the URL querystring 
+		  </label>          <br>
+		  <div id="query"  <% if @retarget.retargetType == 'query' %> class="input-prepend segpath goal-choice" <% else %> class="input-prepend segq goal-choice hide" <% end %>>
+		    <span class="add-on">http://domain.com/?</span>
+		    <% if @retarget.retargetType == 'query' %>
+		    	<%= f.text_field :query , :style => "width:135px;" ,:placeholder=>"/your_query" , :size => "30" ,:id=>"queryvalue",:value=>@retarget.retargetValue,:rel=>"tooltip",:title=>"/your_query", :onchange=>"return trim(this)", :class=>"req url", :onblur=>"validate(this.id,'queryerror')" %>
+		    <% else %>
+		    	<%= f.text_field :query , :style => "width:135px;" ,:placeholder=>"/your_query" , :size => "30" ,:id=>"queryvalue",:value=>"",:rel=>"tooltip",:title=>"/your_query", :onchange=>"return trim(this)", :class=>"req url", :onblur=>"validate(this.id,'queryerror')" %>
+		    <% end %>
+		    <div class="error" id="queryerror"></div>
+		    <br>
+		  </div>
+		</div>
+		<br>
+		<div class="radio">
+		  <%= radio_button("retarget", "retargetType", "regex",:id=>"retarget_retargeting_type_regex") %>
+		  <label for="optionsRadios4">
+		    <b>Regular Expression:</b> Track based on URLs that match a regular expression (Advanced).
+		  </label>          <br>
+		  <div id="regex" <% if @retarget.retargetType == 'regex' %> class="input-prepend segpath goal-choice" <% else %> class="input-prepend segq goal-choice hide" <% end %>>
+		    <% if @retarget.retargetType == 'regex' %> 
+		    	<%= f.text_field :regex , :style => "width:200px;" ,:placeholder=>"regular expression" , :size => "30" ,:id=>"regexp",:value=>@retarget.retargetValue,:rel=>"tooltip",:title=>"Your valid regular expression", :onchange=>"return trim(this)", :class=>"req url", :onblur=>"validate(this.id,'regexerror')" %>
+		    <% else %>
+		    	<%= f.text_field :regex , :style => "width:200px;" ,:placeholder=>"regular expression" , :size => "30" ,:id=>"regexp",:value=>"",:rel=>"tooltip",:title=>"Your valid regular expression", :onchange=>"return trim(this)", :class=>"req url", :onblur=>"validate(this.id,'regexerror')" %>
+		    <% end %>
+		    <div class="error" id="regexerror"></div>
+		   </div>
+		 </div>
+		</div>
+	      </div>
+             <div class="actions form-actions">
+		<%= f.text_field :advertiseris , :type=>"hidden",:value=>session[:user_id] %>
+		<%= f.text_field :authenticity_token , :type=>"hidden",:value=>form_authenticity_token() %>
+		<input type="submit" value="Update Retargeting List" name="commit" onclick="return validateForm()" class="btn btn-primary btn-large">
+	     </div>
+	  </div>
+	</fieldset>
+     <% end 
+     #### Retarget edit form ends here
+     %>
+     <script>window['new_segment'] = {"type":"ActionView::Helpers::FormBuilder","input_tag":"&lt;div class=\"field_with_errors\"&gt;&lt;span id=\"input_tag\" /&gt;&lt;label for=\"\" class=\"message\"&gt;&lt;/label&gt;&lt;/div&gt;","label_tag":"&lt;div class=\"field_with_errors\"&gt;&lt;label id=\"label_tag\" /&gt;&lt;/div&gt;","validators":{}};</script>
+     <script type="text/javascript">
+	$(document).ready(function() {
+	  $('input[name="retarget[retargetType]"]').change(function(){
+	  var selected = $(this).val();
+	  $('.goal-choice').hide();
+	  $('#'+selected).fadeIn();
+	  });
+	});
+     </script>
+  </div>
+  <div class="span3 expando">
+    <div style="margin-right:-25px;width:290px;" class="expandable">
+	<p><b>Retargeting Lists 101:</b> A retargeting list is a group of your web site visitors.  You can generate a list based on the <b>URL path</b> <a href="" target="new">(details)</a> visited by a user, by a <b>URL querystring</b> <a href="" target="new">(details)</a> seen by a user, or when a specified <a href="" target="new">javascript event</a> is fired. 
+	</p><p>
+	</p><p>Wildcards (*) are used to include subdirectories in a list.</p>  
+	<p><b>Examples:</b></p>
+	<p>1. Cookie everyone who visits your site:</p>
+	<p style="font-style:italic;">Make a <b>path</b> list with a value of <b>/*</b></p>
+        <p>2. Cookie people who visited from ads with a utm_source parameter of "Adwords"</p>
+	<p style="font-style:italic;">Make a <b>querystring</b> list with a value of <b>Adwords</b></p>
+	<p>For examples using the Javascript Tracking api, <a href="" target="new">click here.</a></p>
+     </div>
+     <span style="right:-98px;bottom:-12px;" class="underangle"><img src="images/yellow.png" alt="Yellowunder"></span>
+  </div>
+  <div style="clear:both;"></div>
+  </div>
+

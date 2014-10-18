@@ -1,0 +1,1325 @@
+<% ### NEW AD FORM PAGE %>
+<html>
+  <head> 
+    <title> sample page </title> 
+<style>
+	.error {
+		height:16px;
+		margin-left:0px;
+		margin-top:3px;
+		position:absolute;
+	}
+.side{
+float:left;
+}
+</style>
+<% if params[:frame] == "frame" %>
+	<link data-turbolinks-track="true" href="/stylesheets/application.css" media="all" rel="stylesheet" />
+    
+  <script type="text/javascript" src="/assets/jquery.js"></script>
+	<script type="text/javascript" src="/assets/bootstrap-dropdown.js"></script>
+	<script src="https://js.stripe.com/v1/" type="text/javascript"></script>
+	<script src="/assets/jsfile.js"></script>
+
+    <link href="/assets/app.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+    <link rel="stylesheet" href="/assets/dropdown.css" type="text/css" />
+    <script src="https://js.stripe.com/v1/" type="text/javascript"></script>
+    <script src="jsfile.js" type="text/javascript"></script>
+    <script type="jsfile2.js"></script>
+    
+	<!--	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
+	<script src="/assets/zevol.colorpicker.js" type="text/javascript"></script>
+	<script src='/assets/datepicker.js'></script>
+	<script src='/assets/bootstrap-dropdown.js'></script>
+	<script src='/assets/jscolor.js'></script>
+	<script src='/assets/validations.js'></script>
+	<script src='/assets/ads.js'></script>
+<!--	<script src='/assets/jsfile.js'></script>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/ui-lightness/jquery-ui.css" type="text/css" />
+	<link href="/assets/demo.css" rel="stylesheet" /> 
+	<link href="/assets/evol.colorpicker.css" rel="stylesheet" />
+  <link href="/assets/app.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+	<link href="/assets/bsa.min.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="/assets/code.css" />-->
+
+ 
+<script>
+	$(document).ready(function(){
+		$('.bannerPrefImg').live('click', function(event) {
+			window.open("<%= Tagaly3::RORHOST %>/ads/imagepreference","","width=500,height=1000,scrollbars=yes,");
+		});
+	});
+</script>
+
+<% end %>
+    <script type="text/javascript" src="/assets/ads.js"></script>  
+  <script src='http://livevalidation.com/javascripts/src/1.3/livevalidation_standalone.compressed.js'> </script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+<script>
+
+	function displayAd(id) {
+		var value = $("#"+id).val();
+/*
+		if ((value.substr(value.length - 1)).charCodeAt(0) == 8206) {
+alert("if");
+			codelen = value.length - 1;
+			finalvalue = value.substr(0 , codelen);
+			value = finalvalue.trim();
+		} else {
+// alert("else");
+}
+*/
+
+		document.getElementById(id).value = value;
+		if(id == "text_ad_text_title") {
+			txtlength = value.length;
+			var textcount = 25 - txtlength;
+			document.getElementById("title_counter").innerHTML = textcount;
+			if(textcount < 0){
+				$("#title_counter").addClass("counter-over-limit");
+			} else {
+				$("#title_counter").removeClass("counter-over-limit");
+			}
+			if(value != "" ){
+				$("#preview_title").children("a").html(value);
+			} else {
+				$("#preview_title").children("a").html("Your Title Here");
+			}
+		} else if(id == "text_destination_url") {
+			if(value != "" ){
+			$("#preview_title").children("a").attr("href",value);
+			} else {
+			$("#preview_title").children("a").attr("href","#");
+			}
+		} else if(id == "text_display_url") {
+			if(value != "" ){
+				$("#preview_url").html(value);
+			} else {
+				$("#preview_url").html("http://www.example.com");
+			}
+		} else if(id == "text_ad_text_body") {
+			txtlength = value.length;
+			if(value.length > 35)
+			{
+				value=value.substring(0,35) + "<br>" + value.substring(35,value.length)
+			}
+			var body_counter = 70 - txtlength;
+			document.getElementById("body_counter").innerHTML = body_counter;
+			if(body_counter < 0){
+				$("#body_counter").addClass("counter-over-limit");
+			} else {
+				$("#body_counter").removeClass("counter-over-limit");
+			}
+			if(value != "" ){
+				$("#preview_body").html(value);
+			} else {
+				$("#preview_body").html("About your company");
+			}
+		}
+
+	}
+
+function setBitSuggestion(campaignid,adids)
+{
+	var textadform=document.getElementById("new_fb_ad_btn");
+	var nativeadform=document.getElementById("new_pagepost_ad_btn");
+	var banneradform=document.getElementById("new_web_ad_btn");
+	if(textadform.className=="active")
+	{
+		var adType="TextAd";
+		document.getElementById("textadcampaignid").value=campaignid ;
+		document.getElementById("textadids").value=adids ;
+		if(document.getElementById("CPC-btn").className.search("btn-primary") != -1)
+		{
+			var bidtype="CPC" ;
+			var bidpriceid=document.getElementById("CPC") ;
+		}
+		else if(document.getElementById("CPA-btn").className.search("btn-primary") != -1)
+		{
+			var bidtype="CPA" ;
+			var bidpriceid=document.getElementById("CPA") ;
+		}
+		else if(document.getElementById("CPM-btn").className.search("btn-primary") != -1)
+		{
+			var bidtype="CPM" ;
+			var bidpriceid=document.getElementById("CPM") ;
+		}
+		var adSize="240x70";
+	}
+	else if(nativeadform.className=="active")
+	{
+		var adType="NativeAd";
+		document.getElementById("nativeadcampaignid").value=campaignid ;
+		document.getElementById("nativeadids").value=adids ;
+		if(document.getElementById("native_CPC-btn").className.search("btn-primary") != -1)
+		{
+			var bidtype="CPC" ;
+			var bidpriceid=document.getElementById("native_CPC") ;
+		}
+		else if(document.getElementById("native_CPA-btn").className.search("btn-primary") != -1)
+		{
+			var bidtype="CPA" ;
+			var bidpriceid=document.getElementById("native_CPA") ;
+		}
+		else if(document.getElementById("native_CPM-btn").className.search("btn-primary") != -1)
+		{
+			var bidtype="CPM" ;
+			var bidpriceid=document.getElementById("native_CPM") ;
+		}
+		var adSize="240x70";
+	}
+	else if(banneradform.className=="active")
+	{
+		var adType="BannerAd";
+		document.getElementById("banneradcampaignid").value=campaignid ;
+		document.getElementById("banneradids").value=adids ;
+		if(document.getElementById("banner_CPC-btn").className.search("btn-primary") != -1)
+		{
+			var bidtype="CPC" ;
+			var bidpriceid=document.getElementById("banner_CPC") ;
+		}
+		else if(document.getElementById("banner_CPA-btn").className.search("btn-primary") != -1)
+		{
+			var bidtype="CPA" ;
+			var bidpriceid=document.getElementById("banner_CPA") ;
+		}
+		else if(document.getElementById("banner_CPM-btn").className.search("btn-primary") != -1)
+		{
+			var bidtype="CPM" ;
+			var bidpriceid=document.getElementById("banner_CPM") ;
+		}
+		if(document.getElementById("bannerImageSize").value.trim()=="")
+		{
+			document.getElementById("banner_ImageError").innerHTML="Please upload a valid sized image to get the bid price!";
+			document.getElementById("banner_ImageError").style.display="block";
+			var camp = document.getElementsByClassName("campaigns");
+				for (var i = 0; i < camp.length; i++) {
+						camp[i].checked=false ;
+				}
+			document.getElementById("closemodal").click();
+			return false ;
+		}
+		else
+		{
+			document.getElementById("banner_ImageError").style.display="none";
+		}
+		var adSize=document.getElementById("bannerImageSize").value;
+	}
+		  var hostname = "http://"+window.location.hostname+":3000/ads/getminimumbidprice";
+		  
+			$.ajax({
+				type: "GET",
+				url: hostname,
+				data: "campaignId=" + campaignid + "&bidType=" + bidtype + "&adType="+ adType +"&adSize="+adSize,
+				success: function(data){
+				var camp = document.getElementsByClassName("campaigns");
+				for (var i = 0; i < camp.length; i++) {
+						camp[i].checked=false ;       
+				}
+
+					bidpriceid.value=parseFloat(data).toFixed(2);
+					var camp = document.getElementsByClassName("campaigns");
+							for (var i = 0; i < camp.length; i++) {
+									camp[i].checked=false ;       
+							}
+							document.getElementById("closemodal").click();
+					
+				}
+			});
+	
+}
+	$(document).ready(function(e){
+
+		var bannerSizes = "<%= Tagaly3::BannerSizes %>".split(",");
+		var bannerWeights = "<%= Tagaly3::BannerWeights %>".split(",");
+console.log(bannerSizes)
+		var laptopsanddesktops = { "728x90":"728 x 90 Leaderboard", "120x60":"120 x 60 Button", "468x60":"468 x 60 Full Banner", "250x250":"250 x 250 Square",
+			"240x400":"240 x 400  Fat Skyscraper", "234x60":"234 x 60  Half Banner", "88x31":"88 x 31  Button", "160x600":"160 x 600  Skyscraper" };
+		var mobiles = { "120x20":"120 x 20", "168x28":"168 x 28", "216x36":"216 x 36", "300x250":"300 x 250[Smart Phones only]", "320x50":"320 x 50[Smart Phones only]", "300x50":"300 x 50[Smart Phones only]"
+		};
+		var tablets = { "300x250":"300 x 250", "468x60":"468 x 60", "728x90":"728 x 90", "1024x90":"1024 x 90", };
+		var desktops = "<tr><th>Size</th><th>Style</th><th>Gif Weight</th><th>Flash Weight</th></tr><tr><td>468 x 60 </td><td> Full Banner</td><td> 20 KB</td><td> 30 KB</td></tr><tr><td>728 x 90 </td><td>Leaderboard </td><td> 25 KB</td><td> 35 KB</td></tr><tr><td>250 x 250 </td><td>Square </td><td> 25 KB</td><td> 35 KB</td></tr><tr><td>160 x 600 </td><td>Skyscraper </td><td>20 KB </td><td> 30 KB</td></tr><tr><td>240 x 400 </td><td>Fat Skyscraper </td><td>25 KB </td><td>35 KB </td></tr><tr><td>234 x 60 </td><td>Half Banner </td><td> 15 KB</td><td>20 KB </td></tr><tr><td>120 x 60 </td><td>Button </td><td>10 KB </td><td>20 KB </td></tr><tr><td>88 x 31 </td><td>Button </td><td>10 KB </td><td>10 KB </td></tr>";
+		var mobilesDiv = "<tr><th>Size ( Style )</th><th>Image Weight</th></tr><tr><td>120 x 20 </td><td> 20 KB</td></tr><tr><td>168 x 28 </td><td> 20 KB</td></tr><tr><td>216 x 36 </td><td> 20 KB</td></tr><tr><td>300 x 250 (Smartphones Only) </td><td> 20 KB</td></tr><tr><td>300 x 50 (Smartphones Only) </td><td> 20 KB</td></tr><tr><td>320 x 50 (Smartphones Only) </td><td> 20 KB</td></tr>";
+		var tabletsDiv = "<tr><th>Size</th><th>Image Weight</th></tr><tr><td>300 x 250</td><td> 20 KB</td></tr><tr><td>468 x 60</td><td> 20 KB</td></tr><tr><td>728 x 90</td><td> 20 KB</td></tr><tr><td>1024 x 90</td><td> 20 KB</td></tr>";
+
+		// setFormats(laptopsanddesktops,mobiles,tablets);
+		$("#banner_swffla").on('change' , function(e){
+			var value = this.value;
+			$("#bannerImageSize").val(value);
+		});
+		$("#upload_datafile_banner").change(function(e) {
+			document.getElementById("banner_ImageError").innerHTML = ''
+			document.getElementById("banner_ImageError").style.display = 'none';
+			$("#imageCode_banner").val("");
+			$("#bannerImageSize").val("");
+			$("#banneradPreviewImage").attr("src","");
+			var _URL = window.URL || window.webkitURL;
+			var _validFileExtensions = [".jpg",".gif", ".png",".jpeg",".swf",".fla"];
+			var ext = $('#upload_datafile_banner').val().split('.').pop().toLowerCase();
+			if($.inArray(ext, ['gif','png','jpg','jpeg','swf','fla']) == -1) {
+				  alert("Invalid File, Please upload images with extension 'gif' , 'png' , 'jpg' , 'jpeg' , 'swf' only.");
+			} else {
+				if($.inArray(ext, ['swf','fla']) >= 0) {
+					var switchVal = 0;
+					var reqFileSize = 1048576;
+					var iSize = $(this)[0].files[0].size ;
+					var somenum = bannerSizes.indexOf(iSize);
+					if (iSize > reqFileSize ) {
+						switchVal = 1;
+					} else {
+						switchVal = 0;
+					}
+					if(switchVal == 1){
+						document.getElementById("imageCode_banner").value ='';
+						document.getElementById("banner_ImageError").innerHTML = " Image size should be less than " + reqFileSize + "kb. Please refer <a class='bannerPrefImg' href='#'>image sizes</a> for valid image sizes.";
+						document.getElementById("banner_ImageError").style.display='inline';
+						document.getElementById("banner_ImageError").style.height='40px';
+						return false;
+					}
+					if(switchVal == 0){
+						$("#banner_swffla_div").show();
+						var inputs = this;
+						$("#imageCodeFormat").val(ext);
+						/* flaseBannerPreview  */
+					}
+				} else {
+						var file, img;
+						if ((file = this.files[0])) {
+							img = new Image();
+							img.onload = function(e) {
+								var width = this.width;
+								var height = this.height;
+								var size = file.size;
+								var widhe = width+"x"+height
+								var switchVal = 0;
+								var somenum = bannerSizes.indexOf(widhe);
+								if(somenum >= 0) { 
+									if (size > bannerWeights[somenum]){
+										switchVal = '1';
+										reqFileSize = (bannerWeights[somenum] /1024);
+									}
+								} else {
+									switchVal = '2';
+								}
+								if(switchVal == 1){
+									document.getElementById("imageCode_banner").value ='';
+									document.getElementById("banner_ImageError").innerHTML = " Image size should be less than " + reqFileSize + "kb. Please refer <a class='bannerPrefImg' href='#'>image sizes</a> for valid image sizes.";
+									document.getElementById("banner_ImageError").style.display='inline';
+									document.getElementById("banner_ImageError").style.height='53px';
+									return false;
+								} 
+								if(switchVal == 2){
+									document.getElementById("imageCode_banner").value ='';
+									document.getElementById("banner_ImageError").innerHTML = "The image you uploaded is not supported. Please refer <a class='bannerPrefImg' href='#'> image Dimensions</a> for valid image sizes.";
+									document.getElementById("banner_ImageError").style.display='inline';
+									document.getElementById("banner_ImageError").style.height='53px';
+									return false;
+								}
+								if(switchVal == 0){
+									document.getElementById("imageCode_banner").value ='Ok';
+									document.getElementById("bannerImageSize").value = widhe;
+									$('#banneradPreviewImage').attr('src', img.src);
+								}
+			
+							};
+							img.src = _URL.createObjectURL(file);        
+				  	}
+					}
+				}
+		});
+		/* 
+			var devicePref = $("#banner_device_preferences").val();
+			if(devicePref == "DesktopsAndLaptops"){
+				var appendValue = desktops;
+			} else if(devicePref == "Mobiles"){
+				var appendValue = mobilesDiv;
+			} else if(devicePref == "Tabs"){
+				var appendValue = tabletsDiv;
+			} 
+			$("#prefImagesTable").empty();
+			$("#prefImagesTable").append(appendValue);
+		*/
+
+
+		$(".costDecimel").change(function(e){
+			var costValue =	$(this).val();
+			if(!isNaN(costValue)){
+				costValue = Math.round(costValue * 100) / 100; 
+				$(this).val(costValue);
+			}
+		});
+		$(document).ready(function(){
+		$('.bannerPrefImg').live('click', function(event) {
+		window.open("<%= Tagaly3::RORHOST %>/ads/imagepreference","","width=500,height=1000,scrollbars=yes,");
+		/*	if ($("#bannerPrefDiv").css('display')=="none") {
+					$("#bannerPrefDiv").css({"display":"inline"});
+			} else {
+					$("#bannerPrefDiv").css({"display":"none"});
+			}*/
+		});
+	});
+	$('#close_prefimages').live('click', function(event) {
+					$("#bannerPrefDiv").css({"display":"none"});
+		});
+	
+		$( "#prefImg" ).hover(
+			function () {
+				$("#prefDiv").css({"display":"inline"});
+			}, 
+			function () {
+				$("#prefDiv").css({"display":"none"});
+			}
+		);
+/*
+		$("#text_ad_text_title").on('keyup change',function(){
+			var txt = document.getElementById("text_ad_text_title").value;
+			var txtlength = document.getElementById("text_ad_text_title").value.length;
+			var textcount = 25 - txtlength;
+			document.getElementById("title_counter").innerHTML = textcount;
+			if(txt == ''){
+				document.getElementById("preview_title").innerHTML = "My Title";
+			} else {
+				document.getElementById("preview_title").innerHTML = txt;
+			}
+			if(textcount < 0){
+				$("#title_counter").addClass("counter-over-limit");
+			} else {
+				$("#title_counter").removeClass("counter-over-limit");
+			}
+		});
+*/
+		$("#banner_swffla").change(function(){
+			var value = $(this).val();
+			if(value != ""){
+				document.getElementById("bannerImageSize").value = value;
+				document.getElementById("imageCode_banner").value = 'Ok';
+			} else {
+				document.getElementById("imageCode_banner").value ='';
+			}
+		});
+
+		$("#upload_datafile1").change(function(e) {
+			document.getElementById("native_ImageError").innerHTML = ''
+			document.getElementById("native_ImageError").style.display = 'none';
+			var _URL = window.URL || window.webkitURL;
+			var _validFileExtensions = [".jpg",".gif", ".png",".jpeg"];
+			var ext = $('#upload_datafile1').val().split('.').pop().toLowerCase();
+			if($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
+				  alert("Invalid File, Please upload images with extension 'gif' , 'png' , 'jpg' , 'jpeg' only.");
+			} else {
+		    var file, img;
+		    if ((file = this.files[0])) {
+					img = new Image();
+					img.onload = function(e) {
+						var width = this.width;
+						var height = this.height;
+						var size = file.size
+						var widhe = width+"x"+height
+						var switchVal = 0;
+						var selectedImageSize = document.getElementById("nativeAdImageSizes").value;
+						if (selectedImageSize == widhe){
+							if (parseInt(size) > 20480){
+								switchVal = '1'
+							}
+						} else {
+							switchVal = '2'
+						}
+						if(switchVal == 1){
+							document.getElementById("imageCode_native").value ='';
+							document.getElementById("native_ImageError").innerHTML = "Please give a valid Image, Please check prefered size.";
+							document.getElementById("native_ImageError").style.display='inline';
+							return false;
+						} 
+						if(switchVal == 2){
+							document.getElementById("imageCode_native").value ='';
+							document.getElementById("native_ImageError").innerHTML = "Image sizes are not supported.";
+							document.getElementById("native_ImageError").style.display='inline';
+							return false;
+						}
+						if(switchVal == 0){
+							document.getElementById("imageCode_native").value ='Ok';
+							document.getElementById("nativeImageSize").value = widhe;
+							// $('#banneradPreviewImage').attr('src', img.src);
+						}
+				
+					};
+					img.src = _URL.createObjectURL(file);
+		  	}
+			}
+		});
+		$("#banner_swffla").change(function(){
+			var value = $(this).val();
+			if(value != ""){
+				document.getElementById("bannerImageSize").value = value;
+				document.getElementById("imageCode_banner").value = 'Ok';
+			} else {
+				document.getElementById("imageCode_banner").value ='';
+			}
+		});
+	});
+ 
+	function validate(id,divId) {
+		allAdsNames = Array();
+		<% @allAds.each do |key,adDetails| %>
+			text = "<%= adDetails['adName'] %>";
+			decoded = $('<div/>').html(text).text();
+			allAdsNames.push(decoded)
+		<% end %>
+		value = $( "#" + id ).val();
+		if(divId == "AdNameError") {
+			msg = "Please provide Ad name";
+		} else if(divId == "HeadeLineError") {
+			len = 25
+			msg = "Please provide a Headline title";
+			lenmsg = "Headline cannot be more than more than 25 character length";
+		} else if(divId == "DestUrlError" || divId == "banner_DestUrlError") {
+			len = 1024
+			lenmsg = "Url cannot be longer than 1024 char length";
+			msg = "Please give a valid URL";
+		} else if(divId == "DisplayUrlError") {
+			len = 35
+			lenmsg = "Display Url cannot be longer than 35 char length";
+			msg = "Please give a valid URL";
+		} else if(divId == "TextError") {
+			len = 70
+			lenmsg = "Text cannot be more than more than 70 character length";
+			msg = "Please provide some text";
+		} else if(divId == "banner_AdNameError") {
+			msg = "Please provide Ad name";
+		} 
+		if($( "#" + id ).hasClass( "req" )) {
+			if(value.trim().length == 0) {
+				document.getElementById(divId).innerHTML = msg;
+				document.getElementById(divId).style.display = "inline";
+			} else {
+				if(divId == "AdNameError" || divId == "banner_AdNameError") {
+					if(allAdsNames.indexOf(value) != -1) {
+						document.getElementById("adNameExistance").value = "exist";
+						document.getElementById(divId).innerHTML = "Ad with '" + value + "' already exists";
+						document.getElementById(divId).style.display = "inline";
+						document.getElementById(divId).style.width = "350px";
+					} else {
+						document.getElementById("adNameExistance").value = "no";
+						document.getElementById(divId).innerHTML = "";
+						document.getElementById(divId).style.display = "none";
+					}
+				} else {
+					document.getElementById(divId).innerHTML = "";
+					document.getElementById(divId).style.display = "none";
+				}
+			}
+		}
+		if($( "#" + id ).hasClass( "url" )) {
+			if(!value.match(/((?:https?\:\/\/|www\.)(?:[-a-z0-9]+\.)*[-a-z0-9]+.*)/i)) {
+				document.getElementById(divId).innerHTML = "Please give a valid URL";
+				document.getElementById(divId).style.display = "inline";
+				document.getElementById(divId).style.width = "350px";
+				return false;
+			} else {
+				document.getElementById(divId).innerHTML = "";
+				document.getElementById(divId).style.display = "none";
+			}
+		}
+		if($( "#" + id ).hasClass( "length" )) {
+			if(value.length > len) {
+				document.getElementById(divId).innerHTML = lenmsg;
+				document.getElementById(divId).style.display = "inline";
+				document.getElementById(divId).style.width = "350px";
+				return false;
+			} else {
+				document.getElementById(divId).innerHTML = "";
+				document.getElementById(divId).style.display = "none";
+			}
+		}
+	}
+</script>
+   </head>
+  <body>
+    <div class="pcontent admaker" >
+<input type="hidden" id="adNameExistance" value="" />
+<% if params[:frame] != "frame" %>
+      <div class="row">
+        <div class="span12">
+          <a style="margin-bottom:9px;" class="btn btn-large" href="/ads">« Back to ad manager</a>
+        </div>
+      </div>
+<% end %>
+<div class="modal fade hide" style="width:1024px;margin-left:-513px;padding:0px 50px 50px 50px; " id="bid_pricing_suggestion">
+<div align="right" style="cursor:pointer;" id="closemodal"  data-dismiss="modal">Close</div>
+<% if @campaigns.present? %>
+<div align='center'>Select a campaign to assign the Ad !</div>
+<table width="90%">
+
+	<%
+	br=1
+	 @campaigns.each do |key,campaign|
+	 
+	  %>
+	  <% if br==1 %>
+		<tr>
+		<% end %>
+			<td><input type="radio" class="campaigns" name="campaigns" value="<%= key %>" onchange="setBitSuggestion('<%= key %>','<%= campaign['adId'].join(',') %>')">&nbsp;&nbsp;<%= campaign["campaignName"] %></td>
+		<% 
+		br=br+1
+		if br == 4
+
+		br=1
+		%>
+			</tr>
+
+		<%  
+		end
+		 end %>
+	</table>
+<% else %>
+<div align='center'>Please assign this ad to any campaign to view minimum bid price suggestion !</div>
+<% end %>
+</div>
+      <div class="row">
+        <div style="width:740px;min-height:550px;<% if params[:frame] != 'frame' %> margin-left: 20px; <% end %>" class="well span7">
+          <h2>Create a new Ad</h2>
+          <ul style="margin-top:1px;" class="nav nav-tabs">
+            <li id="new_fb_ad_btn" class="active">
+              <a data-toggle="tab" href="#new_facebook_ad_form">
+              <i class="icon-facebook-sign"></i> Text Ad
+              </a>
+            </li>
+<!--
+            <li id="new_pagepost_ad_btn" class="">
+              <a data-toggle="tab" href="#new_pagepost_ad_form">
+              <i class="icon-th-list"></i> Native Ad
+              </a>
+            </li>
+-->
+            <li id="new_web_ad_btn" class="">
+              <a data-toggle="tab" href="#new_web_ad_form">
+              <i class="icon-globe"></i> Banner Ad
+              </a>
+            </li>        
+          </ul>
+          <div class="tab-content">
+
+            <div id="new_facebook_ad_form" class="tab-pane active">
+            <% #### Text Ad form starts here %>
+              <%= form_for :ad,:html => { :multipart => true ,:id => "new_ad" ,:class => "form-horizontal"},url: ads_path do |f| %>
+
+<% if params[:frame] == "frame" %>
+	<input type='hidden' name='frame' value='frame'/>
+<% end %>
+              <fieldset>
+                <div class="form">
+                  <br>
+                  <div class="control-group">
+                    <div class="control-label">
+                      Ad Name: <a rel="tooltip" data-original-title="Administrative purposes only: Give your ad a descriptive, memorable name.">[?]</a>
+                    </div>
+                    <div class="controls">
+                      <%= text_field(:ad, :ad_name,:id=>"text_ad_name" , :class=>"req" , :autofocus => "autofocus",:rel=>"tooltip",:title=>"My Text ad",:placeholder=>"My Text ad",:onchange=>"validate(this.id,'AdNameError')" , :maxlength=>"200" ,:autocomplete=>"off"  )%>
+                    </div>
+			<div class="error" id="AdNameError" ></div>
+                  </div>
+                  <div class="control-group">
+                    <div class="control-label">
+                      Headline: <a rel="tooltip" data-original-title="Give your ad a clear headline so people can associate your ad with your URL.">[?]</a>
+                    </div>
+                    <div class="controls">
+                      <%= text_field(:ad, :headline,:id=>"text_ad_text_title",:rel=>"tooltip" ,:class=>"req length" ,:onblur=>"validate(this.id,'HeadeLineError')", :onkeyup =>"displayAd(this.id)"  , :onchange =>"displayAd(this.id)"  , :onkeydown=>"displayAd(this.id)" ,:title=>"My company name",:placeholder=>"My company name"  ) %>
+                    <small style="font-size:10px;color:#999;margin-top:3px;" class="help-inline"><span id="title_counter">25</span> characters left.</small>
+                    </div>
+		    <div class="error" id="HeadeLineError"></div>
+                  </div>
+                  <div class="control-group">
+                    <div class="control-label">
+                      Destination URL: <a rel="tooltip" data-original-title="When people click on your ad, they will land on the destination you put here.">[?]</a>
+
+                    </div>
+                    <div class="controls">
+                      <%= text_field(:ad, :destination_url,:id=>"text_destination_url", :rel=>"tooltip",:title=>"http://www.myapplicationone.com",:placeholder=>"http://www.myapplicationone.com",'data-trigger' => "fb_ad_utm_show_link" ,:class=>"req length url" ,:onblur=>"validate(this.id,'DestUrlError')",'data-target' => "utm-builder"  ) %>
+                    </div>
+										<div class="error" id="DestUrlError"></div>
+                  </div>
+                  <div class="control-group">
+                    <div class="control-label">
+                      Display URL: <a rel="tooltip" data-original-title="Display URLs are meant to give users a clear idea of what page they'll arrive at when they click an ad.">[?]</a>
+                    </div>
+                    <div class="controls">
+                      <%= text_field(:ad, :display_url,:id=>"text_display_url",:rel=>"tooltip",:title=>"http://www.myapplicationone.com",:placeholder=>"http://www.myapplicationone.com"  ,'data-trigger' => "fb_ad_utm_show_link" ,:class=>"req length url" ,:onblur=>"validate(this.id,'DisplayUrlError')",'data-target' => "utm-builder" ) %>
+                    </div>
+										<div class="error" id="DisplayUrlError" style="width: 350px;"></div>
+                  </div>
+                  <div class="control-group">
+                    <div class="control-label">
+                      Text: <a rel="tooltip" data-original-title="Tell people a bit more about your URL. Make sure to make it clear what you're promoting.">[?]</a>
+                    </div>        
+                    <div class="controls">
+                      <%= text_area(:ad, :text,:style => "height:100px;width:80%" ,:class=>"req length" ,:onblur=>"validate(this.id,'TextError')",:id => "text_ad_text_body",:rel=>"tooltip", :onkeyup =>"displayAd(this.id)" , :onkeydown=>"displayAd(this.id)" ,:title=>"Why my company is amazing",:placeholder=>"Why my company is amazing",:WRAP=>"HARD",:cols=>"54" ) %>
+                    <small style="margin-left:22px;font-size:10px;color:#999;margin-top:3px;" class="help-inline"><span id="body_counter">70</span> characters left.</small>
+										<div class="error" id="TextError"></div>
+                    </div>
+                  </div>
+
+                <!--<div class="control-group">
+                  <div class="control-label">
+                    Device Preferences: <a rel="tooltip" data-original-title="When people click on your ad, they will land on the destination you put here.">[?]</a>
+                  </div>
+                  <div class="controls">
+			<select name="ad[device_preferences]">
+				<option value="DesktopsAndLaptops">Desktops and Laptops</option>
+				<option value="Mobiles">Mobiles</option>
+				<option value="Tabs">Tabs</option>
+			</select>
+                  </div>
+                </div>
+		<div class="control-group">
+                    <div class="control-label">
+                      Bid Strategy: <a rel="tooltip" data-original-title="Tagaly offers several bid strategies depending on whether you want to focus on getting clicks, impressions, or conversions">[?]</a>
+                    </div>        
+                    <div class="controls">
+			<button id='CPC-btn' class='btn btn-primary bttn'>CPC</button>
+			<button id='CPM-btn' class='btn btn-default bttn'>CPM</button>
+			<button id='CPA-btn' class='btn btn-default bttn'>CPA</button>		<a data-toggle="modal" href="#bid_pricing_suggestion" onclick="showtag('<%=@siteid%>','<%=@sitename%>','<%= @siteurl %>')">Minimum bid price suggestions</a>
+                    </div>
+                </div>
+		<div class="control-group">
+			<div class="control-group" id='div-CPC' style='display:inline;'>
+			    <div class="controls side">
+				<div>Clicks: </div>
+				<div><input type='text' onkeypress="return isNumberKey(event)" id='Clicks' name='cpc_firstUnit' style='width:60px;'/></div>
+			    </div>
+			    <div class="side" style='margin-left:20px;'>
+				<div>CPC: </div>
+				<div>$ <input type='text' class='costDecimel'  onkeypress="return isNumberDecKey(event)"  id='CPC' name='cpc_secondUnit' style='width:60px;'/></div>
+			    </div>
+		        </div>
+			<div class="control-group" id='div-CPM' style='display:none;'>
+			    <div class="controls side">
+				<div>Impressions: </div>
+				<div><input type='text' onkeypress="return isNumberKey(event)" id='Impressions' name='cpm_firstUnit' style='width:60px;'/></div>
+			    </div>
+			    <div class="side" style='margin-left:20px;'>
+				<div>CPM: </div>
+				<div>$ <input type='text' class='costDecimel'  onkeypress="return isNumberDecKey(event)"  id='CPM' name='cpm_secondUnit' style='width:60px;'/></div>
+			    </div>
+		        </div>
+			<div class="control-group" id='div-CPA' style='display:none;'>
+			    <div class="controls side">
+				<div>Conversions: </div>
+				<div><input type='text' onkeypress="return isNumberKey(event)" id='Cost' name='cpa_firstUnit' style='width:60px;'/></div>
+			    </div>
+			    <div class="side" style='margin-left:20px;'>
+				<div>CPA: </div>
+				<div>$ <input type='text' class='costDecimel'  onkeypress="return isNumberDecKey(event)"  id='CPA' name='cpa_secondUnit' style='width:60px;'/></div>
+			    </div>
+		        </div>
+			<div class="error" id="PricingError" style='margin-left:160px'></div>
+		</div>-->
+                <div class="actions form-actions">
+                <!-- require change in the controller-->
+	            <!--<input type='hidden' value='CPC' id='pricing_val' name='ad[pricing_val]'/>-->
+                    <%= text_field(:ad, :ad_type , :id=>"ad_type",:value=>"TextAd",:type=>"hidden") %>
+                    <%= text_field(:ad, :utm ,:class=>"utmparameters", :id=>"utm",:value=>"",:type=>"hidden") %>
+                    <%= text_field(:ad, :campaignid ,:id=>"textadcampaignid",:value=>"",:type=>"hidden") %>
+                    <%= text_field(:ad, :existingadids ,:id=>"textadids",:value=>"",:type=>"hidden") %>
+                    
+                    <input type="submit" value="Upload and submit for review" name="commit" class="btn btn-primary btn-large" onclick="return text_submitform()">
+                  </div>
+                </div>
+              </fieldset>
+              <% end %>
+              <% #### Text Ad form ends here %>
+            </div>
+
+            <div id="new_pagepost_ad_form" class="tab-pane ">
+            <% #### Native form starts here %>
+             <%= form_for :ad,:html => { :multipart => true ,:id => "new_ad" ,:class => "form-horizontal"},url: ads_path do |f| %>
+
+<% if params[:frame] == "frame" %>
+	<input type='hidden' name='frame' value='frame'/>
+<% end %>
+                <fieldset>
+                  <div class="form">
+                    <br>
+                    <div class="control-group">
+                      <div class="control-label">
+                        Ad Name: <a rel="tooltip" data-original-title="Administrative purposes only: Give your ad a descriptive, memorable name.">[?]</a>
+                      </div>
+                      <div class="controls">
+                        <%= text_field(:ad, :ad_name,:id=>"ad_name",:autofocus => "autofocus",:rel=>"tooltip",:title=>"My Native ad",:placeholder=>"My Native ad",:onchange=>"checkAdName(this.value,'native')", :maxlength=>"200",:autocomplete=>"off" ) %>
+                      </div>
+			<div class="error" id="native_AdNameError" ></div>
+                    </div>
+                    <div class="control-group">
+                      <div class="control-label">
+                        Destination URL: <a rel="tooltip" data-original-title="When people click on your ad, they will land on the destination you put here.">[?]</a>
+                      </div>
+                      <div class="controls">
+                        <%= text_field(:ad, :destination_url,:id=>"destination_url",:rel=>"tooltip",:title=>"http://www.myapplicationone.com",:placeholder=>"http://www.myapplicationone.com",'data-trigger' => "fb_ad_utm_show_link" ,'data-target' => "utm-builder") %>
+                      </div>
+			<div class="error" id="native_DestUrlError"></div>
+                    </div>
+<!--
+                  <div class="control-group">
+                    <div class="control-label">
+                      Display URL: <a rel="tooltip" data-original-title="Display URLs are meant to give users a clear idea of what page they'll arrive at when they click an ad">[?]</a>
+                    </div>
+                    <div class="controls">
+                      <%= text_field(:ad, :display_url,:id=>"display_url",:rel=>"tooltip",:title=>"http://www.myapplicationone.com",:placeholder=>"http://www.myapplicationone.com",'data-trigger' => "fb_ad_utm_show_link" ,'data-target' => "utm-builder") %>
+                    </div>
+		<div class="error" id="native_DisplayUrlError"></div>
+                  </div>
+-->
+                    <div class="control-group">
+                      <div class="control-label">
+                        Headline: <a rel="tooltip" data-original-title="Give your ad a clear headline so people can associate your ad with your URL.">[?]</a>
+                      </div>
+                      <div class="controls">
+                        <%= text_field(:ad, :headline,:id=>"ad_native_title",:rel=>"tooltip",:title=>"My company name",:placeholder=>"My company name") %>
+                      </div>
+                      <small style="font-size:10px;color:#999;margin-top:3px;" class="help-inline"><span id="native_title_counter">25</span> characters left.</small> 
+			<div class="error" id="native_HeadLineError" ></div>
+                    </div>
+                    <div class="control-group">
+                      <div class="control-label">
+                        Text: <a rel="tooltip" data-original-title="Tell people a bit more about your URL. Make sure to make it clear what you're promoting.">[?]</a>
+                      </div>
+                      <div class="controls">
+                        <%= text_area(:ad, :text,:style => "height:100px;width:80%" ,:id => "ad_native_body",:rel=>"tooltip",:title=>"Why my company is amazing",:placeholder=>"Why my company is amazing") %>
+                      </div>
+                      <small style="margin-left:160px;font-size:10px;color:#999;margin-top:3px;" class="help-inline"><span id="native_body_counter">35</span> characters left.</small>
+			<div class="error" id="native_TextError" ></div>
+                    </div>
+		
+               <!-- <div class="control-group">
+                  <div class="control-label">
+                    Device Preferences: <a rel="tooltip" data-original-title="When people click on your ad, they will land on the destination you put here.">[?]</a>
+                  </div>
+                  <div class="controls">
+			<select name="ad[device_preferences]">
+				<option value="DesktopsAndLaptops">Desktops and Laptops</option>
+				<option value="Mobiles">Mobiles</option>
+				<option value="Tabs">Tabs</option>
+			</select>
+                  </div>
+                </div>-->
+                <div class="control-group">
+                  <div class="control-label">
+                    Native Ad Sizes: <a rel="tooltip" data-original-title="These are the sizes available for native ads.">[?]</a>
+                  </div>
+                  <div class="controls">
+										<select name="ad[nativeAdSizes]" id="nativeAdSizes">
+										</select>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <div class="control-label">
+                    Image Sizes: <a rel="tooltip" data-original-title="These are the sizes available for native ads.">[?]</a>
+                  </div>
+                  <div class="controls">
+										<select name="ad[nativeAdImageSizes]" id="nativeAdImageSizes">
+										</select>
+                  </div>
+                </div>
+		<!--<div class="control-group">
+                    <div class="control-label">
+                      Bid Strategy: <a rel="tooltip" data-original-title="Tagaly offers several bid strategies depending on whether you want to focus on getting clicks, impressions, or conversions">[?]</a>
+                    </div>
+                    <div class="controls">
+			<button id='native_CPC-btn' class='btn btn-primary bttn'>CPC</button>
+			<button id='native_CPM-btn' class='btn btn-default bttn'>CPM</button>
+			<button id='native_CPA-btn' class='btn btn-default bttn'>CPA</button><a data-toggle="modal" href="#bid_pricing_suggestion" onclick="showtag('<%=@siteid%>','<%=@sitename%>','<%= @siteurl %>')">Minimum bid price suggestions</a>
+                    </div>
+                </div>
+		<div class="control-group">
+			<div class="control-group" id='native_div-CPC' style='display:inline;'>
+			    <div class="controls side">
+				<div>Clicks: </div>
+				<div><input type='text' onkeypress="return isNumberKey(event)" id='native_Clicks' name='cpc_firstUnit' style='width:60px;'/></div>
+			    </div>
+			    <div class="side" style='margin-left:20px;'>
+				<div>CPC: </div>
+				<div>$ <input type='text' class='costDecimel'  onkeypress="return isNumberDecKey(event)"  id='native_CPC' name='cpc_secondUnit' style='width:60px;'/></div>
+			    </div>
+		        </div>
+			<div class="control-group" id='native_div-CPM' style='display:none;'>
+			    <div class="controls side">
+				<div>Impressions: </div>
+				<div><input type='text' onkeypress="return isNumberKey(event)" id='native_Impressions' name='cpm_firstUnit' style='width:60px;'/></div>
+			    </div>
+			    <div class="side" style='margin-left:20px;'>
+				<div>CPM: </div>
+				<div>$ <input type='text' class='costDecimel'  onkeypress="return isNumberDecKey(event)"  id='native_CPM' name='cpm_secondUnit' style='width:60px;'/></div>
+			    </div>
+		        </div>
+			<div class="control-group" id='native_div-CPA' style='display:none;'>
+			    <div class="controls side">
+				<div>Conversions: </div>
+				<div><input type='text' onkeypress="return isNumberKey(event)" id='native_Cost' name='cpa_firstUnit' style='width:60px;'/></div>
+			    </div>
+			    <div class="side" style='margin-left:20px;'>
+				<div>CPA: </div>
+				<div>$ <input type='text' class='costDecimel'  onkeypress="return isNumberDecKey(event)"  id='native_CPA' name='cpa_secondUnit' style='width:60px;'/></div>
+			    </div>
+		        </div>
+			<div class="error" id="native_PricingError" style='margin-left:160px' ></div>
+		</div>-->
+
+                    <div class="control-group">
+                      <div class="control-label">
+                        Image: <a rel="tooltip" data-original-title="Add an eye-catching image that's related to your URL. Choose something that will be visible even when it is shown as a thumbnail. All ad images must have dimensions of exactly 99 pixels wide x 72 pixels tall.">[?]</a>
+                      </div>
+                      <div class="controls">
+                        <%= file_field 'upload', 'datafile',:id=>"upload_datafile1" %>
+                      </div>
+			<div class="error" id="native_ImageError" style='' ></div>
+                    </div>
+		<div class="control-group">
+			<div class='control-label'>
+			</div>
+			<div class='controls'>
+				<a href='javascript:void();' id='prefImg'>Prefered Image Sizes</a>
+				<div id='prefDiv' style="margin-top:-200px;position:absolute;display:none;background:none repeat scroll 0 0 #FFFFFF;border: 2px solid; border-radius: 10px;">
+					<table class='table'>
+						<tr><th>Size</th><th>Style</th><th>Gif Weight</th><th>Flash Weight</th></tr><tr>
+						<td>468 x 60 </td><td> Full Banner</td><td> 20 KB</td><td> 30 KB</td></tr><tr>
+						<td>728 x 90 </td><td>Leaderboard </td><td> 25 KB</td><td> 35 KB</td></tr><tr>
+						<td>250 x 250 </td><td>Square </td><td> 25 KB</td><td> 35 KB</td></tr><tr>
+						<td>160 x 600 </td><td>Skyscraper </td><td>20 KB </td><td> 30 KB</td></tr><tr>
+						<td>240 x 400 </td><td>Fat Skyscraper </td><td>25 KB </td><td>35 KB </td></tr><tr>
+						<td>234 x 60 </td><td>Half Banner </td><td> 15 KB</td><td>20 KB </td></tr><tr>
+						<td>120 x 60 </td><td>Button </td><td>10 KB </td><td>20 KB </td></tr><tr>
+						<td>88 x 31 </td><td>Button </td><td>10 KB </td><td>10 KB </td></tr>
+					</table>
+				</div>
+			</div>
+		</div>
+                    <div class="actions form-actions">
+		      <input type='hidden' id='native_pricing_val' name='ad[pricing_val]' value='CPC'>
+			<input type='hidden' id='imageCode_native' value='' name='ad[imageCode_native]' >
+			<input type='hidden' id='nativeImageSize' value='' name='ad[nativeImageSize]' >
+                      <%= text_field(:ad, :ad_type , :id=>"ad_type",:value=>"NativeAd",:type=>"hidden") %>
+                      <%= text_field(:ad, :utm ,:class=>"utmparameters", :id=>"utm",:value=>"",:type=>"hidden") %>
+                      <%= text_field(:ad, :campaignid ,:id=>"nativeadcampaignid",:value=>"",:type=>"hidden") %>
+                      <%= text_field(:ad, :existingadids ,:id=>"nativeadids",:value=>"",:type=>"hidden") %>
+                      <input type="submit" value="Upload and submit for review" name="commit" class="btn btn-primary btn-large" onclick="return native_submitform()">
+                    </div>
+                  </div>
+                </fieldset>
+              <% end %>
+              <% #### Native Ad form ends here %>
+            </div>
+
+
+
+            <div id="new_web_ad_form" class="tab-pane ">
+              <% #### banner Ad form starts here %>
+              <%= form_for :ad,:html => { :multipart => true ,:id => "new_ad" ,:class => "form-horizontal"},url: ads_path do |f| %>
+
+<% if params[:frame] == "frame" %>
+	<input type='hidden' name='frame' value='frame'/>
+<% end %>
+              <fieldset>
+								<div class="control-group">
+									<div class="control-label">
+										Ad Name: <a rel="tooltip" data-original-title="Administrative purposes only: Give your ad a descriptive, memorable name.">[?]</a>
+									</div>
+									<div class="controls">
+										<%= text_field(:ad, :ad_name,:id=>"banner_ad_name",:autofocus => "autofocus",:class=>"req" , :rel=>"tooltip",:title=>"My banner ad",:placeholder=>"My banner ad",:onchange=>"checkAdName(this.value,'banner')", :onblur=>"validate(this.id,'banner_AdNameError')" , :maxlength=>"200",:autocomplete=>"off") %>
+									</div>
+									<div class="error" id="banner_AdNameError"></div>
+								</div>
+								<div class="control-group">
+									<div class="control-label">
+										Destination URL: <a rel="tooltip" data-original-title="When people click on your ad, they will land on the destination you put here.">[?]</a>
+									</div>
+									<div class="controls">
+										<%= text_field(:ad, :destination_url,:id=>"banner_destination_url",:rel=>"tooltip", :class=>"req url length" , :title=>"http://www.zady.com",:placeholder=>"http://www.zady.com",'data-trigger' => "normal_ad_utm_show_link" ,'data-target' => "utm-builder", :onblur=>"validate(this.id,'banner_DestUrlError')" ) %>
+									</div>
+									<div class="error" id="banner_DestUrlError" style='width:350px;'></div> 
+								</div>
+
+                <div class="control-group">
+                  <label for="ad_Your ad (40kb max filesize)" class="control-label">Your ad </label>
+                  <div class="controls">
+                    <div><%= file_field 'upload', 'datafile',:id=>"upload_datafile_banner" %></div>
+										<div id='banner_swffla_div' style='display:none;'>
+											<select id='banner_swffla' name='ad[ImageSizeFroSwfOrFla]' style='margin-top:15px;'>
+												<option> Select Size </option>
+												<option value='88x31'> 88x31 </option>
+												<option value='120x20'> 120x20 </option>
+												<option value='120x60'> 120x60 </option>
+												<option value='160x600'> 160x600 </option>
+												<option value='168x28'> 168x28 </option>
+												<option value='216x36'> 216x36 </option>
+												<option value='220x50'> 220x50 </option>
+												<option value='234x60'> 234x60 </option>
+												<option value='240x400'> 240x400 </option>
+												<option value='250x250'> 250x250 </option>
+												<option value='300x50'> 300x50 </option>
+												<option value='300x250'> 300x250 </option>
+												<option value='468x60'> 468x60 </option>
+												<option value='728x90'> 728x90 </option>
+												<option value='1024x90'> 1024x90 </option>
+											</select>
+										</div>
+                  </div>
+									<div class="error" id="banner_ImageError" style='width:350px;height:40px' ></div>
+                </div>
+		<div class="control-group">
+			<div class='control-label'>
+			 
+			</div>
+			<div class='controls'>
+				<a href='#' class='bannerPrefImg'>Prefered Image Sizes</a>
+				<div id='bannerPrefDiv' style="margin-top:-200px;position:absolute;display:none;background:none repeat scroll 0 0 #FFFFFF;border: 2px solid; border-radius: 10px;z-index:10000">
+					<table class='table' id='prefImagesTable'>
+						<tr><td colspan='8' align='right' style="text-align:right"><a href="javascript:void()" id="close_prefimages">close</a></td></tr>
+						<tr><td colspan='4' align='left' style="text-align:center"><h2>Laptops and Desktops<h2></td>
+								<td colspan='3' align='center' style="text-align:center"><h2>Mobiles<h2></td>
+						</tr>
+						<tr><!-- laptops and desktops --><td><strong>Size</strong></td><td><strong>Style</strong></td><td><strong>Gif Weight</strong></td><td><strong>Flash Weight</strong></td><!-- Mobiles --><td><div style="width: 1px;background-color: black;height:100%;margin:0px 40px 0px 40px;">&nbsp;</div></td><td><strong>Size ( Style )</strong></td><td><strong>Image Weight</strong></td></tr>
+						<tr>
+						<td>468 x 60 </td><td> Full Banner</td><td> 20 KB</td><td> 30 KB</td>
+						<!-- Mobiles --><td><div style="width: 1px;background-color: black;height:100%;margin:0px 40px 0px 40px;">&nbsp;</div></td><td>120 x 20 </td><td> 20 KB</td>
+						</tr><tr>
+						<td>728 x 90 </td><td>Leaderboard </td><td> 25 KB</td><td> 35 KB</td>
+						<!-- Mobiles --><td><div style="width: 1px;background-color: black;height:100%;margin:0px 40px 0px 40px;">&nbsp;</div></td><td>168 x 28 </td><td> 20 KB</td>
+						</tr><tr>
+						<td>250 x 250 </td><td>Square </td><td> 25 KB</td><td> 35 KB</td><!-- Mobiles--> <td><div style="width: 1px;background-color: black;height:100%;margin:0px 40px 0px 40px;">&nbsp;</div></td><td>216 x 36 </td><td> 20 KB</td></tr><tr>
+						<td>160 x 600 </td><td>Skyscraper </td><td>20 KB </td><td> 30 KB</td><!-- Mobiles --><td><div style="width: 1px;background-color: black;height:100%;margin:0px 40px 0px 40px;">&nbsp;</div></td><td>300 x 250 (Smartphones Only) </td><td> 20 KB</td></tr><tr>
+						<td>240 x 400 </td><td>Fat Skyscraper </td><td>25 KB </td><td>35 KB </td><!-- Mobiles --><td><div style="width: 1px;background-color: black;height:100%;margin:0px 40px 0px 40px;">&nbsp;</div></td><td>300 x 50 (Smartphones Only) </td><td> 20 KB</td></tr><tr>
+						<td>234 x 60 </td><td>Half Banner </td><td> 15 KB</td><td>20 KB </td><!-- Mobiles --><td><div style="width: 1px;background-color: black;height:100%;margin:0px 40px 0px 40px;">&nbsp;</div></td><td>320 x 50 (Smartphones Only) </td><td> 20 KB</td></tr><tr>
+						<td>120 x 60 </td><td>Button </td><td>10 KB </td><td>20 KB </td></tr><tr>
+						<td>88 x 31 </td><td>Button </td><td>10 KB </td><td>10 KB </td></tr>
+						
+						<!-- Mobiles -->
+						<!--<tr><td colspan='4' align='left'>Mobiles</td></tr>
+						<tr><td><strong>Size ( Style )</strong></td><td><strong>Image Weight</strong></td></tr>
+						<tr><td>120 x 20 </td><td> 20 KB</td></tr><tr><td>168 x 28 </td><td> 20 KB</td></tr><tr><td>216 x 36 </td><td> 20 KB</td></tr><tr><td>300 x 250 (Smartphones Only) </td><td> 20 KB</td></tr><tr><td>300 x 50 (Smartphones Only) </td><td> 20 KB</td></tr><tr><td>320 x 50 (Smartphones Only) </td><td> 20 KB</td></tr>-->
+						<!-- Tablets -->
+						<tr><td colspan='8' align='left' style="text-align:center"><h2>Tablets</h2></td></tr>
+						<tr><td><strong>Size</strong></td><td><strong>Image Weight</strong></td></tr><tr><td>300 x 250</td><td> 20 KB</td></tr><tr><td>468 x 60</td><td> 20 KB</td></tr><tr><td>728 x 90</td><td> 20 KB</td></tr><tr><td>1024 x 90</td><td> 20 KB</td></tr>
+
+		
+		
+		
+					</table>
+				</div>
+			</div>
+		</div>
+<div class="control-group" align='center'>
+	<h6>Image Preview</h6>
+	<div>
+		<img src="" id="banneradPreviewImage"/>
+	</div>
+</div>
+                <div class="actions form-actions">
+	            <input type='hidden' value='CPC' id='banner_pricing_val' name='ad[pricing_val]'/>
+	            <input type='hidden' value='' id='bannerImageSize' name='ad[bannerImageSize]'/>
+			<input type='hidden' id='imageCode_banner' value=''/>
+			<input type='hidden' id='imageCodeFormat' name='ad[imageCodeFormat]' value=''/>
+                  <%= text_field(:ad, :ad_type , :id=>"ad_type",:value=>"BannerAd",:type=>"hidden") %>
+                  <%= text_field(:ad, :utm ,:class=>"utmparameters", :id=>"utm",:value=>"",:type=>"hidden") %>
+                  <%= text_field(:ad, :campaignid ,:id=>"banneradcampaignid",:value=>"",:type=>"hidden") %>
+                  <%= text_field(:ad, :existingadids ,:id=>"banneradids",:value=>"",:type=>"hidden") %>
+                  <input type="submit" value="Upload and submit for review" name="commit" class="btn btn-primary btn-large" onclick="return banner_submitform()">
+                </div>
+              </fieldset>
+              <% end %>
+              <% #### Banner Ad form ends here %>
+            </div>
+
+          </div>
+        </div>
+        <div class="span3 expando ad-guidelines-new">
+          <div class="ad-guidelines expandable hide" id="web_help_text">
+            <p> <b>Ad Creative Guidelines:</b> For your ad to pass review it MUST adhere to the following guidelines:<br> </p>
+            <ol>
+              <li>Your ad must be a .gif or .jpg smaller than 40kb in filesize.</li>
+              <li>Your ad must have one of the standard sets of dimensions: 300x250, 728x35, 160x600, 468x60, or 120x600.</li>
+              <li>Your ad must include the advertiser's brand.</li>
+              <li>Your ad must have a border.</li>
+              <li>Your ad cannot imitate computer effects like scrolling or mousing over.</li>
+              <li>No animations longer than 30 seconds.</li>
+              <li>No strobe or flashing effects allowed.</li>
+              <li>Your ad and campaign must not feature or promote alcohol, anabolic steroids, drugs, financial products, gambling, adult content, or weight loss products.</li>
+            </ol>
+            <p>
+						</p>
+          </div>
+          <div class="ad-guidelines expandable " id="fb_help_text">
+            <p> <b>Facebook Creative Guidelines:</b> For your ad to pass review it MUST adhere to the following guidelines:<br> </p>
+            <ol>
+              <li>Your ad image must be a .png, .gif, or .jpg.</li>
+              <li>Your ad image must be <b>99x72</b> pixels.</li>
+              <li>The title must be 25 characters or fewer.</li>
+              <li>The body must be 70 characters or fewer.</li>
+              <li>Neither the title nor body text may include a word longer than 20 characters. This includes URLs so please do not use URLs in your text.</li>
+              <li>No non-latin characters, special punctuation, misspellings, or improper grammar.</li>
+            </ol>
+            <p></p>
+            <div style="position:absolute;right:-40px;top:300px">
+              <div class="pull-right facebook_ad_builder_preview" style="margin-top:10px;background-color:#FFFFFF;width:260px;height:auto;">
+                <p class="sponsored">
+                  Ad Preview
+                  <img src="/assets/microphone.png" alt="Facebook_megaphone">
+                </p>
+<div>
+	<ul style="width: 240px;margin:10px;">
+		<li id="preview_title" style="float: none;color:blue;"><a href="">Your title</a></li>
+		<li id="preview_url" class="adunits-innerli" style="float: none; color: rgb(0, 128, 0);">http://myappone.com</li>
+		<li id="preview_body" class="adunits-innerli" style="float: none; color: rgb(0, 0, 0);">Your body text</li>
+	</ul>
+</div>
+              </div>
+            </div>
+          </div>
+          <div class="ad-guidelines expandable hide" id="pagepost_help_text">
+            <p> <b>News Feed Ad Guidelines:</b> For your ad to pass review it MUST adhere to the following guidelines:<br> </p>
+            <ol>
+              <li>Your ad image must be a .png, .gif, or .jpg.</li>
+              <li>Your ad image must be <b>200x200</b> pixels.</li>
+              <li>The post message is optional must be 500 characters or fewer.</li>
+              <li>The link headline must be 55 characters or fewer.</li>
+              <li>The link description must be 145 characters or fewer.</li>
+              <li>No text fields may include a word longer than 20 characters. This includes URLs so please do not use URLs in your text.</li>
+              <li>No non-latin characters, special punctuation, misspellings, or improper grammar.</li>
+            </ol>
+            <p></p>
+            <div style="position:absolute;right:-72px;top:325px">
+              <div style="background:#fff;" class="pull-right pagepost_ad_builder_preview">
+                <p class="sponsored"> Native Ad Preview
+                <img src="/assets/microphone.png" alt="Facebook_megaphone"> </p>
+                <br>
+                <p style="font-size:11px;padding-left:8px;padding-right:8px;" id="message">
+                  Why my company is amazing...
+                </p>
+                <div style="background:#F7F7F7;border:1px solid #e3e3e3;height:100px;">
+                  <p style="margin-top:9px;margin-bottom:1px;" class="headline">
+                    My link headline...
+                  </p>
+                  <p style="margin-top:0;color:#80808a" class="decription">  www.domain.com </p>
+                  <p style="color:#80808a" id="native_description"> A little bit about my url... </p>
+                </div> 
+              </div>
+            </div>
+          </div>
+          <div class="ad-guidelines expandable hide" id="dynamic_fb_sidebar_help_text">
+            <p> <b>Available Macros:</b> You may use any of the following macros in your template <strong>title</strong> or <strong>body</strong>. Bear in mind that even after your product data is inserted in place of the macros, the resulting text still must adhere to the standard facebook sidebar ad guidelines (25 characters in the title; 70 in the body).<br> </p>
+            <ul>
+              <li><strong>{{ name }}</strong> - The name of your product</li>
+              <li><strong>{{ description }}</strong> - The description of your product</li>
+              <li><strong>{{ category }}</strong> - The category of your product</li>
+              <li><strong>{{ price }}</strong> - The price of your product. Be sure to add currency symbols ($) as necessary.</li>
+            </ul>
+            <p></p>
+          </div>
+            <span class="underangle"><img src="/assets/yellow.png" alt="Yellowunder"></span>
+        </div>
+          
+        <script type="text/javascript">
+          $(document).ready(function() {
+          $('#new_web_ad_btn').click(function() {
+            $('.ad-guidelines').hide();
+            $('#web_help_text').show();
+						$('#new_facebook_ad_form').hide();
+						$('#new_pagepost_ad_form').hide();
+						$('#new_web_ad_form').show();
+						$('#new_fb_ad_btn').removeClass("active");
+						$('#new_pagepost_ad_btn').removeClass("active");
+						$('#new_web_ad_btn').addClass("active");
+						return false;
+          });
+          $('#new_fb_ad_btn').click(function() {
+            $('.ad-guidelines').hide();
+            $('#fb_help_text').show();
+						$('#new_facebook_ad_form').show();
+						$('#new_pagepost_ad_form').hide();
+						$('#new_web_ad_form').hide();
+						$('#new_fb_ad_btn').addClass("active");
+						$('#new_pagepost_ad_btn').removeClass("active");
+						$('#new_web_ad_btn').removeClass("active");
+						return false;
+          });
+          $('#new_pagepost_ad_btn').click(function() {
+            $('.ad-guidelines').hide();
+            $('#pagepost_help_text').show();
+						$('#new_facebook_ad_form').hide();
+						$('#new_pagepost_ad_form').show();
+						$('#new_web_ad_form').hide();
+						$('#new_fb_ad_btn').removeClass("active");
+						$('#new_pagepost_ad_btn').addClass("active");
+						$('#new_web_ad_btn').removeClass("active");
+						for(var item in adunitSizes){
+							var option = document.createElement("option");
+							option.text = item ;
+							var select = document.getElementById("nativeAdSizes");
+							select.appendChild(option);
+						}
+						var adSizeValue = document.getElementById("nativeAdSizes").value;
+						for(var item in adunitSizes){
+							if(item == adSizeValue){
+								for(var imagesizesvalues in adunitSizes[item]){
+									var option = document.createElement("option");
+									option.text = adunitSizes[item][imagesizesvalues] ;
+									var selectedv = document.getElementById("nativeAdImageSizes");
+									selectedv.appendChild(option);
+								}
+							}
+						}
+						return false;
+          });
+          $('#new_dynamic_fb_ad_btn').click(function() {
+            $('.ad-guidelines').hide();
+            $('#dynamic_fb_sidebar_help_text').show();
+            });
+          });
+$('#nativeAdSizes').change(function(){
+	for(var item in adunitSizes){
+		var adSizeValueV = $(this).val();
+		if(item == adSizeValueV){
+			var selectedv = document.getElementById("nativeAdImageSizes");
+			selectedv.options.length = 0;
+			for(var imagesizesvalues in adunitSizes[item]){
+				var option = document.createElement("option");
+				option.text = adunitSizes[item][imagesizesvalues] ;
+				var selectedv = document.getElementById("nativeAdImageSizes");
+				selectedv.appendChild(option);
+			}
+		}
+	}
+});
+        </script>
+      </div>
+    </div>
+      
+    <div class='modal fade hide' id='utm-builder'>
+      <div class='modal-header'>
+        <button class='close' data-dismiss='modal'>x</button>
+        <h3>Build URL with UTM parameters</h3>
+      </div>
+      <div class='modal-body'>
+        <p> 
+          <label for="Click_URL__required_">Click url (required)</label>
+          <input id="utm_click_url" name="utm_click_url" placeholder="e.g. http://www.zady.com" type="text" /> 
+        </p>
+        <p>
+          <label for="UTM_Source__required_">Utm source (required)</label>
+          <input id="utm_source" name="utm_source" placeholder="(referrer: google, facebook, twitter)" type="text" />
+        </p>
+        <p>
+          <label for="UTM_Medium__required_">Utm medium (required)</label>
+          <input id="utm_medium" name="utm_medium" placeholder="(marketing medium: cpc, banner, email)" type="text" />
+        </p>
+        <p>
+          <label for="UTM_Term">Utm term</label>
+          <input id="utm_term" name="utm_term" placeholder="(identify the paid keywords)" type="text" />
+        </p>
+        <p>
+          <label for="UTM_Content">Utm content</label>
+          <input id="utm_content" name="utm_content" placeholder="(use to differentiate ads)" type="text" />
+        </p>
+        <p>
+          <label for="UTM_Name__required_">Utm name (required)</label>
+          <input id="utm_campaign" name="utm_campaign" placeholder="(product, promo code, or slogan)" type="text" />
+        </p>
+      </div>
+      <div class='modal-footer'>
+        <a class='btn' data-dismiss='modal'>Close</a>
+        <a href="#" class="btn btn-success" id="utm_finish_button" >Finish</a>
+      </div>
+    </div>
+    <script>
+      //<![CDATA[ CPC-btn
+      
+      $(document).ready(function() {
+        $('[data-target=utm-builder]').each(function() {
+          var inputEl = $(this);
+          var triggerEl = $('#' + inputEl.data('trigger'));
+          var $modal = $('#utm-builder');
+      
+          triggerEl.click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+      
+            var url = inputEl.val();
+            var path = "";
+            var query = "";
+            var hash = "";
+            var params = {};
+            var urlCopy = url;
+            hash = urlCopy.split('#').slice(1).join('');
+            urlCopy = urlCopy.split('#')[0];
+            query = urlCopy.split('?').slice(1).join('');
+            path = urlCopy.split('?')[0];
+            if (query !== "") {
+              query.split('&').forEach(function(param) {
+                params[param.split('=')[0]] = param.split('=')[1];
+              });
+            }
+      
+            $modal.find('input[type=text]').each(function(index, input) {
+              var $input = $(input);
+              $input.val('');
+              var id = $input.attr('id');
+              if (params.hasOwnProperty(id)) {
+                $input.val(params[id]);
+                delete params[id];
+              }
+            });
+      
+            var paramString = $.param(params);
+            var baseUrl = path;
+            if (paramString !== "") {
+              baseUrl += "?" + paramString;
+            }
+            if (hash !== "") {
+              baseUrl += '#' + hash;
+            }
+      
+            $('#utm_click_url').val(baseUrl);
+            $modal.modal('show');
+          });
+      
+          $('#utm_finish_button').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+      
+            var url = $('#utm_click_url').val();
+      
+            var hash = url.split('#').slice(1).join('');
+            url = url.split('#')[0];
+      
+            var options = ["utm_source", "utm_medium", "utm_term", "utm_content", "utm_campaign"];
+            var params = [];
+            for (var i = 0; i < options.length; i++) {
+              var optionId = options[i];
+              var optionValue = $('#' + optionId).val();
+              if (optionValue !== "") {
+                params.push(optionId + '=' + optionValue);
+              }
+            }
+            var paramString = params.join('&');
+            if (paramString !== "") {
+              if (url.indexOf('?') === -1) {
+                url += '?';
+              } else {
+                url += '&';
+              }
+              url += paramString;
+            }
+            if (hash !== "") {
+              url += '#' + hash;
+            }
+            inputEl.val(url);
+            $modal.modal('hide');
+          });
+        });
+      
+      });
+      //]]>
+    </script>
+  </body>
+</html>

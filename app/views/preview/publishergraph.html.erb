@@ -1,0 +1,95 @@
+        <script src="/assets/amcharts.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            var chart;
+            var chartData = [];
+            var chartCursor;
+            AmCharts.ready(function () {
+                // generate some data first
+                generateChartData();
+
+                // SERIAL CHART    
+                chart = new AmCharts.AmSerialChart();
+                chart.pathToImages = "/assets/";
+                chart.zoomOutButton = {
+                    backgroundColor: '#000000',
+                    backgroundAlpha: 0.15
+                };
+                chart.dataProvider = chartData;
+                chart.categoryField = "date";
+                chart.balloon.bulletSize = 5;
+
+                // listen for "dataUpdated" event (fired when chart is rendered) and call zoomChart method when it happens
+                chart.addListener("dataUpdated", zoomChart);
+
+                // AXES
+                // category
+                var categoryAxis = chart.categoryAxis;
+                categoryAxis.parseDates = true; // as our data is date-based, we set parseDates to true
+                categoryAxis.minPeriod = "DD"; // our data is daily, so we set minPeriod to DD
+                categoryAxis.dashLength = 1;
+                categoryAxis.gridAlpha = 0.15;
+                categoryAxis.position = "top";
+                categoryAxis.axisColor = "#DADADA";
+
+                // value                
+                var valueAxis = new AmCharts.ValueAxis();
+                valueAxis.axisAlpha = 0;
+                valueAxis.dashLength = 1;
+                chart.addValueAxis(valueAxis);
+
+                // GRAPH
+                var graph = new AmCharts.AmGraph();
+                graph.title = "red line";
+                graph.valueField = "visits";
+                graph.bullet = "round";
+                graph.bulletBorderColor = "#FFFFFF";
+								graph.bulletBorderThickness = 2; 
+                graph.lineThickness = 2;
+                graph.lineColor = "#5fb503";
+                graph.negativeLineColor = "#efcc26";
+                graph.hideBulletsCount = 50; // this makes the chart to hide bullets when there are more than 50 series in selection
+                chart.addGraph(graph);
+
+                // CURSOR
+                chartCursor = new AmCharts.ChartCursor();
+                chartCursor.cursorPosition = "mouse";
+                chartCursor.pan = true; // set it to fals if you want the cursor to work in "select" mode
+                chart.addChartCursor(chartCursor);
+
+                // SCROLLBAR
+                var chartScrollbar = new AmCharts.ChartScrollbar();
+                chart.addChartScrollbar(chartScrollbar);
+
+                // WRITE
+                chart.write("chartdiv");
+            });
+
+            // generate some random data, quite different range
+            function generateChartData() {
+
+			<% graphType = "tot"+params[:graphType] %>
+			<% @graphDataForCamp.each do |data| %>
+			  <% data.each do |key,ads| %>
+			  
+			<% 
+			monthIndexes=Array.new
+			monthIndexes={"Jan"=>01,"Feb"=>02,"Mar"=>03,"Apr"=>04,"May"=>05,"Jun"=>"06","Jul"=>"07","Aug"=>"08","Sep"=>"09","Oct"=>"10","Nov"=>"11","Dec"=>"12" }
+			month=key[4,3]
+			year=key[10,15]
+			day=key[8,2]
+			%>
+			//alert("<%= month %>");
+					var y = parseInt(<%= year %>);					var m = parseInt(<%= monthIndexes[month.to_s] %>) - 1  ;					var d = parseInt(<%= day %>);					var date = new Date(Date.UTC(y,m,d));
+					//alert(date);					chartData.push({						date: date,						visits: <%= ads[graphType] %>					});
+			<% end %>
+			<% end %>
+
+            }
+
+            // this method is called when chart is first inited as we listen for "dataUpdated" event
+            function zoomChart() {
+                // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
+                chart.zoomToIndexes(chartData.length - 40, chartData.length - 1);
+            }	            
+        </script>
+        <div id="chartdiv" style="width: 100%; height: 300px;"></div>

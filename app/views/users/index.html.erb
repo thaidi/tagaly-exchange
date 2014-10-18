@@ -1,0 +1,148 @@
+<% #### MAIN DASHBOARD PAGE ###### %>
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/assets/bsa.min.css" type="text/css" />
+    <link rel="stylesheet" href="/assets/adblock.css" type="text/css" />
+    <link rel="stylesheet" href="/assets/skinny.css" type="text/css" media="screen and (max-width: 1100px)" />
+  </head>
+  <body>
+    <div id="realpage">
+      <div class="contentwrap cf ">
+        <div class="breathablewrap">
+          <div class="heading cf">
+            <div class="breadcrumbs">
+              <a href="/users">My Account<strong></strong></a>
+              <a class="off">Overview</a>	
+            </div>
+            <div rel="My Account | BuySellAds" id="realpagetitle"></div>
+              <span class="title">My Account <em>/ Overview</em></span>
+            </div>
+            <div class="content cf">
+              <div class="sidebar">    
+                <ul class="sidenav">
+                  <li class="account on"><a href=""><em>Account Overview</em></a></li>
+                  <li class="settings "><a href=""><em>Account Settings</em></a></li>
+                  <li class="payment "><a href=""><em>Cashout Settings</em></a></li>
+                  <li class="separator"></li>
+                  <li class="billing"><a href=""><em>Billing &amp; Deposit</em></a></li>
+                  <li class="separator"></li>
+                  <li class="transactions"><a href=""><em>Transaction History</em></a></li>
+                  <li class=""><a href=""><em>Ads by month</em></a></li>
+                </ul>        
+              </div>
+              <div class="rightcol cf">
+                <div class="rpad">
+                  <div class="accountmodule cf">
+                    <div class="acmodpad cf">
+                      <span class="avatar">
+                        <img width="60" height="60" alt="" src="/assets/avatar.gif">
+                      </span>
+                      <span class="title">Hi <%= session[:user_name] %>!</span>										
+                      <div class="accountmood" id="normalmood">
+                       
+                      </div>										
+                      <div class="accountmood" id="editingmood">
+                        I am
+                        <select id="selectextent" name="extent">
+                          <option selected="" value="0">-</option>
+                          <option value="1">very</option>
+                          <option value="2">somewhat</option>
+                          <option value="3">mostly</option>
+                          <option value="4">skeptically</option>
+                        </select>
+                        <select id="selectmood" name="mood">
+                          <option selected="" value="0">indifferent</option>
+                          <option value="1">overjoyed</option>
+                          <option value="2">happy</option>
+                          <option value="3">disappointed</option>
+                          <option value="4">angry</option>
+                        </select> with Tagaly.
+                      <div id="moodmessagewrapper">
+                        <span class="title">Is there any other feedback you would like to share with us at this time?</span>
+                        <textarea rows="3" cols="5" id="moodmessage" name="moodmessage"></textarea>
+                      </div>
+                      <a id="savemood" class="button green small edit dojs" href=""><span><em>save</em></span></a>
+                    </div>									  
+                  </div>
+                  <div class="separator cf"></div>
+                </div>								
+                <div class="separator smtop bottom cf"></div>						
+                <div class="module cf">						
+                  <h3>Account Balance</h3>
+                  <div class="modpad nopad cf">
+                    <ul class="balance cf">
+                      <li> <strong>Currency</strong><br> US Dollar </li>
+                      <li class="right"> <strong>Available</strong><br> $0.00 </li>
+                      <li class="right"> <strong>Pending</strong><br> $0.00 </li>
+                      <li class="right"> <strong>Total Balance</strong><br> $0.00	</li>
+                    </ul>
+                  </div>
+                </div>								
+                <div class="separator mbottom cf"></div>								
+                <div class="fiftyleft cf">								
+                  <div class="fiftyleft cf">
+                  <!-- check the user type -->
+                  
+                    <ul class="cta">
+                      <li class="title"><a href="/dashboard/<%= session[:site_id] %>">Advertisers<span class="arw"></span></a>
+                      <ul>
+                      <% if session[:usertype]=="advertiser" || session[:usertype]=="both" %>
+                        <li><a href="/dashboard/<%= session[:site_id] %>">Dashboard</a></li>
+                        <li><a href="/mycampaigns">My Campaigns</a></li>
+                        <li><a href="/ads/?adtype=all">My Ads</a></li>
+                  <li><a href="/conversions"><em>My Conversions</em></a></li>
+                        <li><a href="/sites">My Sites</a></li>
+                        <li><a href="/retargets">Retargeting Lists</a></li>
+                        <li><a href="/sites/tag">Site Tracking Tag</a></li>
+                        <% else %>
+                        <li>
+                          <a href="/users/introduction?page=1" ><button type="button" class="btn btn-info">Get Started</button></a>
+                        </li>
+                        <% end %>
+                      </ul>
+                      
+                    </li>
+                  </ul>
+                  
+                </div>									
+                <div class="fiftyright cf">
+                  <ul class="cta">
+                    <li class="title"><a href="publishers/dashboard/<%= session[:publishersite_id] %>">Publisher<span class="arw"></span></a>
+                      <ul>
+                      <% if session[:usertype]=="publisher" || session[:usertype]=="both" %>
+													<li><a href="/publishers/dashboard/<%= session[:publishersite_id] %>"><em>Dashboard</em></a></li>
+													<li><a href="/reports/publisher/adUnit"><em>Reports</em></a></li>
+													<li><a href="/publisher"><em>My Sites</em></a></li>
+													<li><a href="/placements/"><em>Placements</em></a></li>
+													<li><a href="/channels/viewall"><em>Channels</em></a></li>
+													<li><a href="/styles/"><em>Styles</em></a></li>
+													<li><a href="/nativestyles/"><em>Native Styles</em></a></li>
+													<li><a href="/fonts/"><em>Fonts</em></a></li>
+                        <% else %>
+                        <li><a href="/publishers/introduction?page=1" ><button type="button" class="btn btn-info">Get Started</button></a><li>
+                         <% end %>
+                      </ul>
+                    </li>
+                  </ul>
+                 
+                </div>									
+                <div class="separator mtop cf"></div>								
+              </div>								
+            <div class="separator mtop mbottom cf"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        $(function () {
+          $('.dismiss').click(function () {
+            $(this).parents('.completeprofile').hide();
+            return false;
+          });
+        });
+      </script>
+    </div> <!-- END div#realpage -->
+  </div>
+  </body>
+</html>

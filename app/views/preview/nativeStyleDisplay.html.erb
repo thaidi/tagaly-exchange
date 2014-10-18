@@ -1,0 +1,107 @@
+<script></script>
+<style>
+	<% @fontDetails.each do |fontDetls| %>
+		@font-face {
+			font-family: <%= fontDetls.name %>;
+			src: url( /fonts/<%= fontDetls.url %>);
+		}
+	<% end %>
+</style>
+<style>
+			.bubble{ position: relative;width: 100px;height: 20px;padding: 2px;background: #000000;-webkit-border-radius: 2px;-moz-border-radius: 2px;border-radius: 2px; }
+			.bubbleDivAfter { content: '';position: absolute;border-style: solid;border-width: 10px 10px 0;border-color: #000 transparent;display: block;width: 0;z-index: 1;bottom: -10px;left: 10px; }
+			.radiodiv { margin-left: 15px; line-height: 12px; font-size: 14px; display:none; }
+			.color { width: 60px; }
+			.nativeadstable td { vertical-align : top; }
+			ul { margin:0px;padding:0px; }
+			.div2Ofli { display:none; }
+			.spanOfDivLi {display:none; }
+			.spanOfLi3 { float:left; }
+			.icon-img{ background:url('/assets/nicEditorIcons.gif') no-repeat scroll -17px 0px #FFF;width:20px;height:20px;float:left; }
+			.icon-bold { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -53px 0px #FFF;width:20px;height:20px;float:left; }
+			.icon-italic { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -125px 0px #FFF;width:20px;height:20px;float:left; }
+			.icon-underline { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -341px 0px #FFF;width:20px;height:20px;float:left; }
+			.icon-number { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -324px 0px #FFF;width:20px;height:20px;float:left; }
+			.icon-circle { background:url('/assets/circle_icon.png') no-repeat scroll 0px 0px #FFF;width:20px;height:20px;float:left; border-radius: 50% }
+			.icon-fontcolor { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -35px 0px #FFF;width:20px;height:20px;float:left; }
+			#effect { position: absolute; float: left; margin-left: 12px; margin-top: 20px; width: 70px; }
+			#blink { color: #008000; font-size: 14px; }
+			#nativestep1 { width:340px; border-radius:10px; padding:10px; border: 1px solid #95999C; background: none repeat scroll 0 0 #ffffff; float:left; margin-right : 5px; }
+			#nativestep2 { float:left; width:800px; border-radius:10px; border: 1px solid #95999C; padding:10px; background: none repeat scroll 0 0 #ffffff; margin: 0px 0px 10px 10px; }
+			.resize { position:absolute; border-color:black; border-style:solid; border-width:1px; }
+			.ui-resizable-nw{ width: 7px; height: 7px; background-color: #D0F2F0; border-color:#45C1B1; border-style:solid; border-width:1px; top:0px; left:0px; }
+			.ui-resizable-se{ width: 7px; height: 7px; background-color: #D0F2F0; border-color:#45C1B1; border-style:solid; border-width:1px; bottom:0px; right:0px; }
+			.ui-resizable-sw{ width: 7px; height: 7px; background-color: #D0F2F0; border-color:#45C1B1; border-style:solid; border-width:1px; bottom:0px; left:0px; }
+			.ui-resizable-ne{ width: 7px; height: 7px; background-color: #D0F2F0; border-color:#45C1B1; border-style:solid; border-width:1px; top:0px; right:0px; }
+			.ui-resizable-s{ width: 7px; height: 7px; background-color: #D0F2F0; border-color:#45C1B1; border-style:solid; border-width:1px; bottom:0px; left:0px; }
+			.ui-resizable-n{ width: 7px; height: 7px; background-color: #D0F2F0; border-color:#45C1B1; border-style:solid; border-width:1px; bottom:0px; left:0px; }
+			.ui-resizable-handle.ui-resizable-e { width: 7px; height: 7px; background-color: #D0F2F0; border-color:#45C1B1; border-style:solid; border-width:1px; top:calc(50% -  7px); right:0px; }
+			.ui-resizable-w{ width: 7px; height: 7px; background-color: #D0F2F0; border-color:#45C1B1; border-style:solid; border-width:1px; bottom:0px; left:0px; }
+			.textAreaForEdit { margin-left:10px; width: 350px; height: 75px; }
+			
+</style>
+<%
+	require 'json'
+	stylesData = JSON.parse(@nativeAdStyle["styleData"])
+%>
+<div style='font-size:13px;<%= @nativeAdStyle["canvasStyle"] %>'>
+<% stylesData.each do |key,data| %>
+	<% if key == "linAdunitscoloredtextbox" || key == "linAdunitsheadline" || key == "linAdunitsdescription" || key == "linAdunitscomments" || key == "linAdunitsauthorname" || key == "linAdunitsplaceholder" || key == "linAdunitssecondheadline" || key == "linAdunitscategorytitle" || key == "linAdunitsmore" || key == "linAdunitsnsotp" || key == "linAdunitsowtoti" || key == "linAdunitsncotp" || key == "linAdunitsreadmore" || key == "linAdunitsmultiplecategories" || key == "linAdunitsquotesbelowthephoto" || key == "linAdunitsenabletags" || key == "linAdunitscategorytitleiconorbox" || key == "linAdunitstimeago" || key == "linAdunitshorizontalline" || key == "linAdunitsdividerline" || key == "linAdunitsfollowmacontwitter" %>
+		<div id="<%= data["name"] %>" style="<%= data["styles"] %>" > <%= raw data["text"] %> </div>
+		<% elsif key == "linAdunitsimage" || key == "linAdunitsauthorimage" || key == "linAdunitscaret" || key == "linAdunitsyoutubesnapshot" || key == "linAdunitsvideosnapshot" || key == "linAdunitsfacebooklikeoranysocialmediawidget" || key == "linAdunitsfacebookshare" || key == "linAdunitsgoogleplusshare" || key == "linAdunitslinkedinshare" || key == "linAdunitstwittershare" || key == "linAdunitsseriesoficons" %>
+			<%
+				if data["imageSrc"] == ""	
+					if key == "linAdunitsimage"
+						src = ""
+					elsif key == "linAdunitsauthorimage"
+						src = ""
+					elsif key == "linAdunitscaret"
+						src = ""
+					elsif key == "linAdunitsyoutubesnapshot"
+						src = "/assets/youtube_icon.png"
+					elsif key == "linAdunitsvideosnapshot"
+						src = "video_icon.png"
+					elsif key == "linAdunitsfacebooklikeoranysocialmediawidget"
+						src = "/assets/facebook_icon.png"
+					elsif key == "linAdunitsfacebookshare"
+						src = "/assets/facebook_icon.png"
+					elsif key == "linAdunitsgoogleplusshare"
+						src = "/assets/google.png"
+					elsif key == "linAdunitslinkedinshare"
+						src = "/assets/linkedin.png"
+					elsif key == "linAdunitstwittershare"
+						src = "/assets/twitter.png"
+					elsif key == "linAdunitsseriesoficons"
+						src = "/assets/shareicons.png"
+					end
+				else
+					src = "/uploads/" + data["imageSrc"]
+				end
+			%>
+		<% if key == "linAdunitsimage" || key == "linAdunitsauthorimage"  %>
+			<div id="<%= data["name"] %>" style="<%= data["styles"] %>" > <img src="<%= src %>" style='<%= data["imgCss"] %>' /> </div>
+		<% elsif key == "linAdunitscaret" || key == "linAdunitsyoutubesnapshot" || key == "linAdunitsvideosnapshot" || key == "linAdunitsfacebooklikeoranysocialmediawidget" || key == "linAdunitsfacebookshare" || key == "linAdunitsgoogleplusshare" || key == "linAdunitslinkedinshare" || key == "linAdunitstwittershare" || key == "linAdunitsseriesoficons" %>
+			<div id="<%= data["name"] %>" style="<%= data["styles"] %>" > <img src="<%= src %>" width="30px" height="30px" style='<%= data["imgCss"] %>' /> </div>
+		<% end %>
+	<% elsif key == "linAdunitsdateofposts" %>
+<%
+	if data["dateType"] == "dd-mm-yy"
+		date = Time.now.strftime("%d-%m-%Y")
+	elsif data["dateType"] == "yy-mm-dd"
+		date = Time.now.strftime("%Y-%m-%d")
+	elsif data["dateType"] == "dd/mm/yy"
+		date = Time.now.strftime("%d/%m/%Y")
+	elsif data["dateType"] == "yy/mm/dd"
+		date = Time.now.strftime("%Y/%m/%d")
+	elsif data["dateType"] == "ddthmmmyy"
+		date = Time.now.strftime("%dth%b%Y")
+	elsif data["dateType"] == "ddthmmmy"
+		date = Time.now.strftime("%dth%b%y")
+	elsif data["dateType"] == "ddmmm"
+		date = Time.now.strftime("%dth%b")
+	end
+%>
+<div id='<%= data["linAdunitsdateofposts"] %>' style='<%= data["styles"] %>'><%= date %></div>
+	<% end %>
+<% end %>
+</div>

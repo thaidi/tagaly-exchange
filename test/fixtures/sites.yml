@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  sitename: MyString
+  siteurl: MyString
+  description: MyText
+  type: 
+  addedby: MyString
+
+two:
+  sitename: MyString
+  siteurl: MyString
+  description: MyText
+  type: 
+  addedby: MyString

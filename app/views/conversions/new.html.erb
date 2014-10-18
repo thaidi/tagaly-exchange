@@ -1,0 +1,285 @@
+<script>
+function trim(el) {
+    el.value = el.value.
+    replace(/(^\s*)|(\s*$)/gi, ""). // removes leading and trailing spaces
+    replace(/[ ]{2,}/gi, " "). // replaces multiple spaces with one space 
+    replace(/\n +/, "\n"); // Removes spaces after newlines
+    return;
+}
+
+function validate(id,divId) {
+		value = $( "#" + id ).val();
+		if(divId == "conversionnameerror") {
+			msg = "Name Field cannot be blank";
+		} else if(divId == "revenueerror") {
+			msg = " Field cannot be blank";
+		} else if(divId == "patherror") {
+			msg = " Field cannot be blank";
+		} else if(divId == "queryerror") {
+			msg = " Field cannot be blank";
+		} else if(divId == "regexerror") {
+			msg = " Field cannot be blank";
+		} 
+		if($( "#" + id ).hasClass( "req" )) {
+			if(value.trim().length == 0) {
+				document.getElementById(divId).innerHTML = msg;
+				document.getElementById(divId).style.display = "-moz-stack";
+return false;
+			} else {
+				document.getElementById(divId).innerHTML = "";
+				document.getElementById(divId).style.display = "none";
+			}
+		}
+		if($( "#" + id ).hasClass( "url" )) {
+				path=value;
+			if(!path.match(/^\/[a-z0-9]*_*-*.*\**$/i)) {
+				document.getElementById("patherror").innerHTML = "Please give a valid URL";
+				document.getElementById("patherror").style.display = "-moz-stack";
+return false;
+			} else {
+				document.getElementById("patherror").innerHTML = "";
+				document.getElementById("patherror").style.display = "none";
+			}
+		}
+if($( "#" + id ).hasClass( "url" )) {
+				query=value;
+			if(!query.match(/^[a-z0-9\/&=_]*$/i )) {
+				document.getElementById("queryerror").innerHTML = "Please give a valid URL";
+				document.getElementById("queryerror").style.display = "-moz-stack";
+return false;
+			} else {
+				document.getElementById("queryerror").innerHTML = "";
+				document.getElementById("queryerror").style.display = "none";
+			}
+		}
+if($( "#" + id ).hasClass( "url" )) {
+				regexp=value;
+			if(document.getElementById("regexp").value.indexOf(' ') >= 0) {
+				document.getElementById("regexerror").innerHTML = "Please give a valid URL";
+				document.getElementById("regexerror").style.display = "-moz-stack";
+return false;
+			} else {
+				document.getElementById("regexerror").innerHTML = "";
+				document.getElementById("regexerror").style.display = "none";
+			}
+		}
+if($( "#" + id ).hasClass( "numeric" )) {
+			revenue = value;
+			if(isNaN(revenue)){
+				document.getElementById("revenueerror").innerHTML = "Please give only integer values";
+				document.getElementById("revenueerror").style.display = "inline";
+				return false;
+			} else if (revenue < 0){
+				document.getElementById("revenueerror").innerHTML = "Please give only positive integer values";
+				document.getElementById("revenueerror").style.display = "inline";
+				return false;
+			} else if(revenue > 1000){
+				document.getElementById("revenueerror").innerHTML = "Value should be below 1000";
+				document.getElementById("revenueerror").style.display = "inline";
+				return false;
+			}
+				else {
+	     var n = document.getElementById("revenue").value.toString().split('.');
+    	  var decimalpoints=['0'];
+		    if(n.length >= 2)
+		    { 
+		    	var decimalpoints=n[1];
+		    }
+				if(decimalpoints.length <= 2)
+				{
+					document.getElementById("revenue").value=parseFloat(document.getElementById("revenue").value).toFixed(2);
+						document.getElementById("revenueerror").style.display="none";
+						//validaterevenue=1;
+				}
+				else
+				{
+						document.getElementById("revenueerror").style.display = 'block';
+		        document.getElementById("revenueerror").innerHTML = 'Please enter only two digits after the decimal point !';
+		        //validaterevenue=0 ;
+					return false;
+				}
+			
+	}
+		}
+}
+</script>
+ <%
+=begin
+  Conversion goals creation page
+=end
+%>
+<% if params[:frame] == "frame" %>
+	
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
+	<script src="/assets/zevol.colorpicker.js" type="text/javascript"></script>
+	<script src='/assets/datepicker.js'></script>
+	<script src='/assets/bootstrap-dropdown.js'></script>
+	<script src='/assets/jscolor.js'></script>
+	<script src='/assets/validations.js'></script>
+	<script src='/assets/ads.js'></script>
+<!--	<script src='/assets/jsfile.js'></script>-->
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/ui-lightness/jquery-ui.css" type="text/css" />
+	<link href="/assets/demo.css" rel="stylesheet" /> 
+	<link href="/assets/evol.colorpicker.css" rel="stylesheet" />
+  <link href="/assets/app.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+	<link href="/assets/bsa.min.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="/assets/code.css" />
+<script>
+	$(document).ready(function(){
+		$( "#bannerPrefImg" ).hover(
+			function () {
+				$("#bannerPrefDiv").css({"display":"inline"});
+			}, 
+			function () {
+				$("#bannerPrefDiv").css({"display":"none"});
+			}
+		);
+	});
+</script>
+<% end %>
+<script src="/assets/validateconversion.js"></script>
+
+   <script type="text/javascript" src="/assets/validateconversion.js"></script>
+    <div class="pcontent" >
+    <!-- If page is used for campaigns then dont display it -->
+    <% if params[:frame] != "frame" %>
+      <div class="row">
+        <div class="span12">
+          <a style="margin-bottom:9px;" class="btn btn-large" href="/conversions">« Back to conversion goals</a>
+        </div>
+      </div>
+      <% end %>
+      <div class="row">
+        <div style="width:596px; margin-left: 130px;" class="well pull-left">
+        <div class="form-horizontal ">
+          <h3> 
+            <i style="margin-top:0px;<% if params[:frame] != 'frame' %> margin-left: 20px; <% end %>" class="icon-exchange"> </i> Create a new conversion goal
+          </h3>
+          <hr>
+          <% #### Conversions goals form starts here #### %>
+          <%= form_for :conversion,url: conversions_path do |f| %>
+          <% if params[:frame] == "frame" %>
+	  <input type='hidden' name='frame' value='frame'/>
+          <% end %>
+            <fieldset>
+              <div class="control-group">
+                <label for="conversion_Conversion Name" class="control-label">Conversion name</label>
+                <div class="controls">
+
+ <input type="hidden" id="conversionoldName" value=""/>
+        
+                  <%= f.text_field :conversionName ,:size => "30" , :id=>"con_name" ,:autofocus => "autofocus", :Placeholder=>"Conversion Name",:rel=>"tooltip",:title=>"Enter Your Conversion Name" ,:maxlength=>"200" ,:onblur=>"validate(this.id,'conversionnameerror')",:class=>"req" , :onchange=>"checkConversionName()",:value=>@con_name,:autocomplete=>"off"  %>
+                  <div class="error" id="conversionnameerror" style="display: none;"></div>
+                </div>
+              </div>
+              <br>
+              <div class="control-group">
+                <div class="control-label">
+                  Conversion Type <span style="color:red;margin-right:-10px;">*</span>
+                </div>
+                <div style="padding-left:20px;" class="controls">
+                  <div style="margin-bottom: 4px" class="radio">
+                    <%= radio_button("conversion", "conversionType","path",:checked => true) %> 
+                    When a user visits a specific page or section: 
+                    <div id="path"  class="input-prepend goal-choice ">
+                      <span class="add-on">http://domain.com</span><%= f.text_field :path , :style => "width:135px;" ,:placeholder=>"/thankyou.html" , :size => "30" ,:id=>"path_value",:rel=>"tooltip",:title=>"Your Page Name", :class=>"req url" ,:onblur=>"validate(this.id,'patherror')" ,:onchange=>"return trim(this)"  %>
+                      <div class="error" id="patherror"></div>
+                    </div>
+                  </div>
+                  <div class="radio">
+                    <%= radio_button("conversion", "conversionType", "query") %> URL Querystring 
+                    <div id="query"  class="goal-choice input-prepend hide">
+                      <span class="add-on">http://domain.com/?</span>
+<%= f.text_field :query , :style => "width:135px;" ,:placeholder=>"Query String" , :size => "30" ,:id=>"queryvalue",:rel=>"tooltip",:title=>"Query String", :onchange=>"return trim(this)" ,:class=>"req url" ,:onblur=>"validate(this.id,'queryerror')" %>
+                      <div class="error" id="queryerror"></div>
+                    </div>
+                  </div>
+                  <br>
+                  <!--<div class="radio">
+                    <%= radio_button("conversion", "conversionType", "event") %>
+                    When a user triggers a specific javascript event <a href="http://support.perfectaudience.com/knowledgebase/articles/212490-visitor-tracking-api" target="new" tabindex="-1">(API Docs)</a><br>
+                      <div id="event" class="input-prepend input-append goal-choice hide">
+                        &nbsp;<span class="add-on">_pa.track("</span>
+                        <%= f.text_field :event , :style => "width:135px;" ,:placeholder=>"Javascript Event" , :size => "30" ,:id=>"eventvalue",:rel=>"tooltip",:title=>"Javascript Event" %>
+                        <span class="add-on">") </span>
+                        <div class="error" id="eventerror"></div>
+                      </div>
+                    </div>
+                    <br>-->
+                    <div class="radio">
+                      <%= radio_button("conversion", "conversionType", "regex") %>
+                      Advanced: match against the full URL with a regular expression.
+                      <br>
+                        <div id="regex" class="input-prepend input-append goal-choice hide">
+                          <span class="add-on">/</span>
+                          <%= f.text_field :regex , :style => "width:200px;" ,:placeholder=>"regular expression" , :size => "30" ,:id=>"regexp",:rel=>"tooltip",:title=>"Your valid regular expression", :onchange=>"return trim(this)" , :class=>"req url" ,:onblur=>"validate(this.id,'regexerror')"%>
+                          <span class="add-on">/i</span>
+                          <div class="error" id="regexerror"></div>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                   <br>
+                   <div class="control-group">
+                     <div class="control-label"> Revenue Value  </div>
+                     <div class="helpform"> How much is each conversion worth? </div>
+                     <div class="controls">
+                       <div class="input-prepend">           
+                         <span style="" class="add-on">$</span>
+                         <%= f.text_field :revenue , :style => "width:25px;" ,:size => "30" ,:id=>"revenue" ,:rel=>"tooltip",:title=>"Revenue per conversion",:placeholder=>"DD" , :class=> "req numeric" ,:onblur=>"validate(this.id,'revenueerror')"%> per conversion
+							<br>
+                         <div class="error" id="revenueerror"></div>
+                       </div>
+                     </div>
+                   </div>
+                   <br>
+                   <div class="control-group">
+                     <div class="control-label"> Conversion Counting </div>
+                     <div class="helpform">
+                       Configure your conversion to be counted every time it fires or once per user
+                     </div>
+                     <div class="controls">
+                       <%= select(:conversion,:conversionCounting,options_for_select([['Count every conversion', 'every'],['Count once per user', 'once']])) %>
+                     </div>
+                   </div>
+                   <div class="actions form-actions">
+                     <%= f.text_field :siteid , :type=>"hidden",:id=>"siteid",:value=>session[:site_id] %>
+	       	     <%= f.text_field :advertiserId , :type=>"hidden",:value=>session[:user_id] %>
+	             <%= f.text_field :authenticity_token , :type=>"hidden",:value=>form_authenticity_token() %>
+				 <input type="hidden" id="conversionoldName" value=""/>
+                     <input type="submit" value="Create Conversion Goal" name="commit" onclick="return validateForm()" class="btn btn-primary btn-large">
+                   </div>
+                 </fieldset>
+               <% end %>
+               <% #### Form ends here #### %>
+               </div>
+               <script>
+                 window['new_conversion'] = {"type":"ActionView::Helpers::FormBuilder","input_tag":"&lt;div class=\"field_with_errors\"&gt;&lt;span id=\"input_tag\" /&gt;&lt;label for=\"\" class=\"message\"&gt;&lt;/label&gt;&lt;/div&gt;","label_tag":"&lt;div class=\"field_with_errors\"&gt;&lt;label id=\"label_tag\" /&gt;&lt;/div&gt;","validators":{}};
+               </script>
+               <script type="text/javascript">
+                 $(document).ready(function() {
+                   $('input[name="conversion[conversionType]"]').change(function(){
+                     var selected = $(this).val();
+                     $('.goal-choice').hide();
+                     $('#'+selected).fadeIn();
+                   });
+                 });
+               </script>
+             </div>
+             <div class="span3 expando">
+               <div style="margin-right:-25px;width:290px;" class="expandable">
+                 <div class="summary"><p>
+                   <b>What's a conversion goal?:</b> A conversion goal is an event you'd like to see happen on your web site.  It might be someone signing up for your service, or making a purchase.  It's the end goal you're trying to track.</p><p>Tagaly lets you create events to track based on URL path, URL querystring or javascript event.</p>
+                   <p><a href="http://support.perfectaudience.com/knowledgebase/topics/39545-conversion-goals" target="new">Click here</a> for a breakdown of the different ways to track<span class="read-more">… <a href="#">read more</a></span></p>
+                 </div>
+                 <div class="details" style="display: none;"><p>
+                   <b>What's a conversion goal?:</b> A conversion goal is an event you'd like to see happen on your web site.  It might be someone signing up for your service, or making a purchase.  It's the end goal you're trying to track.</p><p>Tagaly lets you create events to track based on URL path, URL querystring or javascript event.</p>
+                  
+                 </div>
+               </div>
+               <span style="right:-98px;bottom:-12px;" class="underangle"><img src="/assets/yellow.png" alt="Yellowunder"></span>
+             </div>
+           </div>
+         </div>
+

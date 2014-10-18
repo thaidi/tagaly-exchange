@@ -1,0 +1,1579 @@
+<%
+  if !params[:type]
+%>
+  <script type="text/javascript">
+    window.location.href="/campaigns/new?type=run_of_network"
+  </script>
+<%
+  end
+%>
+<!DOCTYPE html>
+
+<script>
+function setStatus(status,adid,adname)
+		      {
+		      var hostname=window.location.hostname;
+		      //alert("http://myappone.com:3000/campaigns/updatestatus?campaignid="+campaignid+"&status="+status);
+		      if (window.XMLHttpRequest)
+		      {// code for IE7+, Firefox, Chrome, Opera, Safari
+			  		xmlhttp=new XMLHttpRequest();
+		      }
+		      else
+		      {// code for IE6, IE5
+						xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		      }
+		      	xmlhttp.onreadystatechange=function()
+		      {
+		      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		      {
+		      //alert(xmlhttp.responseText);
+			if(xmlhttp.responseText=="success")
+			{
+			
+			 //alert("#statusmsg"+campaignid.text());
+			  $("#statusmsg"+adid).fadeIn()
+			  $("#statusmsg"+adid).fadeOut(500)
+			  document.getElementById("adname").innerHTML=adname;
+			  document.getElementById("statustext").innerHTML=status ;
+			  document.getElementById("statusmsg").style.display="block";
+			  if(status=="Deleted")
+			  {
+			  	document.getElementById("tr"+adid).style.display="none";
+			  }
+			}
+			}
+			}
+	
+			xmlhttp.open("GET","http://"+hostname+":3000/ads/updatestatus?adid="+adid+"&status="+status,true);
+			xmlhttp.send();
+			}
+			
+		</script>
+
+
+	<script>
+	//close-reveal-modal
+		$(function() {
+
+			
+		
+		   $("#campaign_geotargeting_countries").click(function () {
+		      $('#countries').removeAttr("disabled", $(this).is(":checked"));
+		      $('#dmas').attr("disabled", $(this).is(":checked"));
+		   });
+		   $("#campaign_geotargeting_dmas").click(function () {
+		      $('#countries').attr("disabled", $(this).is(":checked"));
+		      $('#dmas').removeAttr("disabled", $(this).is(":checked"));
+		   });
+		   $("#campaign_geotargeting_all").click(function () {
+		      $('#countries').attr("disabled", $(this).is(":checked"));
+		      $('#dmas').attr("disabled", $(this).is(":checked"));
+		   });
+		   $("#run-ad-continuously").click(function(){return $("#run-ad-continuously").is(":checked")?($("#manual-dayparting").hide()):$("#manual-dayparting").show()});
+		   
+		   $("#specificretargetlists").click(function(){return $("#specificretargetlists").is(":checked")?($("#specific-retargets").show()):$("#specific-retargets").hide()});
+		    $("#allretargetlists").click(function(){return $("#specificretargetlists").is(":checked")?($("#specific-retargets").show()):$("#specific-retargets").hide()});
+		    
+		    
+		});
+		function showhideconv(str)
+		    {
+		    	document.getElementById("campaigntype").value=str;
+		    	/*if(str=="cpa")
+		    	{
+		    		document.getElementById("conversionsDiv").style.display="block";
+		    	}
+		    	else
+		    	{
+		    		document.getElementById("conversionsDiv").style.display="none";
+		    	}*/
+		    }
+	</script>
+	<script>
+	
+		$(document).on('click','.adZoom', function(e){
+  			var idOfZoomClass = $(this).attr("id");
+				var adId = String(idOfZoomClass).substring(4);
+				var adDivId = "div" + adId;
+				var toset=$("#"+adDivId).html() ;
+				var width=$("#"+adDivId).width();
+				var height=$("#"+adDivId).height();
+				//alert(toset);
+				$("#adPreview").html("<a class='close-reveal-modal' id='closeadPreview'>&#215;</a>"+toset);
+				
+				if($("#img"+adId).attr('src'))
+				{
+					imgSize();
+					$("#adPreview").css("width", '');
+					$("#adPreview").css("height", '');
+				}
+				else
+				{
+					$("#adPreview").css("width", width);
+					$("#adPreview").css("height", height);
+				}
+				/*var src=$("#img"+adId).attr('src') ;
+				$("#img"+adId).attr('src',src);
+				$div = $("#" + adDivId);
+				$("#" + adDivId).show();
+				$("#" + adDivId).offset({
+				    top: e.pageY - ($div.outerHeight()/2),
+				    left: e.pageX + 20
+				});*/
+		});
+		function imgSize(){
+    $("img").load(function(){
+        var width = $(this).width();
+        var height = $(this).height();
+        $(this).attr("width",width).attr("height",height);
+    });
+}
+	/*$(document).on('mouseout','.adZoom', function(e){
+  			var idOfZoomClass = $(this).attr("id");
+				var adId = String(idOfZoomClass).substring(4);
+				var adDivId = "div" + adId;
+				$("#" + adDivId).hide();
+		});*/
+	</script>
+
+	<script type="text/javascript" src="/assets/bootstrap-dropdown.js"></script>
+	<script src="/assets/jquery.reveal.js"  type="text/javascript"></script>
+	<script src="/assets/moment.nin.js" type="text/javascript"></script>
+	<script src="/assets/campaign.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+<link rel="stylesheet" href="/assets/reveal.css"/>
+
+	<style>
+	.add-on{background-color: #EEEEEE;
+    border: 1px solid #CCCCCC;
+    display: inline-block;
+    font-weight: normal;
+    height: 18px;
+    line-height: 18px;
+    min-width: 16px;
+    padding: 4px 5px;
+    text-align: center;
+    text-shadow: 0 1px 0 #FFFFFF;
+    vertical-align: middle;
+    width: auto;
+    }
+    .span6{
+      width:554px;
+    }
+#dayparting tr {
+	vertical-align: top;
+}
+	</style>
+	<h4 id="notice" class="alert-header" style="margin-top:0;margin-bottom:0;"> </h4>
+    <div style="" class="pcontent">
+      <div class="row">
+        <div style="margin-bottom:5px;" class="span12">
+          <h2 style="text-shadow:0 1px white;margin:5px 0 10px 20px;"> <i style="margin-top:0px;" class="icon-facebook-sign"> </i>&nbsp;New Campaign </h2>
+        </div>
+  
+      </div>
+		<div class="modal fade hide" style="width:1024px;margin-left:-513px;padding:0px 50px 50px 50px; " id="bid_pricing_suggestion">
+		<div align="right" style="cursor:pointer;" id="closemodal"  data-dismiss="modal">Close</div>
+		<% if @campaigns.present? %>
+		<div align='center'>Select a campaign to assign the Ad !</div>
+		<table width="90%">
+
+			<%
+			br=1
+			 @campaigns.each do |key,campaign|
+			 
+				%>
+				<% if br==1 %>
+				<tr>
+				<% end %>
+					<td><input type="radio" class="campaigns" name="campaigns" value="<%= key %>" onchange="setBitSuggestion('<%= key %>','<%= campaign['adId'].join(',') %>')">&nbsp;&nbsp;<%= campaign["campaignName"] %></td>
+				<% 
+				br=br+1
+				if br == 4
+
+				br=1
+				%>
+					</tr>
+
+				<%  
+				end
+				 end %>
+			</table>
+		<% else %>
+		<div align='center'>Please assign this ad to any campaign to view minimum bid price suggestion !</div>
+		<% end %>
+		</div>
+		<div id="myModal" class="reveal-modal" style="width:1150px;height:635px">
+			<a class="close-reveal-modal" id="closeadFrame">&#215;</a>
+			<iframe src="/ads/new/frame" id="adnewads" width="1150px" frameBorder="0" height="100%" ></iframe>
+		</div>
+		<div id="newRetarget" class="reveal-modal" style="width:1183px;height:545px">
+			<a class="close-reveal-modal" id="closeretargetFrame">&#215;</a>
+			<iframe src="/retargets/new/frame" id="adnewretargets" width="1192px" frameBorder="0" height="100%"></iframe>
+		</div>
+		<div id="newConversion" class="reveal-modal" style="width:1183px;height:545px">
+			<a class="close-reveal-modal" id="closeconversionFrame">&#215;</a>
+			<iframe src="/conversions/new/frame" id="adnewconversions" width="1192px" frameBorder="0" height="100%"></iframe>
+		</div>
+		<div id="newAdunit" class="reveal-modal" style="width:1183px;height:613px">
+			<a class="close-reveal-modal" id="closeadunitFrame">&#215;</a>
+			<iframe src="/campaigns/adunits" id="adnewadunits" width="1192px" frameBorder="0" height="100%"></iframe>
+		</div>
+		<div id="adPreview" class="reveal-modal" style="position:absolute; background-color: white; border-radius: 10px; ">
+			<a class="close-reveal-modal" id="closeadPreview">&#215;</a>
+			Ad Preview
+		</div>
+			<% sectionCount = 1 %>
+      <%= form_for :campaign,:html => {:class => "form-horizontal campaign-form-stripe"},url: campaigns_path do |f| %>
+      <%= f.text_field :siteid , :type=>"hidden",:id=>"siteid",:value=>session[:site_id] %>
+      <%= f.text_field :authenticity_token , :type=>"hidden",:value=>form_authenticity_token() %>
+        <div style="margin:0;padding:0;display:inline">
+          <input type="hidden" value="✓" name="utf8">
+          <input type="hidden" value="Fu6fc1RaORFUQadbo7dgjt3IlwcNplEf23Rh5HhQOIM=" name="authenticity_token">
+        </div>
+         <div class="control-group">
+                  <div class="control-label">
+                    Device Preferences: <a rel="tooltip" data-original-title="You can specify a device preference for any Text, Display ad or Native ad.">[?]</a>
+                  </div>
+                  <div class="controls">
+			<select name="campaign[device_preferences]" id="device_preference" autofocus>
+				<option value="DesktopsAndLaptops">Desktops and Laptops</option>
+				<option value="Mobiles">Mobiles</option>
+				<option value="Tabs">Tabs</option>
+			</select>
+                  </div>
+                </div>
+        <br>
+        <fieldset id="fboo">
+        
+          <div class="widget">
+            <div class="widget-header"> <h3> <span class="sectionnumeral"><%= sectionCount %></span> &nbsp; Set up your ads </h3> </div>
+            <div style="padding:0;" class="widget-content">
+              <div class="" style="border-top:0;padding:15px;">
+                <div style="margin-bottom:0;margin-top:1px;clear:both;" id="accordion7" class="accordion">
+                  <div class="accordion-body  collapse admake-group" id="collapseSeven">
+                    <div style="border:0;padding-left:0;padding-right:0;padding-top:0;" class="accordion-inner">
+                      <div style="margin-left:0;" class="controls">
+                        <div style="margin-left:0;margin-right:0;" class="fbmake">
+                          <h4>Create new ads</h4>
+                          <div style="position:relative;margin-left:0;margin-right:0;margin-bottom:0px;" class="well" id="new-ad-form">
+                            <br>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style="min-height:255px; min-width:500px;" class="modal hide image-resize-modal">
+                </div>
+                
+                <div class="selectable" id="ads-table-container">
+                  <div class="loading-container">
+                  </div>
+                  <div class="selectable-container">
+                    <h5>Select ads for this campaign</h5>
+                    <h6><span></span></h6>
+                    <a data-animation="fade" data-reveal-id="myModal" id="creatNewAd" href="#" class="pull-right btn btn-success big-link" style="margin: -32px 0px 0px 20px;"><i style="margin-top: 3px;" class="icon-plus icon-white"></i> Create new ads</a>
+                    <div style="margin-right:148px;" class="ad-search-container pull-right">
+                      <div class="form-search">
+                        <div class="input-append">
+                          <!--<label><span class="clear-results"><input type="text" class="input-medium search-query" value="" placeholder="Search Ad Name" name="q"><span style="display: none;" title="Clear Results"></span></span></label>
+                          <button class="btn" type="button">Search</button>-->
+                        </div>
+                      </div>
+                    </div>
+                    <div style="clear:both;max-height: 500px;" class="table-scrollable" >
+                     <div id="aderrorText" class="error" colspan="3" style="margin-left:0px;"></div>
+                     <div id="statusmsg" style="display:none;text-align:left;color:green;padding-bottom:10px;">Status has been changed to "<span id="statustext"></span>" for the Ad "<span id="adname"></span>"</div>
+                      <table style="border-radius:0;" id="ads_table" class="table table-striped fbpicker table-bordered" >
+                        <thead>
+                          <tr>
+                            <th width="1%"></th>
+                            <!--<th width="1%"><a href="">ID</a></th>-->
+                            <th width="45%">Name</th>
+                            <th width="3%">Impr.</th>
+                            <th>Clicks</th>
+														<th>Conversions</th>
+                            <th>CTR</th>
+                            <th>Status</th>
+                            <th width="3%">URL</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                       
+                        <% if @ads.present?
+                             @ads["stats"].each do |key,ads| %>
+                          <tr class="selected" id="tr<%= key %>">
+                            <td style="text-align: center;">
+                              <%= check_box("campaign", "ads" ,{:style=>"display:none;",:multiple=>"true",:class=>"ads"}, key,nil ) %>
+                             
+                              <a onclick="toggleAdSelection(this,this.innerHTML);" class="btn btn-mini btn-primary" href="javascript:void(0);">Add</a>
+                            </td>
+                            <!--<td><%= key %></td>-->
+                            <td><%= ads["advertisementDetails"]['adName'].to_s %><div style="float:right;">&nbsp;<button class="btn btn-mini btn-inverse" disabled style="cursor:default">&nbsp;<%= ads["advertisementDetails"]["version"] %>&nbsp;</button> 
+                            <a data-animation="fade" id="zoom<%= key %>" class="adZoom" data-reveal-id="adPreview" href="#"><i style="margin-top: 3px;" class="icon-zoom-in adZoom"></i></a></div>
+															<div id="div<%= key %>" style="display:none;position:absolute; background-color: white; border-radius: 10px; border: 4px solid rgb(239, 239, 239);">
+															<div><b><h6><%= ads["advertisementDetails"]['adName'] %></h6></b></div>
+															<div style="height:7px"></div>
+															<% if ads["advertisementDetails"]['adType'] == 'TextAd' %>
+																<ul style="width: 234px; height: 60px; margin-left: 5px;">
+																	<li style="float: none; color: rgb(34, 34, 34); "><a href="<%= ads["advertisementDetails"]['adDestinationUrl'] %>" target="_blank"><%= ads["advertisementDetails"]['adHeadline'] %></a></li>
+																	<li class="adunits-innerli" style="float: none; color: rgb(0, 128, 0); "> <%= ads["advertisementDetails"]['adDisplayUrl'] %> </li>
+																	<li class="adunits-innerli" style="float: none; color: rgb(51, 51, 51); "> <%= ads["advertisementDetails"]['adText'] %> </li>
+																</ul>
+															<% elsif ads["advertisementDetails"]['adType'] == 'BannerAd' %>
+																	<%
+																	my_string = ads["advertisementDetails"]['adImageUrl']
+																	if my_string.include? ".swf"
+																	adSizes = ads["advertisementDetails"]['adSize'].split('x') 
+																	%>
+																	<a href="<%= ads["advertisementDetails"]['adDestinationUrl'] %>" target="_blank">
+																	<embed width="<%= adSizes[0] %>" height="<%= adSizes[1] %>" src="/uploads/<%= ads['adImageUrl'] %>">
+																	</a>
+																	<%		
+																	elsif my_string.include? ".fla"
+
+																	else
+																	%>
+																	<a href="<%= ads["advertisementDetails"]['adDestinationUrl'] %>" target="_blank">
+																	<img src="/uploads/<%= ads["advertisementDetails"]['adImageUrl'] %>"/>
+																	</a>
+																	<%
+																	end
+																	%>
+															<% end %>
+															</div>
+                             
+                            </td>
+                            <td width="1%">-</td>
+                            <td width="1%">-</td>
+							<td width="1%">-</td>
+                            <td width="1%">-</td>
+                            <td width="1%" style="text-align:center;">
+                            <div id="statusmsg<%= key %>" style="color:green;display:none;" align="center">Status Set!</div>
+                              <%= select_tag(:status, options_for_select([['Active', 'Active'],['Pause', 'Paused'],['Delete','Deleted']],ads["advertisementDetails"]["adStatus"]),:onchange=>"setStatus(this.value,'#{key}','#{ads["advertisementDetails"]['adName']}' )", :style=>"width:83px;",:disabled=>"disabled") %>
+                             
+                            </td>
+                            <td width="1%" class="ad-url">
+                            <% if ads["advertisementDetails"]['adType'] == 'TextAd' %>
+                            <%
+                            displayurl=ads["advertisementDetails"]["adDisplayUrl"] ; 
+                            %>
+                              <a title="<%= ads['adDestinationUrl'] %>" target="new" href="<%= ads['adDestinationUrl'] %>"><% if displayurl.length > 35 %> <%= displayurl[0,35].to_s + "..." %> <% else %> <%= displayurl %> <% end %></a>
+                            <% else %>
+                             <%
+                            displayurl=ads["advertisementDetails"]["adDestinationUrl"]; 
+                            %>
+                              <a title="<%= ads['adDestinationUrl'] %>" target="new" href="<%= ads['adDestinationUrl'] %>"><% if displayurl.length > 35 %> <%= displayurl[0,35].to_s + "..." %> <% else %> <%= displayurl %> <% end %></a>
+                            <% end %>
+                            </td>
+                          </tr>
+                          <tr>
+                          <% end 
+                          else
+                          %>
+                          <% end %>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><br>
+		  <% if params[:type]=="ad_placement" %>
+		  <div class="widget-header"> <h3> <span class="sectionnumeral"><%= sectionCount = sectionCount +1 %></span> &nbsp; Set up your ad placements </h3> </div>
+		  <div style="padding:0;" class="widget-content">
+              <div class="" style="border-top:0;padding:15px;">
+                <div style="margin-bottom:0;margin-top:1px;clear:both;" id="accordion7" class="accordion">
+                  <div class="accordion-body  collapse admake-group" id="collapseSeven">
+                    <div style="border:0;padding-left:0;padding-right:0;padding-top:0;" class="accordion-inner">
+                      <div style="margin-left:0;" class="controls">
+                        <div style="margin-left:0;margin-right:0;" class="fbmake">
+                          <h4>Add new adunits</h4>
+                          <div style="position:relative;margin-left:0;margin-right:0;margin-bottom:0px;" class="well" id="new-ad-form">
+                            <br>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style="min-height:255px; min-width:500px;" class="modal hide image-resize-modal">
+                </div>
+                
+                <div class="selectable" id="ads-table-container">
+                  <div class="loading-container">
+                  </div>
+                  <div class="selectable-container">
+                    <h5>Select ad placements for this campaign</h5>
+                    <h6><span></span></h6>
+                    <a data-animation="fade" data-reveal-id="newAdunit" id="creatNewAd" href="#" class="pull-right btn btn-success big-link" style="margin: -32px 0px 0px 20px;"><i style="margin-top: 3px;" class="icon-plus icon-white"></i> Add new Ad Placement</a>
+                    <div style="margin-right:148px;" class="ad-search-container pull-right">
+                      <div class="form-search">
+                        <div class="input-append">
+                         </div>
+                      </div>
+                    </div>
+                    <div style="clear:both;" class="table-scrollable">
+                     <div id="aduniterrorText" class="error" colspan="3" style="margin-left:0px;"></div>
+                    
+                      <table style="border-radius:0;" id="adunits_table" class="table table-striped fbpicker table-bordered">
+                        <thead>
+                          <tr>
+                            <th width="1%"></th>
+                            <th>Name</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                       
+                          
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+		  <% end %>
+		  <!-- Ad Placements end here -->
+          <div class="widget">
+            <div class="widget-header">
+              <h3>
+                <span style="margin-left:0;" class="sectionnumeral"><%= sectionCount = sectionCount +1 %></span> &nbsp; Targeting: What audience do you want to reach?
+              </h3>
+            </div>
+            <div class="widget-content">
+            <%= radio_button("campaign", "targetallusers", "no-retargets",{:style=>"float:left;margin-right:10px;margin-left:36px;" , :checked => true,:id=>"allretargetlists"}) %>Target All Users <br>
+            <%= radio_button("campaign", "targetallusers", "specific-retargets",{:style=>"float:left;margin-right:10px;margin-left:36px;",:id=>"specificretargetlists"}) %>Target specific user from retargeting lists
+            </div>
+            <div class="widget-content" >
+             <div id="specific-retargets" style="display:none;">  
+             <% 
+							retCount = 0
+							if @retargetCount.present?
+							@retargetCount.each do |key , ret| 
+							if @retargets.present?
+							@retargets.each do |retarget|
+							if retarget.id.to_i == key.to_i && retarget.retargetName == 'All Visitors'
+							retCount = ret.to_i
+							end
+							end
+							end
+							end
+							end
+							
+							#### check if the site traking tag is installed
+							src=Tagaly3::TAG
+  						scriptcode=src.to_s + "/retargetPixel.php?tpid="+session[:site_id].to_s
+  						scriptpresent=""
+  						if((@result != nil) && (@result.include? scriptcode))
+  							scriptpresent="yes"
+  						else
+  							scriptpresent="no"
+  						end
+							%>
+							<% retargetCount = Tagaly3::RetargetCount %>
+							        
+              <a data-animation="fade" data-reveal-id="newRetarget" style="margin-right: 0px;<% if retCount  < retargetCount %> display:none; <% end %>" class="btn btn-success btn-mini pull-right" href="#"><i style="margin-top:3px;" class="icon-plus icon-white"></i> Create new list</a>
+
+<% if scriptpresent.to_s == "no" %>                 
+<p>It appears that you haven't placed the site tracking code on your website "<a href='<%= session[:site_url] %>' ><%= session[:site_url] %></a>", please place the code on all of the webpages on your site. You can find the instructions <a href= '/sites/tag' target="_blank">here</a> </p>
+<% elsif retCount.to_i < retargetCount %>
+<p>It appears that there are only <%= retCount %> visitors in your lists. Retargeting requires atleast <%= retargetCount %> visitors to be able to create retargeting campaign. If you wish to target general visitors, please select "Target All Users" from above menu.
+<% elsif retCount.to_i >= retargetCount %>
+<p>Choose which retargeting lists to include in your campaign and whether to target their users or exclude them. </p>
+<% end %>
+                 
+              <div class="selectable" id="segments-table-container" <% if retCount  < retargetCount %> style="display:none;" <% end %>>  
+                <div class="loading-container">
+                </div>
+                <div class="selectable-container" >
+                  <h6></h6>
+                  <div class="ad-search-container pull-right">
+                    <div class="form-search">
+                      <div class="input-append">
+                       <!-- <label><span class="clear-results"><input type="text" class="input-medium search-query" value="" placeholder="Search List Name" name="q"><span style="display: none;" title="Clear Results"></span></span></label>
+                        <button class="btn" type="button">Search</button>-->
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style="clear:both;" class="table-scrollable">
+                  
+                     <div id="retargeterrorText" class="error" colspan="3" style="margin-left:0px;"></div>
+
+                    <table style="border-radius:0px;" id="retargetTable" class="table table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width: 170px;">Action</th>
+                          <th style="font-size:12px;">Retargeting List Name</th>
+                          <th width="70">List Size</th>
+                        </tr>
+                      </thead>
+                      <tbody>  
+                      <% if @retargets.present?
+                             @retargets.each do |retarget| %>  
+										<%
+											if retarget.retargetName=='All Visitors'
+												checked="checked"
+											else
+												checked='false'
+											end
+											
+										%>
+										<% if (@retargetCount["#{retarget.id}"] != nil && @retargetCount["#{retarget.id}"] > 0 )|| retarget.retargetName=='All Visitors' %>
+                        <tr <% if checked=="checked" %> class="targeted" <% end %> id="seg_526f491e3a7bc042e200002b">
+                          <td>
+                            <%= check_box("campaign", "retargets" ,{:style=>"display:none",:multiple=>"true",:checked=>checked,:class=>"retargets"},"+#{retarget.id}",nil) %>
+                           
+                            <input type="radio" value="Exclude" style="display: none;" name="segment[526f491e3a7bc042e200002b][status]" id="segment_526f491e3a7bc042e200002b_status_Exclude">
+                            <input type="radio" value="Ignore" style="display: none;" name="segment[526f491e3a7bc042e200002b][status]" id="segment_526f491e3a7bc042e200002b_status_Ignore">
+                            <div class="btn-group">
+                              <button id="target<%= retarget.id %>" onclick="return toggleSegmentSelection(this,'Include');" class="btn btn-mini<% if checked=="checked" %>  btn-success active<% end %>" value="<%= retarget.id %>" type="button">Target</button>
+                              <button id="exclude<%= retarget.id %>" onclick="return toggleSegmentSelection(this,'Exclude');" class="btn btn-mini " value="<%= retarget.id %>" type="button">Exclude</button>
+                              <button id="ignore<%= retarget.id %>" onclick="return toggleSegmentSelection(this,'Ignore');" class="btn btn-mini " value="<%= retarget.id %>" type="button">Ignore</button>
+                            </div>
+                          </td>
+                          <td><%= retarget.retargetName %></td>
+                          <td>
+                          <% if @retargetCount["#{retarget.id}"] !=nil %>
+                          <%=     @retargetCount["#{retarget.id}"]  %>
+                          <% else %>
+                          0
+                          <% end %>
+                          </td>
+                        </tr> 
+                        <% end %>
+								<% end %>
+                       <% else %>             
+                        
+                        <tr>
+                          <td style="text-align: center;" colspan="3">You don't appear to have any lists available for selection. <a target="blank" href="/retargets/new">Create one.</a></td>
+                        </tr>
+                       <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                </div>
+              </div>
+                <br>
+              <div style="margin-bottom:0;margin-top:10px;clear:both;" id="accordion2" class="accordion">
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a href="#collapseOne" data-parent="#accordion2" data-toggle="collapse" style="color:#333;background:#f3f3f3;padding-left:40px;position:relative;" class="accordion-toggle nover">
+                    
+                      <i class="icon-plus-sign collapsecon"></i> <i class="icon-globe"></i> Geo Targeting Settings
+                    </a>
+                  </div>
+                  <div class="accordion-body collapse geo-group " id="collapseOne">
+                    <div class="accordion-inner">
+                      <div class="controls"><br> 
+                        <%= radio_button("campaign", "geotargeting", "all",{:style=>"float:left;margin-right:10px;" , :checked => true}) %>
+                        <%= f.text_field :all , :id=>"all",:type=>"hidden",:multiple=>true,:value=>"" %>
+                        <label for="campaign_geo_target_level_none">Target all countries</label>
+                        <br>
+                        <%= radio_button("campaign", "geotargeting", "countries" ,{ :style=>"float:left;margin-right:10px;"}) %>
+                        <label for="campaign_geo_target_level_country">Target specific countries</label>
+                        
+                        <div id="geo-country-group" class="control-group">
+                          <div style="font-weight:normal;" class="control-label">Select Country</div>
+                          <!-- first GEO selector, determines others -->
+                          <div style="margin-top:3px;" class="controls">
+                            <div class="input-prepend chzn-container chzn-container-multi chzn-container-active">
+                             
+                              <div id="campaign_countries_chzn" class="chzn-container chzn-container-multi" style="width: 460px;">
+                                <ul class="chzn-choices">
+                                  <li class="search-field">
+                                  <!-- <%= f.text_field :countries , :id=>"countries" , :disabled=>"" %>-->
+                                     
+ 				    <select name="campaign[countries][]" multiple="multiple" id="countries" data-placeholder="Choose one or more countries..." class="span6 chzn-select chzn-done" data-original-title="Choose one or more from the countries ! Use 'ctrl' key from your keyboard to select more than one country" rel="tooltip"  disabled  >
+                                     <option value="US">United States</option>
+                                     <option value="AD">Andorra</option>
+                                     <option value="AE">United Arab Emirates</option>
+                                     <option value="AF">Afghanistan</option>
+                                     <option value="AG">Antigua and Barbuda</option>
+                                     <option value="AI">Anguilla</option>
+                                     <option value="AL">Albania</option>
+                                     <option value="AM">Armenia</option>
+                                     <option value="AO">Angola</option>
+                                     <option value="AP">Asia/Pacific Region</option>
+                                     <option value="AQ">Antarctica</option>
+                                     <option value="AR">Argentina</option>
+                                     <option value="AS">American Samoa</option>
+                                     <option value="AT">Austria</option>
+                                     <option value="AU">Australia</option>
+                                     <option value="AW">Aruba</option>
+                                     <option value="AX">Aland Islands</option>
+                                     <option value="AZ">Azerbaijan</option>
+                                     <option value="BA">Bosnia and Herzegovina</option>
+                                     <option value="BB">Barbados</option>
+                                     <option value="BD">Bangladesh</option>
+                                     <option value="BE">Belgium</option>
+                                     <option value="BF">Burkina Faso</option>
+                                     <option value="BG">Bulgaria</option>
+                                     <option value="BH">Bahrain</option>
+                                     <option value="BI">Burundi</option>
+                                     <option value="BJ">Benin</option>
+                                     <option value="BL">Saint Bartelemey</option>
+                                     <option value="BM">Bermuda</option>
+                                     <option value="BN">Brunei Darussalam</option>
+                                     <option value="BO">Bolivia</option>
+                                     <option value="BQ">Bonaire, Saint Eustatius and Saba</option>
+                                     <option value="BR">Brazil</option>
+                                     <option value="BS">Bahamas</option>
+                                     <option value="BT">Bhutan</option>
+                                     <option value="BV">Bouvet Island</option>
+                                     <option value="BW">Botswana</option>
+                                     <option value="BY">Belarus</option>
+                                     <option value="BZ">Belize</option>
+                                     <option value="CA">Canada</option>
+                                     <option value="CC">Cocos (Keeling) Islands</option>
+                                     <option value="CD">Congo, The Democratic Republic of the</option>
+                                     <option value="CF">Central African Republic</option>
+                                     <option value="CG">Congo</option>
+                                     <option value="CH">Switzerland</option>
+                                     <option value="CI">Cote d'Ivoire</option>
+                                     <option value="CK">Cook Islands</option>
+                                     <option value="CL">Chile</option>
+                                     <option value="CM">Cameroon</option>
+                                     <option value="CN">China</option>
+                                     <option value="CO">Colombia</option>
+                                     <option value="CR">Costa Rica</option>
+                                     <option value="CU">Cuba</option>
+                                     <option value="CV">Cape Verde</option>
+                                     <option value="CW">Curacao</option>
+                                     <option value="CX">Christmas Island</option>
+                                     <option value="CY">Cyprus</option>
+                                     <option value="CZ">Czech Republic</option>
+                                     <option value="DE">Germany</option>
+                                     <option value="DJ">Djibouti</option>
+                                     <option value="DK">Denmark</option>
+                                     <option value="DM">Dominica</option>
+                                     <option value="DO">Dominican Republic</option>
+                                     <option value="DZ">Algeria</option>
+                                     <option value="EC">Ecuador</option>
+                                     <option value="EE">Estonia</option>
+                                     <option value="EG">Egypt</option>
+                                     <option value="EH">Western Sahara</option>
+                                     <option value="ER">Eritrea</option>
+                                     <option value="ES">Spain</option>
+                                     <option value="ET">Ethiopia</option>
+                                     <option value="EU">Europe</option>
+                                     <option value="FI">Finland</option>
+                                     <option value="FJ">Fiji</option>
+                                     <option value="FK">Falkland Islands (Malvinas)</option>
+                                     <option value="FM">Micronesia, Federated States of</option>
+                                     <option value="FO">Faroe Islands</option>
+                                     <option value="FR">France</option>
+                                     <option value="GA">Gabon</option>
+                                     <option value="GB">United Kingdom</option>
+                                     <option value="GD">Grenada</option>
+                                     <option value="GE">Georgia</option>
+                                     <option value="GF">French Guiana</option>
+                                     <option value="GG">Guernsey</option>
+                                     <option value="GH">Ghana</option>
+                                     <option value="GI">Gibraltar</option>
+                                     <option value="GL">Greenland</option>
+                                     <option value="GM">Gambia</option>
+                                     <option value="GN">Guinea</option>
+                                     <option value="GP">Guadeloupe</option>
+                                     <option value="GQ">Equatorial Guinea</option>
+                                     <option value="GR">Greece</option>
+                                     <option value="GS">South Georgia and the South Sandwich Islands</option>
+                                     <option value="GT">Guatemala</option>
+                                     <option value="GU">Guam</option>
+                                     <option value="GW">Guinea-Bissau</option>
+                                     <option value="GY">Guyana</option>
+                                     <option value="HK">Hong Kong</option>
+                                     <option value="HM">Heard Island and McDonald Islands</option>
+                                     <option value="HN">Honduras</option>
+                                     <option value="HR">Croatia</option>
+                                     <option value="HT">Haiti</option>
+                                     <option value="HU">Hungary</option>
+                                     <option value="ID">Indonesia</option>
+                                     <option value="IE">Ireland</option>
+                                     <option value="IL">Israel</option>
+                                     <option value="IM">Isle of Man</option>
+                                     <option value="IN">India</option>
+                                     <option value="IO">British Indian Ocean Territory</option>
+                                     <option value="IQ">Iraq</option>
+                                     <option value="IR">Iran, Islamic Republic of</option>
+                                     <option value="IS">Iceland</option>
+                                     <option value="IT">Italy</option>
+                                     <option value="JE">Jersey</option>
+                                     <option value="JM">Jamaica</option>
+                                     <option value="JO">Jordan</option>
+                                     <option value="JP">Japan</option>
+                                     <option value="KE">Kenya</option>
+                                     <option value="KG">Kyrgyzstan</option>
+                                     <option value="KH">Cambodia</option>
+                                     <option value="KI">Kiribati</option>
+                                     <option value="KM">Comoros</option>
+                                     <option value="KN">Saint Kitts and Nevis</option>
+                                     <option value="KP">Korea, Democratic People's Republic of</option>
+                                     <option value="KR">Korea, Republic of</option>
+                                     <option value="KW">Kuwait</option>
+                                     <option value="KY">Cayman Islands</option>
+                                     <option value="KZ">Kazakhstan</option>
+                                     <option value="LA">Lao People's Democratic Republic</option>
+                                     <option value="LB">Lebanon</option>
+                                     <option value="LC">Saint Lucia</option>
+                                     <option value="LI">Liechtenstein</option>
+                                     <option value="LK">Sri Lanka</option>
+                                     <option value="LR">Liberia</option>
+                                     <option value="LS">Lesotho</option>
+                                     <option value="LT">Lithuania</option>
+                                     <option value="LU">Luxembourg</option>
+                                     <option value="LV">Latvia</option>
+                                     <option value="LY">Libyan Arab Jamahiriya</option>
+                                     <option value="MA">Morocco</option>
+                                     <option value="MC">Monaco</option>
+                                     <option value="MD">Moldova, Republic of</option>
+                                     <option value="ME">Montenegro</option>
+                                     <option value="MF">Saint Martin</option>
+                                     <option value="MG">Madagascar</option>
+                                     <option value="MH">Marshall Islands</option>
+                                     <option value="MK">Macedonia</option>
+                                     <option value="ML">Mali</option>
+                                     <option value="MM">Myanmar</option>
+                                     <option value="MN">Mongolia</option>
+                                     <option value="MO">Macao</option>
+                                     <option value="MP">Northern Mariana Islands</option>
+                                     <option value="MQ">Martinique</option>
+                                     <option value="MR">Mauritania</option>
+                                     <option value="MS">Montserrat</option>
+                                     <option value="MT">Malta</option>
+                                     <option value="MU">Mauritius</option>
+                                     <option value="MV">Maldives</option>
+                                     <option value="MW">Malawi</option>
+                                     <option value="MX">Mexico</option>
+                                     <option value="MY">Malaysia</option>
+                                     <option value="MZ">Mozambique</option>
+                                     <option value="NA">Namibia</option>
+                                     <option value="NC">New Caledonia</option>
+                                     <option value="NE">Niger</option>
+                                     <option value="NF">Norfolk Island</option>
+                                     <option value="NG">Nigeria</option>
+                                     <option value="NI">Nicaragua</option>
+                                     <option value="NL">Netherlands</option>
+                                     <option value="NORWAY">Norway</option>
+                                     <option value="NP">Nepal</option>
+                                     <option value="NR">Nauru</option>
+                                     <option value="NU">Niue</option>
+                                     <option value="NZ">New Zealand</option>
+                                     <option value="OM">Oman</option>
+                                     <option value="PA">Panama</option>
+                                     <option value="PE">Peru</option>
+                                     <option value="PF">French Polynesia</option>
+                                     <option value="PG">Papua New Guinea</option>
+                                     <option value="PH">Philippines</option>
+                                     <option value="PK">Pakistan</option>
+                                     <option value="PL">Poland</option>
+                                     <option value="PM">Saint Pierre and Miquelon</option>
+                                     <option value="PN">Pitcairn</option>
+                                     <option value="PR">Puerto Rico</option>
+                                     <option value="PS">Palestinian Territory</option>
+                                     <option value="PT">Portugal</option>
+                                     <option value="PW">Palau</option>
+                                     <option value="PY">Paraguay</option>
+                                     <option value="QA">Qatar</option>
+                                     <option value="RE">Reunion</option>
+                                     <option value="RO">Romania</option>
+                                     <option value="RS">Serbia</option>
+                                     <option value="RU">Russian Federation</option>
+                                     <option value="RW">Rwanda</option>
+                                     <option value="SA">Saudi Arabia</option>
+                                     <option value="SB">Solomon Islands</option>
+                                     <option value="SC">Seychelles</option>
+                                     <option value="SD">Sudan</option>
+                                     <option value="SE">Sweden</option>
+                                     <option value="SG">Singapore</option>
+                                     <option value="SH">Saint Helena</option>
+                                     <option value="SI">Slovenia</option>
+                                     <option value="SJ">Svalbard and Jan Mayen</option>
+                                     <option value="SK">Slovakia</option>
+                                     <option value="SL">Sierra Leone</option>
+                                     <option value="SM">San Marino</option>
+                                     <option value="SN">Senegal</option>
+                                     <option value="SO">Somalia</option>
+                                     <option value="SR">Suriname</option>
+                                     <option value="ST">Sao Tome and Principe</option>
+                                     <option value="SV">El Salvador</option>
+                                     <option value="SX">Sint Maarten</option>
+                                     <option value="SY">Syrian Arab Republic</option>
+                                     <option value="SZ">Swaziland</option>
+                                     <option value="TC">Turks and Caicos Islands</option>
+                                     <option value="TD">Chad</option>
+                                     <option value="TF">French Southern Territories</option>
+                                     <option value="TG">Togo</option>
+                                     <option value="TH">Thailand</option>
+                                     <option value="TJ">Tajikistan</option>
+                                     <option value="TK">Tokelau</option>
+                                     <option value="TL">Timor-Leste</option>
+                                     <option value="TM">Turkmenistan</option>
+                                     <option value="TN">Tunisia</option>
+                                     <option value="TO">Tonga</option>
+                                     <option value="TR">Turkey</option>
+                                     <option value="TT">Trinidad and Tobago</option>
+                                     <option value="TV">Tuvalu</option>
+                                     <option value="TW">Taiwan</option>
+                                     <option value="TZ">Tanzania, United Republic of</option>
+                                     <option value="UA">Ukraine</option>
+                                     <option value="UG">Uganda</option>
+                                     <option value="UM">United States Minor Outlying Islands</option>
+                                     <option value="UY">Uruguay</option>
+                                     <option value="UZ">Uzbekistan</option>
+                                     <option value="VA">Holy See (Vatican City State)</option>
+                                     <option value="VC">Saint Vincent and the Grenadines</option>
+                                     <option value="VE">Venezuela</option>
+                                     <option value="VG">Virgin Islands, British</option>
+                                     <option value="VI">Virgin Islands, U.S.</option>
+                                     <option value="VN">Vietnam</option>
+                                     <option value="VU">Vanuatu</option>
+                                     <option value="WF">Wallis and Futuna</option>
+                                     <option value="WS">Samoa</option>
+                                     <option value="YE">Yemen</option>
+                                     <option value="YT">Mayotte</option>
+                                     <option value="ZA">South Africa</option>
+                                     <option value="ZM">Zambia</option>
+                                     <option value="ZW">Zimbabwe</option>
+				</select>                                  
+                                  </li>
+                                  
+                                </ul>
+                                <div id="geoCountrieserrorText" class="error" ></div>
+                                <div style="left: -9000px; width: 458px; top: 29px;" class="chzn-drop">
+                                 
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <%= radio_button("campaign", "geotargeting", "dmas" ,{ :style=>"float:left;margin-right:10px;"}) %>
+                        
+                        <label for="campaign_geo_target_level_dma">Target DMA (Designated Market Area) Regions</label>
+                        <div id="geo-dma-group" class="control-group">
+                          <div style="font-weight:normal;" class="control-label">Select DMA Region 
+                            <a rel="tooltip" data-original-title="DMA regions are large metro areas in the U.S. such as Chicago, San Franciso-San Jose-Oakland, etc."> [?]</a>
+                          </div>
+                          <div style="margin-top:3px;" class="controls">
+                            <div class="input-prepend chzn-container chzn-container-multi chzn-container-active">
+                               
+                              <div id="campaign_dmas_chzn" class="chzn-container chzn-container-multi" style="width: 460px;">
+                                <ul class="chzn-choices">
+                                  <li class="search-field">
+                                    <!--<%= f.text_field :dmas , :id=>"dmas" , :disabled=>"" %>-->
+                                    <select name="campaign[dmas][]" multiple="multiple" id="dmas" data-placeholder="Choose one or more DMAs..." class="span6 chzn-select chzn-single chzn-default chzn-done"  data-original-title="Choose one or more from the DMAs ! Use 'ctrl' key from your keyboard to select more than one DMA" rel="tooltip" disabled>
+                                      
+                                          <option value="662:Abilene-Sweetwater ( TX )">Abilene-Sweetwater ( TX)</option>
+                                         <option value="525:Albany ( GA)">Albany ( GA)</option>
+                                          <option value="532:Albany-Schenectady-Troy ( NY)">Albany-Schenectady-Troy ( NY)</option>
+                                          <option value="790:Albuquerque-Santa Fe ( NM)">Albuquerque-Santa Fe ( NM)</option>
+                                          <option value="644:Alexandria ( LA)">Alexandria ( LA)</option>
+                                          <option value="583:Alpena ( MI)">Alpena ( MI)</option>
+                                          <option value="634:Amarillo ( TX)">Amarillo ( TX)</option>
+                                          <option value="743:Anchorage ( AK)">Anchorage ( AK)</option>
+                                          <option value="524:Atlanta ( GA)">Atlanta ( GA)</option>
+                                          <option value="520:Augusta ( GA)">Augusta ( GA)</option>
+                                          <option value="635:Austin ( TX)">Austin ( TX)</option>
+                                          <option value="800:Bakersfield ( CA)">Bakersfield ( CA)</option>
+                                          <option value="512:Baltimore ( MD)">Baltimore ( MD)</option>
+                                          <option value="537:Bangor ( ME)">Bangor ( ME)</option>
+                                          <option value="716:Baton Rouge ( LA)">Baton Rouge ( LA)</option>
+                                          <option value="692:Beaumont-Port Arthur ( TX)">Beaumont-Port Arthur ( TX)</option>
+                                          <option value="821:Bend ( OR)">Bend ( OR)</option>
+                                          <option value="756:Billings ( MT)">Billings ( MT)</option>
+                                          <option value="746:Biloxi-Gulfport ( MS)">Biloxi-Gulfport ( MS)</option>
+                                          <option value="502:Binghamton ( NY)">Binghamton ( NY)</option>
+                                          <option value="630:Birmingham ( AL)">Birmingham ( AL)</option>
+                                          <option value="559:Bluefield-Beckley-Oak Hill ( WV)">Bluefield-Beckley-Oak Hill ( WV)</option>
+                                          <option value="757:Boise ( ID)">Boise ( ID)</option>
+                                          <option value="506:Boston ( MA-Manchester ( NH)">Boston ( MA-Manchester ( NH)</option>
+                                          <option value="736:Bowling Green ( KY)">Bowling Green ( KY)</option>
+                                          <option value="514:Buffalo ( NY)">Buffalo ( NY)</option>
+                                          <option value="523:Burlington ( VT-Plattsburgh ( NY)">Burlington ( VT-Plattsburgh ( NY)</option>
+                                          <option value="754:Butte-Bozeman ( MT)">Butte-Bozeman ( MT)</option>
+                                          <option value="767:Casper-Riverton ( WY)">Casper-Riverton ( WY)</option>
+                                          <option value="637:Cedar Rapids-Waterloo-Iowa City ( IA)">Cedar Rapids-Waterloo-Iowa City ( IA)</option>
+                                          <option value="648:Champaign &amp; Springfield-Decatur ( IL)">Champaign &amp; Springfield-Decatur ( IL)</option>
+                                          <option value="519:Charleston ( SC)">Charleston ( SC)</option>
+                                          <option value="564:Charleston-Huntington ( WV)">Charleston-Huntington ( WV)</option>
+                                          <option value="517:Charlotte ( NC)">Charlotte ( NC)</option>
+                                          <option value="584:Charlottesville ( VA)">Charlottesville ( VA)</option>
+                                          <option value="575:Chattanooga ( TN)">Chattanooga ( TN)</option>
+                                          <option value="759:Cheyenne ( WY-Scottsbluff ( NE)">Cheyenne ( WY-Scottsbluff ( NE)</option>
+                                          <option value="602:Chicago ( IL)">Chicago ( IL)</option>
+                                          <option value="868:Chico-Redding ( CA)">Chico-Redding ( CA)</option>
+                                          <option value="515:Cincinnati ( OH)">Cincinnati ( OH)</option>
+                                          <option value="598:Clarksburg-Weston ( WV)">Clarksburg-Weston ( WV)</option>
+                                          <option value="510:Cleveland-Akron (Canton) ( OH)">Cleveland-Akron (Canton) ( OH)</option>
+                                          <option value="752:Colorado Springs-Pueblo ( CO)">Colorado Springs-Pueblo ( CO)</option>
+                                          <option value="546:Columbia ( SC)">Columbia ( SC)</option>
+                                          <option value="604:Columbia-Jefferson City ( MO)">Columbia-Jefferson City ( MO)</option>
+                                          <option value="522:Columbus ( GA)">Columbus ( GA)</option>
+                                          <option value="535:Columbus ( OH)">Columbus ( OH)</option>
+                                          <option value="673:Columbus-Tupelo-West Point ( MS)">Columbus-Tupelo-West Point ( MS)</option>
+                                          <option value="600:Corpus Christi ( TX)">Corpus Christi ( TX)</option>
+                                          <option value="623:Dallas-Ft. Worth ( TX)">Dallas-Ft. Worth ( TX)</option>
+                                          <option value="682:Davenport-IA-Rock Island-Moline ( IL)">Davenport-IA-Rock Island-Moline ( IL)</option>
+                                          <option value="542:Dayton ( OH)">Dayton ( OH)</option>
+                                          <option value="751:Denver ( CO)">Denver ( CO)</option>
+                                          <option value="679:Des Moines-Ames ( IA)">Des Moines-Ames ( IA)</option>
+                                          <option value="505:Detroit ( MI)">Detroit ( MI)</option>
+                                          <option value="606:Dothan ( AL)">Dothan ( AL)</option>
+                                          <option value="676:Duluth ( MN-Superior ( WI)">Duluth ( MN-Superior ( WI)</option>
+                                          <option value="765:El Paso ( TX)">El Paso ( TX)</option>
+                                          <option value="565:Elmira ( NY)">Elmira ( NY)</option>
+                                          <option value="516:Erie ( PA)">Erie ( PA)</option>
+                                          <option value="801:Eugene ( OR)">Eugene ( OR)</option>
+                                          <option value="802:Eureka ( CA)">Eureka ( CA)</option>
+                                          <option value="649:Evansville ( IN)">Evansville ( IN)</option>
+                                          <option value="745:Fairbanks ( AK)">Fairbanks ( AK)</option>
+                                          <option value="724:Fargo-Valley City ( ND)">Fargo-Valley City ( ND)</option>
+                                          <option value="513:Flint-Saginaw-Bay City ( MI)">Flint-Saginaw-Bay City ( MI)</option>
+                                          <option value="570:Florence-Myrtle Beach ( SC)">Florence-Myrtle Beach ( SC)</option>
+                                          <option value="866:Fresno-Visalia ( CA)">Fresno-Visalia ( CA)</option>
+                                          <option value="571:Ft. Myers-Naples ( FL)">Ft. Myers-Naples ( FL)</option>
+                                          <option value="670:Ft Smith-Springdale ( AR)">Ft Smith-Springdale ( AR)</option>
+                                          <option value="509:Ft. Wayne ( IN)">Ft. Wayne ( IN)</option>
+                                          <option value="592:Gainesville ( FL)">Gainesville ( FL)</option>
+                                          <option value="798:Glendive ( MT)">Glendive ( MT)</option>
+                                          <option value="773:Grand Junction-Montrose ( CO)">Grand Junction-Montrose ( CO)</option>
+                                          <option value="563:Grand Rapids-Kalamazoo ( MI)">Grand Rapids-Kalamazoo ( MI)</option>
+                                          <option value="755:Great Falls ( MT)">Great Falls ( MT)</option>
+                                          <option value="658:Green Bay-Appleton ( WI)">Green Bay-Appleton ( WI)</option>
+                                          <option value="518:Greensboro-Winston Salem ( NC)">Greensboro-Winston Salem ( NC)</option>
+                                          <option value="545:Greenville-New Bern-Washington ( NC)">Greenville-New Bern-Washington ( NC)</option>
+                                          <option value="567:Greenville-Spartanburg ( SC)">Greenville-Spartanburg ( SC)</option>
+                                          <option value="647:Greenwood-Greenville ( MS)">Greenwood-Greenville ( MS)</option>
+                                          <option value="636:Harlingen-Weslaco-McAllen ( TX)">Harlingen-Weslaco-McAllen ( TX)</option>
+                                          <option value="566:Harrisburg-Lancaster-York ( PA)">Harrisburg-Lancaster-York ( PA)</option>
+                                          <option value="569:Harrisonburg ( VA)">Harrisonburg ( VA)</option>
+                                          <option value="533:Hartford &amp; New Haven ( CT)">Hartford &amp; New Haven ( CT)</option>
+                                          <option value="710:Hattiesburg-Laurel ( MS)">Hattiesburg-Laurel ( MS)</option>
+                                          <option value="766:Helena ( MT)">Helena ( MT)</option>
+                                          <option value="744:Honolulu ( HI)">Honolulu ( HI)</option>
+                                          <option value="618:Houston ( TX)">Houston ( TX)</option>
+                                          <option value="691:Huntsville-Decatur (Florence) ( AL)">Huntsville-Decatur (Florence) ( AL)</option>
+                                          <option value="758:Idaho Falls-Pocatello ( ID)">Idaho Falls-Pocatello ( ID)</option>
+                                          <option value="527:Indianapolis ( IN)">Indianapolis ( IN)</option>
+                                          <option value="718:Jackson ( MS)">Jackson ( MS)</option>
+                                          <option value="639:Jackson ( TN)">Jackson ( TN)</option>
+                                          <option value="561:Jacksonville ( FL)">Jacksonville ( FL)</option>
+                                          <option value="574:Johnstown-Altoona ( PA)">Johnstown-Altoona ( PA)</option>
+                                          <option value="734:Jonesboro ( AR)">Jonesboro ( AR)</option>
+                                          <option value="603:Joplin ( MO-Pittsburg ( KS)">Joplin ( MO-Pittsburg ( KS)</option>
+                                          <option value="747:Juneau ( AK)">Juneau ( AK)</option>
+                                          <option value="616:Kansas City ( MO)">Kansas City ( MO)</option>
+                                          <option value="557:Knoxville ( TN)">Knoxville ( TN)</option>
+                                          <option value="702:La Crosse-Eau Claire ( WI)">La Crosse-Eau Claire ( WI)</option>
+                                          <option value="582:Lafayette ( IN)">Lafayette ( IN)</option>
+                                          <option value="642:Lafayette ( LA)">Lafayette ( LA)</option>
+                                          <option value="643:Lake Charles ( LA)">Lake Charles ( LA)</option>
+                                          <option value="551:Lansing ( MI)">Lansing ( MI)</option>
+                                          <option value="749:Laredo ( TX)">Laredo ( TX)</option>
+                                          <option value="839:Las Vegas ( NV)">Las Vegas ( NV)</option>
+                                          <option value="541:Lexington ( KY)">Lexington ( KY)</option>
+                                          <option value="558:Lima ( OH)">Lima ( OH)</option>
+                                          <option value="722:Lincoln &amp; Hastings-Kearney ( NE)">Lincoln &amp; Hastings-Kearney ( NE)</option>
+                                          <option value="693:Little Rock-Pine Bluff ( AR)">Little Rock-Pine Bluff ( AR)</option>
+                                          <option value="803:Los Angeles ( CA)">Los Angeles ( CA)</option>
+                                          <option value="529:Louisville ( KY)">Louisville ( KY)</option>
+                                          <option value="651:Lubbock ( TX)">Lubbock ( TX)</option>
+                                          <option value="503:Macon ( GA)">Macon ( GA)</option>
+                                          <option value="669:Madison ( WI)">Madison ( WI)</option>
+                                          <option value="737:Mankato ( MN)">Mankato ( MN)</option>
+                                          <option value="553:Marquette ( MI)">Marquette ( MI)</option>
+                                          <option value="813:Medford-Klamath Falls ( OR)">Medford-Klamath Falls ( OR)</option>
+                                          <option value="640:Memphis ( TN)">Memphis ( TN)</option>
+                                          <option value="711:Meridian ( MS)">Meridian ( MS)</option>
+                                          <option value="528:Miami-Ft. Lauderdale ( FL)">Miami-Ft. Lauderdale ( FL)</option>
+                                          <option value="617:Milwaukee ( WI)">Milwaukee ( WI)</option>
+                                          <option value="613:Minneapolis-St. Paul ( MN)">Minneapolis-St. Paul ( MN)</option>
+                                          <option value="687:Minot-Bismarck-Dickinson ( ND)">Minot-Bismarck-Dickinson ( ND)</option>
+                                          <option value="762:Missoula ( MT)">Missoula ( MT)</option>
+                                          <option value="686:Mobile ( AL-Pensacola ( FL)">Mobile ( AL-Pensacola ( FL)</option>
+                                          <option value="628:Monroe ( LA-El Dorado ( AR)">Monroe ( LA-El Dorado ( AR)</option>
+                                          <option value="828:Monterey-Salinas ( CA)">Monterey-Salinas ( CA)</option>
+                                          <option value="698:Montgomery (Selma) ( AL)">Montgomery (Selma) ( AL)</option>
+                                          <option value="659:Nashville ( TN)">Nashville ( TN)</option>
+                                          <option value="622:New Orleans ( LA)">New Orleans ( LA)</option>
+                                          <option value="501:New York ( NY)">New York ( NY)</option>
+                                          <option value="544:Norfolk-Portsmouth-Newport News ( VA)">Norfolk-Portsmouth-Newport News ( VA)</option>
+                                          <option value="740:North Platte ( NE)">North Platte ( NE)</option>
+                                          <option value="633:Odessa-Midland ( TX)">Odessa-Midland ( TX)</option>
+                                          <option value="650:Oklahoma City ( OK)">Oklahoma City ( OK)</option>
+                                          <option value="652:Omaha ( NE)">Omaha ( NE)</option>
+                                          <option value="534:Orlando-Daytona Beach ( FL)">Orlando-Daytona Beach ( FL)</option>
+                                          <option value="631:Ottumwa ( IA-Kirksville ( MO)">Ottumwa ( IA-Kirksville ( MO)</option>
+                                          <option value="632:Paducah ( KY-Harrisburg ( IL)">Paducah ( KY-Harrisburg ( IL)</option>
+                                          <option value="804:Palm Springs ( CA)">Palm Springs ( CA)</option>
+                                          <option value="656:Panama City ( FL)">Panama City ( FL)</option>
+                                          <option value="597:Parkersburg ( WV)">Parkersburg ( WV)</option>
+                                          <option value="675:Peoria-Bloomington ( IL)">Peoria-Bloomington ( IL)</option>
+                                          <option value="504:Philadelphia ( PA)">Philadelphia ( PA)</option>
+                                          <option value="753:Phoenix ( AZ)">Phoenix ( AZ)</option>
+                                          <option value="508:Pittsburgh ( PA)">Pittsburgh ( PA)</option>
+                                          <option value="820:Portland ( OR)">Portland ( OR)</option>
+                                          <option value="500:Portland-Auburn ( ME)">Portland-Auburn ( ME)</option>
+                                          <option value="552:Presque Isle ( ME)">Presque Isle ( ME)</option>
+                                          <option value="521:Providence ( RI-New Bedford ( MA)">Providence ( RI-New Bedford ( MA)</option>
+                                          <option value="717:Quincy ( IL-Hannibal ( MO-Keokuk ( IA)">Quincy ( IL-Hannibal ( MO-Keokuk ( IA)</option>
+                                          <option value="560:Raleigh-Durham (Fayetteville) ( NC)">Raleigh-Durham (Fayetteville) ( NC)</option>
+                                          <option value="764:Rapid City ( SD)">Rapid City ( SD)</option>
+                                          <option value="811:Reno ( NV)">Reno ( NV)</option>
+                                          <option value="556:Richmond-Petersburg ( VA)">Richmond-Petersburg ( VA)</option>
+                                          <option value="573:Roanoke-Lynchburg ( VA)">Roanoke-Lynchburg ( VA)</option>
+                                          <option value="611:Rochester-Austin ( MN-Mason City ( IA)">Rochester-Austin ( MN-Mason City ( IA)</option>
+                                          <option value="538:Rochester ( NY)">Rochester ( NY)</option>
+                                          <option value="610:Rockford ( IL)">Rockford ( IL)</option>
+                                          <option value="862:Sacramento-Stockton-Modesto ( CA)">Sacramento-Stockton-Modesto ( CA)</option>
+                                          <option value="576:Salisbury ( MD)">Salisbury ( MD)</option>
+                                          <option value="770:Salt Lake City ( UT)">Salt Lake City ( UT)</option>
+                                          <option value="661:San Angelo ( TX)">San Angelo ( TX)</option>
+                                          <option value="641:San Antonio ( TX)">San Antonio ( TX)</option>
+                                          <option value="825:San Diego ( CA)">San Diego ( CA)</option>
+                                          <option value="807:San Francisco-Oakland-San Jose ( CA)">San Francisco-Oakland-San Jose ( CA)</option>
+                                          <option value="855:Santa Barbara-San Luis Obispo ( CA)">Santa Barbara-San Luis Obispo ( CA)</option>
+                                          <option value="507:Savannah ( GA)">Savannah ( GA)</option>
+                                          <option value="819:Seattle-Tacoma ( WA)">Seattle-Tacoma ( WA)</option>
+                                          <option value="657:Sherman ( TX-Ada ( OK)">Sherman ( TX-Ada ( OK)</option>
+                                          <option value="612:Shreveport ( LA)">Shreveport ( LA)</option>
+                                          <option value="624:Sioux City ( IA)">Sioux City ( IA)</option>
+                                          <option value="725:Sioux Falls(Mitchell) ( SD)">Sioux Falls(Mitchell) ( SD)</option>
+                                          <option value="588:South Bend-Elkhart ( IN)">South Bend-Elkhart ( IN)</option>
+                                          <option value="881:Spokane ( WA)">Spokane ( WA)</option>
+                                          <option value="619:Springfield ( MO)">Springfield ( MO)</option>
+                                          <option value="543:Springfield-Holyoke ( MA)">Springfield-Holyoke ( MA)</option>
+                                          <option value="638:St. Joseph ( MO)">St. Joseph ( MO)</option>
+                                          <option value="609:St. Louis ( MO)">St. Louis ( MO)</option>
+                                          <option value="555:Syracuse ( NY)">Syracuse ( NY)</option>
+                                          <option value="530:Tallahassee ( FL-Thomasville ( GA)">Tallahassee ( FL-Thomasville ( GA)</option>
+                                          <option value="539:Tampa-St Petersburg (Sarasota) ( FL)">Tampa-St Petersburg (Sarasota) ( FL)</option>
+                                          <option value="581:Terre Haute ( IN)">Terre Haute ( IN)</option>
+                                          <option value="547:Toledo ( OH)">Toledo ( OH)</option>
+                                          <option value="605:Topeka ( KS)">Topeka ( KS)</option>
+                                          <option value="540:Traverse City-Cadillac ( MI)">Traverse City-Cadillac ( MI)</option>
+                                          <option value="531:Tri-Cities ( TN-VA)">Tri-Cities ( TN-VA)</option>
+                                          <option value="789:Tucson (Sierra Vista) ( AZ)">Tucson (Sierra Vista) ( AZ)</option>
+                                          <option value="671:Tulsa ( OK)">Tulsa ( OK)</option>
+                                          <option value="760:Twin Falls ( ID)">Twin Falls ( ID)</option>
+                                          <option value="709:Tyler-Longview(Nacogdoches) ( TX)">Tyler-Longview(Nacogdoches) ( TX)</option>
+                                          <option value="526:Utica ( NY)">Utica ( NY)</option>
+                                          <option value="626:Victoria ( TX)">Victoria ( TX)</option>
+                                          <option value="625:Waco-Temple-Bryan ( TX)">Waco-Temple-Bryan ( TX)</option>
+                                          <option value="511:Washington ( DC (Hagerstown ( MD))">Washington ( DC (Hagerstown ( MD))</option>
+                                          <option value="549:Watertown ( NY)">Watertown ( NY)</option>
+                                          <option value="705:Wausau-Rhinelander ( WI)">Wausau-Rhinelander ( WI)</option>
+                                          <option value="548:West Palm Beach-Ft. Pierce ( FL)">West Palm Beach-Ft. Pierce ( FL)</option>
+                                          <option value="554:Wheeling ( WV-Steubenville ( OH)">Wheeling ( WV-Steubenville ( OH)</option>
+                                          <option value="627:Wichita Falls ( TX &amp; Lawton ( OK)">Wichita Falls ( TX &amp; Lawton ( OK)</option>
+                                          <option value="678:Wichita-Hutchinson ( KS)">Wichita-Hutchinson ( KS)</option>
+                                          <option value="577:Wilkes Barre-Scranton ( PA)">Wilkes Barre-Scranton ( PA)</option>
+                                          <option value="550:Wilmington ( NC)">Wilmington ( NC)</option>
+                                          <option value="810:Yakima-Pasco-Richland-Kennewick ( WA)">Yakima-Pasco-Richland-Kennewick ( WA)</option>
+                                          <option value="536:Youngstown ( OH)">Youngstown ( OH)</option>
+                                          <option value="771:Yuma ( AZ-El Centro ( CA)">Yuma ( AZ-El Centro ( CA)</option>
+                                          <option value="596:Zanesville ( OH)">Zanesville ( OH)</option>
+															</select>
+                                  </li>
+                                  
+                                </ul>
+                                <div id="geoDmaserrorText" class="error" ></div>
+                                <div style="left: -9000px; width: 458px; top: 29px;" class="chzn-drop">
+                                 
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div style="margin-bottom:20px" class="span6 offset4">
+                        <p class="muted">Geo-targeting allows you to concentrate on a specific geography, but also greatly limits your reach. We recommend against using geography targeting for lists under 20,000 users.  You just won't reach many people. If you have more questions about geographic targeting please look at our documentation. </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-bottom:0;margin-top:10px;clear:both;" id="accordion4" class="accordion">
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a href="#collapseThree" data-parent="#accordion4" data-toggle="collapse" style="color:#333;background:#f3f3f3;padding-left:40px;position:relative;" class="accordion-toggle nover">
+                    <i class="icon-plus-sign collapsecon"></i>   <i class="icon-time"></i> Dayparting Settings
+                    </a>
+                  </div>
+                  <div class="accordion-body collapse" id="collapseThree">
+                    <div class="accordion-inner">
+                      <% trId=1 %>
+                      <div >
+                       <%= check_box("campaign", "runadcontinuously" ,{:checked=>true,:id=>"run-ad-continuously"}, "ongoing") %>&nbsp;Run my ads continuously
+                       
+                       </div>
+                       <br><br>
+                       <div id="manual-dayparting" class="hide">
+                      <table id="dayparting">
+                      	<tr id="daypartingRow<%= trId %>">
+                      	  <td>
+                      	    <%= select(:campaign,"dayparting_day"+trId.to_s,options_for_select([['Monday', 'monday'],['Tuesday', 'tuesday'],['Wednesday','wednesday'],['Thursday', 'thursday'],['Friday', 'friday'],['Saturday', 'saturday'],['Sunday', 'sunday']])) %>
+                      	  </td>
+                      	  <td>
+                      	    <%= select(:campaign,"dayparting_start_hr"+trId.to_s,options_for_select([['0', 0],['1', 1],['2', 2],['3', 3],['4', 4],['5', 5],['6', 6],['7', 7],['8', 8],['9', 9],['10', 10],['11', 11],['12', 12],['13', 13],['14', 14],['15', 15],['16', 16],['17', 17],['18', 18],['19', 19],['20', 20],['21', 21],['22', 22],['23', 23]]) , {} , :onchange => "validateHr(this.id)") %>
+							 
+                      	  </td>
+                      	  <td>
+                      	    <%= select(:campaign,"dayparting_start_min"+trId.to_s ,options_for_select([['0', 0],['15', 15],['30', 30],['45', 45]]) , {} , :onchange => "validateMin(this.id)" ) %>
+                      	  </td>
+                      	  <td>
+                      	    &nbsp;to&nbsp;
+                      	  </td>
+                      	  <td>
+                      	    <%= select(:campaign ,"dayparting_end_hr"+trId.to_s ,options_for_select([['0', 0],['1', 1],['2', 2],['3', 3],['4', 4],['5', 5],['6', 6],['7', 7],['8', 8],['9', 9],['10', 10],['11', 11],['12', 12],['13', 13],['14', 14],['15', 15],['16', 16],['17', 17],['18', 18],['19', 19],['20', 20],['21', 21],['22', 22],['23', 23]]) , {}, :onchange => "validateHr(this.id)" ) %>
+                      	    <div id="cenderror<%= trId %>" class="error" style="width:210px;margin-left:1px;"></div>
+                      	  </td>
+                      	  <td>
+                      	  <%= select(:campaign,"dayparting_end_min"+trId.to_s ,options_for_select([['0', 0],['15', 15],['30', 30],['45', 45]]), {}, :onchange => "validateMin(this.id)") %>
+                      	  </td>
+                      	  <td>
+                      	   <a href='' onclick='deleteRow(<%= trId %>)'>X</a>
+                      	  </td>
+                      	  <% trId = trId +1 %>  
+                      	</tr>
+                      </table>
+                       <input type="hidden" id="trId" value="<%= trId %>"/>
+                      <div><a href="javascript:addRow('<%= trId %>')"> Add Day Parting </a></div>
+                      <%= f.text_field :countDayparting , :id=>"countDayparting",:type=>"hidden",:value=>1 %>
+			
+                      Please note a campaign will start serving on the first minute of the Start Hour and then will stop on the last minute of the End Hour. EG - a campaign starting at 8 will start at 8:00am in the users local time. A campaign ending at 20 will stop at 20:59 or 8:59PM in the user's local time.
+                    </div></div>
+                  </div>
+                </div>
+              </div>
+              <br>
+              <script type="text/javascript">
+                $(document).ready(function(){    
+                $('#accordion2').on('shown', function () {
+                   $('#accordion2').find(".icon-plus-sign").removeClass("icon-plus-sign").addClass("icon-minus-sign");
+                });
+
+                $('#accordion2').on('hidden', function () {
+                   $('#accordion2').find(".icon-minus-sign").removeClass("icon-minus-sign").addClass("icon-plus-sign");
+                });
+                
+                $('#accordion3').on('shown', function () {
+                   $('#accordion3').find(".icon-plus-sign").removeClass("icon-plus-sign").addClass("icon-minus-sign");
+                });
+
+                $('#accordion3').on('hidden', function () {
+                   $('#accordion3').find(".icon-minus-sign").removeClass("icon-minus-sign").addClass("icon-plus-sign");
+                });
+                 
+                $('#accordion4').on('shown', function () {
+                   $('#accordion4').find(".icon-plus-sign").removeClass("icon-plus-sign").addClass("icon-minus-sign");
+                });
+
+                $('#accordion4').on('hidden', function () {
+                   $('#accordion4').find(".icon-minus-sign").removeClass("icon-minus-sign").addClass("icon-plus-sign");
+                });
+                
+                $('#accordion5').on('shown', function () {
+                   $('#accordion5').find(".icon-plus-sign").removeClass("icon-plus-sign").addClass("icon-minus-sign");
+                });
+
+                $('#accordion5').on('hidden', function () {
+                   $('#accordion5').find(".icon-minus-sign").removeClass("icon-minus-sign").addClass("icon-plus-sign");
+                });
+                });
+
+              </script>
+            </div>
+                <br>
+          </div>
+          
+          
+          <div class="widget-header">
+	    <h3><span class="sectionnumeral"><%= sectionCount = sectionCount +1 %></span> &nbsp; Bid Strategy </h3>
+	  </div>
+          <div class="widget-content " style="padding:15px;">
+	    <div style="width:910px;margin-left: 0px;" class="span12">
+	    <input type="hidden" id="campaigntype" value="cpm"/>
+		<div class="tabbable widget">
+		  <div style="border-bottom:0;" class="widget-header ">	
+		    <ul style="padding-left:15px;margin-top:5px;" class="nav nav-tabs">
+			<li class="active" onclick="showhideconv('cpm')">
+			  <a class="table-tab-toggle" data-toggle="tab" href="#cpm" onclick="setbidType('cpm')"><i class="icon-flag"></i> Cpm</a>
+			</li>
+			<li class="" onclick="showhideconv('cpc')">
+			  <a class="table-tab-toggle" data-toggle="tab" href="#cpc" id="ads_summary_table_link" onclick="setbidType('cpc')"><i class="icon-eye-open"></i> Cpc</a>
+			</li>
+			<li class="" onclick="showhideconv('cpa')">
+			<a class="table-tab-toggle" data-toggle="tab" href="#cpa" id="conversion_summary_table_link" onclick="setbidType('cpa')"><i class="icon-shopping-cart"></i> Cpa</a>
+			</li>
+			
+		     </ul>
+		     
+		   </div>
+		   
+		   <%= f.text_field :bidtype , :id=>"bidtype" ,:type=>"hidden",:value=>"cpm"%>
+		   <div class="tab-content widget-content stattables"> 
+		   
+		     <div data-url="campaign_summaries" id="cpm" class="tab-pane loaded offset3 span6 active" style="margin-left:117px;">
+		     
+			<div class="form-group">
+			  <label class="sr-only">Impression:</label>
+			    <%= f.text_field :impressions , :id=>"impressions" ,:class=>"bids req numeric" , :rel=>"tooltip" , :title=>"Impresions (Provide number of impresions)" , :onKeyUp=>"calculateCost()" , :onchange=>"validate(this.id,'impressionserror')" %>
+			     <br><div id="impressionserror" class="error" style="width:210px;margin-left:1px;"></div>
+			</div>
+			<div style="float: left; margin: -53px 0px 0px 290px;" id="form-cpm" class="form-group">
+			
+			  <label class="sr-only">CPM</label>
+			  <span class="add-on">$</span><%= f.text_field :cpm , :id=>"campaign_cpm" ,:class=>"bids req numeric" , :rel=>"tooltip" , :title=>"Impresions (Provide number of impresions)" , :onKeyUp=>"calculateCost()", :onchange=>"validate(this.id,'campaign_cpmerror')"%>
+			   <div id="campaign_cpmerror" class="error" style="width:210px;margin-left:1px;"></div>
+			</div>
+			
+			<div style="margin-top: 12px; text-align:center; border-top: 1px solid #c7c7c7;" class="form-group">
+			  <input type="text" style="background-color:#BCF5A9;" value="Campaign Cost" name="campaigncost" id="cpmcampaigncost" class="ccnum">
+			</div>
+	              </div>
+		      <div data-url="campaign_summaries" id="cpc" class="tab-pane loaded offset3 span6" style="margin-left:117px;">
+			    <div class="form-group">
+			      <label style="display: table;" class="sr-only">Cicks:</label>
+			      <%= f.text_field :clicks , :id=>"clicks" ,:class=>"bids req numeric", :onKeyUp=>"calculateCost()" ,:onchange=>"validate(this.id,'clickserror')"   %>
+			      <br><div id="clickserror" class="error" style="width:210px;margin-left:1px;"></div>
+			    </div>
+			    <div style="float: left; margin: -53px 0px 0px 290px;" id="form-cpc" class="form-group">
+			      <label class="sr-only">CPC</label>
+			      <span class="add-on">$</span><%= f.text_field :cpc , :id=>"campaign_cpc" ,:class=>"bids req numeric" , :onKeyUp=>"calculateCost()" , :onchange=>"validate(this.id,'campaign_cpcerror')" %>
+			      <div id="campaign_cpcerror" class="error" style="width:210px;margin-left:1px;"></div>
+			    </div>
+			    
+			  <div style="margin-top: 12px; text-align:center; border-top: 1px solid #c7c7c7;" class="form-group">
+			    <input type="text" style="background-color:#BCF5A9;" value="Campaign Cost" name="campaigncost" id="cpccampaigncost" class="ccnum">
+			  </div>
+			</div>
+			<div data-url="campaign_summaries" id="cpa" class="tab-pane loaded offset3 span6" style="margin-left:117px;">
+			    <div class="form-group">
+			      <label style="display: table;" class="sr-only">Conversions:</label>
+			      <%= f.text_field :conversionscpa , :id=>"conversions" ,:class=>"bids req numeric" , :onKeyUp=>"calculateCost()", :onchange=>"validate(this.id,'conversionserror')" %>
+			     <br> <div id="conversionserror" class="error" style="width:210px;margin-left:1px;"></div>
+			      
+			    </div>
+			    <div style="float: left; margin: -53px 0px 0px 290px;" id="form-cpa" class="form-group">
+			      <label class="sr-only">CPA</label>
+			      <span class="add-on">$</span><%= f.text_field :cpa , :id=>"campaign_cpa" ,:class=>"bids req url", :onKeyUp=>"calculateCost()",  :onchange=>"validate(this.id,'campaign_cpaerror')" %>
+			      <div id="campaign_cpaerror" class="error" style="width:210px;margin-left:1px;"></div>
+			    </div>
+			  <div style="margin-top: 12px; text-align:center; border-top: 1px solid #c7c7c7;" class="form-group">
+			  <input type="text" style="background-color:#BCF5A9;" value="Campaign Cost" name="campaigncost" id="cpacampaigncost" class="ccnum">
+			  </div>
+			</div>
+			<a href="JAVASCRIPT:void()" onclick="calculateMinBid()">Minimum bid price suggestions</a>
+	              </div>
+	              
+	            </div>
+	            
+		</div>
+		
+              </div>
+
+          <div class="widget">
+            <div class="widget-header">
+              <h3>
+              <span class="sectionnumeral"><%= sectionCount = sectionCount +1 %></span> &nbsp; Campaign, Pricing, Schedule
+              </h3>
+            </div>
+            <div style="padding:15px;" class="widget-content ">
+              <div class="control-group">
+                <div class="control-label">Campaign Name: <a rel="tooltip" data-original-title="Give your campaign a descriptive name so you remember what it does.">[?]</a>
+                  <div class="helpform"></div>
+                </div>
+                <input type="hidden" id="campaignoldName" value=""/>
+                <%= f.text_field :campaign_name , :id=>"campaign_name" ,:placeholder=>"My Campaign" ,:onchange=>"checkCampaignName(this.value)",:maxlength=>"200", :class=>"req", :onchange=>"validate(this.id,'campaignNameerrorText')" %>
+                <div id="campaignNameerrorText" class="error" style="width:210px;margin-left:162px;"></div>
+                <%= f.text_field :campaign_type ,:type=>"hidden", :id=>"campaign_type" ,:value=>params[:type], :class=>"req numeric", :onchange=>"validate(this.id,'budgeterrorText')" %>
+              </div>
+              <div class="control-group">
+                <div class="control-label">Daily Budget: <a rel="tooltip" data-original-title="Campaigns are prepaid on a Daily basis and budgets refill every Monday.  You will be billed this amount at the beginning of the campaign and each Monday will be billed when the budget refills to full.  You can transfer or withdraw funds at any time.">[?]</a>
+                </div>
+                <div class="controls">
+                  <div class="input-prepend">
+                    <span style="" class="add-on">$</span>
+                    <%= f.text_field :weekly_budget ,:size=>"30", :id=>"weekly_budget" ,:value=>"25", :class=>"req numeric", :onchange=>"validate(this.id,'budgeterrorText')" %> <small style="color:#999;font-size:11px;">($25 minimum) <a rel="tooltip" data-original-title="Your retargeting budget should scale based on your web traffic.  Here are some budget guidelines:&lt;br/&gt;-10k-25k visitors: $350-700/week&lt;br/&gt;-25k-50k visitors: $700-1500/week&lt;br/&gt;-50k-100k visitors: $1500-3000/week&lt;br/&gt;-100k-350k+ visitors: $3k-10k/week">Recommendations</a></small><br>
+                    <div id="budgeterrorText" class="error" style="width:240px;margin-left:30px;"></div>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-bottom:18px;" class="control-group schedule">
+                <div class="control-label">
+                  Campaign Schedule: <a rel="tooltip" data-original-title="Your campaign is set to run continuously starting today. If you want to set a specific start and end day, uncheck the box.">[?]</a>
+                </div>
+                <%= check_box("campaign", "runcampaigncontinuously" ,{:checked=>true,:id=>"run-campaign-continuously"}, "ongoing") %>
+                
+                Run my campaign continuously starting today.
+                <style type="text/css">  
+                  .datefields input {background: url("/assets/datepicker-ca54d8cce277a4e564193c6615ac09cb.gif") 5px 6px no-repeat;width:185px;padding-left:25px;}
+                </style>
+                <div data-today="11/29/2013" class="hide" id="start-end-schedule-picker">
+                  <div style="margin-bottom:18px;" class="control-group datefields">
+                    <div style="width:50px;" class="control-label">
+                      Start:
+                    </div>
+                    <%= f.text_field :campaign_startdate ,:size=>"30" ,:id=>"campaign_start_date" ,:style=>"background-color: rgb(255, 255, 255); cursor: pointer;" ,:class=>"datepicker", :readonly=>"readonly" , :onchange=>"checkdates()" %>
+                    <div id="startDateerrortext" class="error" style="display: none; margin-left: 71px; padding: 3px; margin-top: 2px; width: 250px;"></div>
+                  </div>
+                  <div style="margin-bottom:5px;" class="control-group datefields">
+                    <div style="width:50px;" class="control-label"> End: </div>
+                    <%= f.text_field :campaign_enddate ,:size=>"30" ,:id=>"campaign_end_date" ,:style=>"background-color: rgb(255, 255, 255); cursor: pointer;" , :class=>"datepicker",:readonly=>"readonly" , :onchange=>"checkdates()" %>
+                    <div id="endDateerrortext" class="error" style="display: none; margin-left: 71px; padding: 3px; margin-top: 2px; width: 250px;"></div>
+                    <small style="font-size:12px;position:relative;top:11px;">
+                      <a style="margin-top:-15px;line-height:15px;" onclick="$('#campaign_end_date').val(''); return false;" href="#" class="btn btn-mini"><i class="icon-minus-sign"></i> clear date</a>
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" value="12" name="campaign[max_day_imps]" id="campaign_max_day_imps">
+ 
+              <div class="control-group" id="conversionsDiv" >
+                <label class="control-label">Conversion Goals <a rel="tooltip" data-original-title="Choose a conversion goal to track for this campaign">[?]</a> </label>
+                <div class="controls">
+                  <div id="conversionGoalerrorText" class="error" style="margin-left:0px;width:720px;"></div>
+                  <table style="clear:none;width:720px;" class="table table-striped table-bordered" id="conversion-chooser">
+                    <thead>
+                      <tr>
+                        <th> <i class="icon-exchange"></i> &nbsp;Select up to 3 Conversion Goals to track <a rel="tooltip" href="" style="color:#888;font-weight:normal;display:inline;" data-original-title="The ad networks may block your ads from serving if you attach more than 3 conversion goals.">[?]</a> </th>
+                        <th width="1%">Track</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <% if @conversionsList.present?
+                             @conversionsList.each do |key,conversion| %>
+                      <tr>
+                        <td><%= conversion["conversionName"] %></td>
+                        <td>
+                          <%= check_box("campaign", "conversions" ,{:multiple=>"true",:class=>"conversionGoals"},key,nil) %>
+                        </td>
+                      </tr>
+                     <% end
+                     %>
+                     <% end %>
+                    </tbody>
+                  </table>
+                  <span class="pull-right">
+                    <a data-animation="fade" data-reveal-id="newConversion" href="#" style="clear:both;text-align:right;margin:5px 30px 10px 0;color:#fff;" id="new-conversion-button" class="btn btn-mini btn-success" ><i style="margin-top:3px;" class="icon-plus icon-white"></i> Create new conversion goal</a>
+                  </span>
+                </div>
+              </div>
+              <div class="control-group">
+                <div class="control-label">
+                  Set to inactive? <a rel="tooltip" data-original-title="Check this box to set campaign 'inactive'.  Ads will not serve until it is unchecked and the campaign is saved again.">[?]</a>
+                   <div class="helpform"> </div>
+                </div>
+                <input type="hidden" value="active" name="campaign[state]"><input type="checkbox" value="pause" style="width:25px;text-align:left;margin-top:0;" name="campaign[state]" id="campaign_state" class="state_check"> Yes, set to inactive.
+              </div>
+            </div>
+          </div>
+          <div class="widget">
+            <div class="widget-header">
+              <h3>
+              <span class="sectionnumeral"><%= sectionCount = sectionCount +1 %></span> &nbsp; Billing Information <span style="color:red;">*</span>
+              </h3>
+            </div>
+            <div style="padding:0;" class="widget-content in collapse">
+              <div style="border-top:0;padding:15px;" class="">
+                <p>You campaign budget will refill Daily, every Monday, to minimize charges.  Billing information is required during free trials to verify identity and ensure seamless transition to live campaigns. 24 hours before your free trial expires we will notify you and your campaign will seamlessly shift into full active mode. </p>
+                <div class="control-group">
+                <!-- Choose or new CC -->
+
+                <!-- Partial for choosing existing or new CC -->
+                  <div class="control-group">
+                    <div class="controls">
+                      <div style="margin-bottom: 4px" class="radio">
+                        <input type="radio" disabled="disabled" value="old" id="cc_chooser_1" name="cc_chooser">
+                          Use existing card
+                         <br>
+                        <input type="radio" disabled="disabled" checked="checked" value="new" id="cc_chooser_2" name="cc_chooser">
+                        <!-- If using new card -->
+                        <input type="hidden" name="cc[stripe_card_token]" id="cc_stripe_card_token">
+                        <input type="hidden" name="cc[last_four]" id="cc_last_four">
+                        <input type="hidden" name="cc[expiration_month]" id="cc_expiration_month">
+                        <input type="hidden" name="cc[expiration_year]" id="cc_expiration_year">
+                        <input type="hidden" name="cc[type]" id="cc_type">  Pay with new card
+                        <div style="margin-top:5px;" class="cc">              
+                          <h4 style="padding:8px 10px;line-height:20px;font-size:16px;background:#ddd;text-shadow:0 1px 0px #fff;">Card Details</h4>  
+                          <div style="padding:0px 10px;"> 
+                            <div style="margin-bottom:5px;" class="field">
+                              <label for="cc_card_number">CREDIT CARD NUMBER</label>
+                              <img src="<%= asset_path( 'ccard.png' ) %>" class="pull-right" alt="Ccard">
+                              <input type="text" style="width:131px" placeholder="" id="cc_card_number" class="ccnum">
+                            </div>
+                            <div style="width:50%; margin-bottom:5px;" class="field pull-left">
+                              <label for="card_code">CV CODE</label>
+                              <input type="text" style="width:50px;" placeholder="" id="cc_card_code">
+                            </div>
+                            <div style="width:50%; margin-bottom:5px;" class="field pull-right">
+                              <label for="cc_card_month">EXPIRY DATE</label>
+                              <select id="cc_card_month">
+                                <option value="1">1 - January</option>
+                                <option value="2">2 - February</option>
+                                <option value="3">3 - March</option>
+                                <option value="4">4 - April</option>
+                                <option value="5">5 - May</option>
+                                <option value="6">6 - June</option>
+                                <option value="7">7 - July</option>
+                                <option value="8">8 - August</option>
+                                <option value="9">9 - September</option>
+                                <option value="10">10 - October</option>
+                                <option value="11">11 - November</option>
+                                <option value="12">12 - December</option>
+                              </select>
+                              <select id="cc_card_year">
+                                <option value="2013">2013</option>
+                                <option value="2014">2014</option>
+                                <option value="2015">2015</option>
+                                <option value="2016">2016</option>
+                                <option value="2017">2017</option>
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                              </select>
+                            </div>
+                            <div style="width:50%" class="field">
+                              <label for="cc_nickname">CARD NICKNAME</label>
+                              <input type="text" style="width:131px" placeholder="" name="cc[nickname]" id="cc_nickname">
+                            </div>
+                          </div>
+                        </div>
+                        <div style="padding:0px;margin-top:10px;border:0;" class="alert alert-danger alert-block" id="stripe_error">             
+                          <noscript>JavaScript is not enabled and is required for this form. First enable it in your web browser settings.</noscript>              
+                        </div>
+                        <div style="color:#999;margin-left:90px;margin-top:-10px;">
+                          Secure billing powered by<a href="http://stripe.com"><img src="/assets/stripe.png" alt="Stripelogo"></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="span12">
+              <div style="margin-top:0;border:0px solid #ccc;" class="actions">
+                <input type="submit" value="Save and submit campaign" style="margin-top:0px;" name="commit" data-portion="0.2857142857142857" data-invoiced="false" data-id="52986238da46178dab000034" data-credits="0.0" onclick="return validateCampaign() " class="next-button btn btn-success btn-large">
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      <% end %>
+      <div id="new-conversion-modal" class="modal hide">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+          <h3> Create a New Conversion Goal </h3>
+        </div>
+        <form method="post" id="new-conversion-form" data-remote="true" class="form-horizontal" action=" " accept-charset="UTF-8"><div style="margin:0;padding:0;display:inline"><input type="hidden" value="✓" name="utf8"><input type="hidden" value="Fu6fc1RaORFUQadbo7dgjt3IlwcNplEf23Rh5HhQOIM=" name="authenticity_token"></div>
+          <div class="modal-body">
+          <div class="alert alert-error hide" id="new-conversion-errors"> </div>
+            <fieldset>
+              <div class="control-group">
+                <label for="conversion_Conversion Name" class="control-label">Conversion name</label>
+                <div class="controls">
+                  <input type="text" size="30" placeholder="Customer Sign Up" name="conversion[name]" id="conversion_name" >
+                </div>
+              </div>
+                <br>
+              <div class="control-group">
+                <div class="control-label">Conversion Type 
+                  <span style="color:red;margin-right:-10px;">*</span>
+                </div>
+                <div style="padding-left:20px;" class="controls">
+                  <div style="margin-bottom: 4px" class="radio">
+                    <input type="radio" checked="checked" value="path" style="margin-top:4px;" id="optionsRadios1" name="conversion[goal]">
+                      When a user visits a specific page or section: 
+                    <div id="path" class="input-prepend goal-choice">
+                      <span class="add-on">http://domain.com</span><input type="text" style="width:135px;" placeholder="/thankyou.html" name="path" id="path">
+                    </div>
+                  </div>
+                  <div class="radio">
+                    <input type="radio" value="query" style="margin-top:4px;" id="optionsRadios2" name="conversion[goal]">
+                    URL Querystring 
+                    <div id="query" class="goal-choice input-prepend hide">
+                      <span class="add-on">http://domain.com/?</span><input type="text" name="query" id="query">
+                    </div>
+                  </div>
+                  <br>
+                  <div class="radio">
+                    <input type="radio" value="event" style="margin-top:4px;" id="optionsRadios3" name="conversion[goal]">
+                    When a user triggers a specific javascript event <a href="/docs#javascript_api_autoopen" tabindex="-1">(API Docs)</a><br>
+                    <div id="event" class="input-prepend input-append goal-choice hide">
+                      &nbsp;<span class="add-on">_pa.track("</span><input type="text" style="width:100px;" name="event" id="event"><span class="add-on">")
+                    </span></div>
+                  </div>
+                  <br>
+                  <div class="radio">
+                    <input type="radio" value="regex" style="margin-top:4px;" id="optionsRadios4" name="conversion[goal]">
+                    Advanced: match against the full URL with a regular expression.
+                    <br>
+                    <div id="regex" class="input-prepend input-append goal-choice hide">
+                      <span class="add-on">/</span><input type="text" style="width:200px;" name="regex" id="regex"><span class="add-on">/i</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                <br>
+              <div class="control-group">
+                <div class="control-label"> Revenue Value </div>
+                <div class="helpform"> How much is each conversion worth? </div>
+                <div class="controls">
+                  <div class="input-prepend">
+                    <span style="" class="add-on">$</span><input type="text" style="width: 40px" size="30" placeholder="25" name="conversion[default_value]" id="conversion_default_value"> per conversion
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="control-group">
+                <div class="control-label"> Conversion Counting </div>
+                <div class="helpform">
+                  Configure your conversion to be counted every time it fires or once per user
+                </div>
+                <div class="controls">
+                  <select name="conversion[conversion_frequency]" id="conversion_conversion_frequency">
+                    <option value="every">Count every conversion</option>
+                    <option value="once">Count once per user</option>
+                  </select>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="modal-footer">
+            <a data-dismiss="modal" href="#">cancel</a>
+            <input type="submit" value="Create Conversion Goal" name="commit" id="new-conversion-submit" class="btn btn-primary btn-large">
+          </div>
+        </form>
+      </div>
+
+      <style type="text/css">
+        #new-conversion-modal {
+          width: 700px;
+          margin-left: -350px;
+          margin-top: -300px;
+        }
+
+        #new-conversion-modal .modal-body {
+          max-height: 600px;
+        }
+
+        #new-conversion-modal .alert {
+          padding-bottom: 0px;
+        }
+      </style>
+    </div>
+

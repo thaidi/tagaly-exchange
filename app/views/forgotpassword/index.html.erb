@@ -1,0 +1,36 @@
+<% ### Forgot password display page %>
+<link href="/assets/app.css" rel="stylesheet" type="text/css" />
+<style>
+.logodisplay{
+	margin-top:10px;
+	margin-left:30px;
+}
+input[type=text]
+{
+height:40px;
+}
+</style>
+<div class="logodisplay">
+  <img src="http://www.tagaly.com/images/logo4.png?1384128788" />
+</div>
+<% if flash[:error] %>
+<div style="width:480px;margin:10px auto;" class="alert alert-danger">
+    <%= flash[:error] %>
+</div>
+<% end %>
+<div style="width:280px;margin:50px auto;" class="widget">
+  <div class="smallh widget-headero">
+    <h3 style="">Forgot your password?</h3>
+
+  </div>
+  <div class="widget-content">
+    <%= form_tag("/forgotpassword/index", method: "post") do %>
+    <div style="margin:0;padding:0;display:inline"><input type="hidden" value="✓" name="utf8"></div>
+    <div>
+      <%= text_field_tag(:email,params[:email],:type=>"email",:id=>"workemail",:placeholder=>"Work Email (xxx@xxx.com)",:required => "required",:style=>"height:30px;") %>
+    </div>
+    <%= text_field_tag(:authenticity_token,form_authenticity_token(),:type=>"hidden") %>
+    <div><input type="submit" value="Send me reset password instructions" style="width:245px;" name="commit" class="btn btn-success"></div>
+    <% end %><br>
+  </div>
+</div>

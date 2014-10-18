@@ -1,0 +1,7 @@
+<%
+  # Redirects to login page if user is not logged in
+  if session[:user_id] == ''
+    redirect_to '/login'
+  end 
+%>
+<%= yield %>

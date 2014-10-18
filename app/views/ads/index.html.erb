@@ -1,0 +1,316 @@
+<%
+  if !params[:adtype]
+%>
+  <script type="text/javascript">
+    window.location.href="/ads/?adtype=all"
+  </script>
+<%
+  end
+%>
+<script>
+	$( document ).ready(function() {
+		$("select").change( function(e){
+			var id = $(this).attr('id');
+			var adStatus = $(this).val();
+			var hostname = "http://"+window.location.hostname+":3000/ads/updatestatus";
+			var divdata = "Status Updated successfully."
+			$.ajax({
+				type: "GET",
+				url: hostname,
+				data: "adId=" + id + "&adStatus=" + adStatus,
+				success: function(data){
+					// location.reload()
+					$( "#div-"+id ).text("Status Updated successfully.");
+				}
+			});
+		});
+	});
+</script>
+<script>
+function setStatus(status,adid,adname)
+		      {
+		      	var tdadId=adid
+		      var hostname=window.location.hostname;
+		      //alert("http://myappone.com:3000/campaigns/updatestatus?campaignid="+campaignid+"&status="+status);
+		      if (window.XMLHttpRequest)
+		      {// code for IE7+, Firefox, Chrome, Opera, Safari
+			  xmlhttp=new XMLHttpRequest();
+		      }
+		      else
+		      {// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		      }
+		      xmlhttp.onreadystatechange=function()
+		      {
+		      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		      {
+			  //alert(xmlhttp.responseText);
+			if(xmlhttp.responseText=="success")
+			{
+			  $("#statusmsg"+tdadId).fadeIn()
+			  $("#statusmsg"+tdadId).fadeOut(500)
+ 			  document.getElementById("adname").innerHTML=decodeURIComponent(ad_name);
+			  document.getElementById("adname").innerHTML=adname;
+			  document.getElementById("statustext").innerHTML=status ;
+			  document.getElementById("statusmsg").style.display="block";
+			  if(status=="Deleted")
+			  {
+			  	document.getElementById("tr"+adid).style.display="none";
+			  }
+			}
+			}
+			}
+	
+			xmlhttp.open("GET","http://"+hostname+":3000/ads/updatestatus?adid="+adid+"&status="+status,true);
+			xmlhttp.send();
+			}
+			
+		</script>	
+		<script>
+				$(document).on('click','.adZoom', function(e){
+  			var idOfZoomClass = $(this).attr("id");
+				var adId = String(idOfZoomClass).substring(4);
+				var adDivId = "div" + adId;
+				var toset=$("#"+adDivId).html() ;
+				var width=$("#"+adDivId).width();
+				var height=$("#"+adDivId).height();
+				//alert(toset);
+				$("#adPreview").html("<a class='close-reveal-modal' id='closeadPreview'>&#215;</a>"+toset);
+				
+				if($("#img"+adId).attr('src'))
+				{
+					imgSize();
+					$("#adPreview").css("width", '');
+					$("#adPreview").css("height", '');
+				}
+				else
+				{
+					$("#adPreview").css("width", width);
+					$("#adPreview").css("height", height);
+				}
+				/*var src=$("#img"+adId).attr('src') ;
+				$("#img"+adId).attr('src',src);
+				$div = $("#" + adDivId);
+				$("#" + adDivId).show();
+				$("#" + adDivId).offset({
+				    top: e.pageY - ($div.outerHeight()/2),
+				    left: e.pageX + 20
+				});*/
+		});
+		function imgSize(){
+    $("img").load(function(){
+        var width = $(this).width();
+        var height = $(this).height();
+        $(this).attr("width",width).attr("height",height);
+    });
+}
+	/*$(document).on('mouseout','.adZoom', function(e){
+  			var idOfZoomClass = $(this).attr("id");
+				var adId = String(idOfZoomClass).substring(4);
+				var adDivId = "div" + adId;
+				$("#" + adDivId).hide();
+		});*/
+	</script>
+	<script src="/assets/jquery.reveal.js"  type="text/javascript"></script>
+	<link rel="stylesheet" href="/assets/reveal.css"/>
+	<div id="adPreview" class="reveal-modal" style="position:absolute; background-color: white; border-radius: 10px; top:100px;">
+			<a class="close-reveal-modal" id="closeadPreview">&#215;</a>
+			Ad Preview
+	</div>
+<div class="widget">
+<% if flash[:notice] %>
+		  <div align="center" class="alert-success" style="color:green;">
+		  
+          	<%= flash[:notice] %>
+  		</div>
+  		<% else %>
+  		  <div style="color:red;text-align=center;"> <%= flash[:error] %></div>
+		<% end %>
+        <div class="widget-header">
+          <div class="pull-right">
+            <a data-toggle="modal" class="btn btn-success btn-mini" href="/ads/new"><i class="icon-plus-sign icon-white"></i> Add new ad</a>
+          </div>
+          <h3>
+            <a href="/ads/" style="color:#222;">
+             <i class="icon-eye-open"> </i> Ad Manager </a>
+             <small>Upload and manage your ads.</small>
+          </h3>
+        </div>
+        <div class="widget-content">
+    
+          <p style="display:none;text-align:center;margin-bottom:-10px;color:#999;">As you upload Facebook ads, make sure they follow the <a href="" target="new">Facebook guidelines</a>.  For banner ads, check our <a href="" target="new">guidelines</a>.</p>
+    
+          <div class="" id="ads-table-container">
+    <div class="">
+      <div class="">
+        <a title="Show ads of all types" class="btn btn-small <% if params[:adtype] == 'all' %><%= 'active' %> <% end %>" href="?adtype=all">All Ads</a>
+<!--
+          <a title="Show only Facebook ads" class="btn btn-small <% if params[:adtype] == 'facebookads' %><%= 'active' %> <% end %>" href="?adtype=textads"><i style="margin-top:2px;" class="icon-facebook-sign"></i> Text Ads</a>
+          <a title="Show only Facebook News Feed ads" class="btn btn-small <% if params[:adtype] == 'nativeads' %><%= 'active' %> <% end %>" href="?adtype=nativeads"><i style="margin-top:2px;" class="icon-th-list"></i> Native Ads</a>
+        <a title="Show only banner ads" class="btn btn-small <% if params[:adtype] == 'bannerads' %><%= 'active' %> <% end %>" href="?adtype=bannerads"><i style="margin-top:2px;" class="icon-globe"></i> Banner Ads</a>
+-->
+      </div>
+    </div>
+<!--
+    <div class="ad-search-container pull-right">
+      <form method="get" class="form-search ads-loader">
+        <input type="hidden" value="facebook" name="type">
+        <div class="input-append">
+          <label><span class="clear-results"><input type="text" class="input-medium search-query" value="" placeholder="Search Ad Name" name="q"><span title="Clear Results" style="display: none;"></span></span></label>
+          <button class="btn">Search</button>
+        </div>
+      </form>
+    </div>
+-->
+<script>
+/*$(document).ready(function(){
+  $(".adZoom").mouseover(function(e){
+		var idOfZoomClass = $(this).attr("id");
+		var adId = String(idOfZoomClass).substring(4);
+		var adDivId = "div" + adId;
+		$div = $("#" + adDivId);
+		$("#" + adDivId).show();
+		// $('#' + adDivId).fadeTo(1000, 1);
+		$("#" + adDivId).offset({
+        top: e.pageY - ($div.outerHeight()/2),
+        left: e.pageX + 20
+    });
+  });
+  $(".adZoom").mouseout(function(){
+		var idOfZoomClass = $(this).attr("id");
+		var adId = String(idOfZoomClass).substring(4);
+		var adDivId = "div" + adId;
+		$("#" + adDivId).hide();
+  });
+});*/
+</script>
+    <div class="loading-container">
+      <img alt="Loading..." src="https://perfect-audience-assets.s3.amazonaws.com/assets/loading-51a27cd5e585bb07e07ab1773b178dbc.gif">
+    </div>
+    <div id="statusmsg" style="display:none;text-align:left;color:green;padding-bottom:10px;">Status has been changed to "<span id="statustext"></span>" for the Ad "<span id="adname"></span>"</div>
+    <table class="table table-striped table-bordered" id="ads-table">
+      <thead class="widget-header ads-loader">
+        <tr>
+          <!--<th><a href="">ID</a></th>-->
+          <th><a href="">Name</a></th>
+          <th><a href="">HeadLine</a></th>
+         <!-- <th><a href="">BidType</a></th>-->
+          <th width="3%"><a href="">Impr.</a></th>
+          <th><a href="">Clicks</a></th>
+		  <th><a href="">Conversions</a></th>
+          <th><a href="">CTR</a></th>
+          <th><a href="">Status</a></th>
+          <th width="5%"><a href="">Size</a></th>
+          <th><a href="">Click URL</a></th>
+          <th width="8%">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+   <% if @adsData["stats"].present? %>
+	<% @adsData["stats"].each do |key,ads| %>
+	          <tr class="active" id="tr<%= key %>">
+<!--
+            <td width="1%">
+                <%= key %>
+            </td>
+-->
+            <td width="30%"> <%= ads["advertisementDetails"]["adName"] %><div style="float:right">&nbsp;<button class="btn btn-mini btn-inverse" disabled style="cursor:default">&nbsp;<%= ads["advertisementDetails"]["version"] %>&nbsp;</button>
+<!--
+               <span data-facebook-body="<%= ads['advertisementDetails']['adText'] %>" data-facebook-title="<%= ads['advertisementDetails']['adHeadline'] %>" data-image-path="" data-preview-type="facebook" data-title="<%= ads['advertisementDetails']['adName'] %>" style="position:relative;text-align:center;color:#999;z-index:0">
+-->
+<a data-animation="fade" id="zoom<%= ads['advertisementDetails']['adId'] %>" class="adZoom" data-reveal-id="adPreview" href="#"><i style="margin-top: 3px;" class="icon-zoom-in adZoom"></i></a></div>
+<div id="div<%= ads['advertisementDetails']['adId'] %>" style="display:none;position:absolute; background-color: white; border-radius: 10px; border: 4px solid rgb(239, 239, 239);z-index:9999999999999999999999999999999">
+<div><b><h6><%= ads['advertisementDetails']['adName'] %></h6></b></div>
+<div style="height:7px"></div>
+<% if ads['advertisementDetails']['adType'] == 'TextAd' %>
+	<ul style="width: 234px; height: 60px; margin-left: 5px;">
+		<li style="float: none; color: rgb(34, 34, 34); "><a href="<%= ads['advertisementDetails']['adDestinationUrl'] %>" target="_blank"><%= ads['advertisementDetails']['adHeadline'] %></a></li>
+		<li class="adunits-innerli" style="float: none; color: rgb(0, 128, 0); "> <%= ads['advertisementDetails']['adDisplayUrl'] %> </li>
+		<li class="adunits-innerli" style="float: none; color: rgb(51, 51, 51); "> <%= ads['advertisementDetails']['adText'] %> </li>
+	</ul>
+<% elsif ads['advertisementDetails']['adType'] == 'BannerAd' %>
+
+<%
+my_string = ads['advertisementDetails']['adImageUrl']
+if my_string.include? ".swf"
+adSizes = ads['advertisementDetails']['adSize'].split('x') 
+%>
+<a href="<%= ads['advertisementDetails']['adDestinationUrl'] %>" target="_blank">
+<embed width="<%= adSizes[0] %>" height="<%= adSizes[1] %>" src="/uploads/<%= ads['advertisementDetails']['adImageUrl'] %>">
+</a>
+<%		
+elsif my_string.include? ".fla"
+
+else
+%>
+<a href="<%= ads['advertisementDetails']['adDestinationUrl'] %>" target="_blank">
+<img src="/uploads/<%= ads['advertisementDetails']['adImageUrl'] %>"/>
+</a>
+<%
+end
+%>
+
+<!--
+	<img src="/uploads/<%= ads['advertisementDetails']['adImageUrl'] %>" />
+-->
+<% end %>
+</div>
+            </td>
+            <td>
+          <%= ads["advertisementDetails"]["adHeadline"] %>
+            </td>
+            <!--
+            <td>
+            <%= ads["advertisementDetails"]["bidType"] %>
+            </td>-->
+            <td width="1%">
+               <%= ads["impressions"] %>
+            </td>
+            <td width="1%">
+              <%= ads["clicks"] %>
+            </td>
+			<td width="1%">
+              <%= ads["conversions"] %>
+            </td>
+            <td width="1%">
+               <%= ads["CTR"] %>
+            </td>
+            <td width="1%" style="text-align:center;">
+						<% ad_Name = Rack::Utils.escape(ads['advertisementDetails']['adName'].to_s) %>
+						<div id="statusmsg<%= key %>" style="color:green;display:none;text-align:center;" align="center">Status Set!</div>
+						<%= select_tag(:status, options_for_select([['Active', 'Active'],['Pause', 'Paused']],ads["advertisementDetails"]["adStatus"]),:onchange=>"setStatus(this.value,'#{key}','#{ad_Name}')") %>
+
+<!--
+              <span rel="tooltip" class="label label-success" data-original-title="approved">
+              <i class="icon-thumbs-up"> </i></span>
+-->
+            </td><td>
+<%= ads["advertisementDetails"]["adSize"] %> </a>
+            </td>
+            <td width="1%" class="ad-url">
+            <% destinationURL=ads["advertisementDetails"]["adDestinationUrl"] %>
+<% if destinationURL != nil %>
+              <a href="<%= ads['advertisementDetails']['adDestinationUrl'] %>">  <% if destinationURL.length > 35 %> <%= destinationURL[0,35].to_s + "..." %> <% else %> <%= destinationURL %> <% end %> </a>
+<% end %>
+            </td>
+            <td width="1%" style="text-align:center;">
+                <a rel="tooltip" href="/ads/<%= key %>/edit" data-original-title="Edit"><i class="icon-edit"></i></a>
+<a rel="tooltip" data-confirm="Are you sure you want to delete?" data-original-title="Delete" data-method="delete" href="<%= '/ads/'+key %>">
+                <i class="icon-trash"></i>
+</a>            </td>
+          </tr>
+	<% end %>
+<% end %>
+      </tbody>
+    </table>
+
+    <div class="undernote">
+      <i class="icon-refresh"></i> Audit status refreshed hourly.
+    </div>
+
+          </div>
+    
+        </div>
+      </div>

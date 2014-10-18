@@ -1,0 +1,42 @@
+table { margin:20px;width:100%; }
+input.submit.mid {  min-width: 115px; }
+			html body  { background: none repeat scroll 0 0 #ffffff; }
+			.nav-tabs { border-bottom: 0px solid ; }
+			.contentwrap  { max-width: 100%; }
+			ul { margin:0px; }
+			ul.balance li { border-left: 1px solid #E1E1E1;}
+			ul.balance li:first-child  { border-left: medium none; }	
+			ul.balance li { border-right: medium none; }
+			ul.balance li:first-child  { border-right: medium none; }
+			.contentwrap .content { padding-right: ; }
+			.browsecontainer .bcpad  { margin: 0 0 0 0px; padding: 20px; width: 1018px; }
+			h3 a  {  font-size: 18px;  }
+			h3 a:hover { text-decoration: none; }\
+			.myads-beta  { color: #B31308; font-size: 10px; font-weight: normal;
+					padding-left: 4px; position: relative; top: -3px; }
+			.pcontent { width: 1195px; }
+			.span9  { width: 945px; }
+			.pull-right  { float: left; }			
+			.myads-title-bar-button  { font-weight: bolder; padding: 0 7px 0 15px; }
+			.gwt-Anchor  { display: inline; }
+			.sma a { font-size:10px; }	
+			.status-active  { color: #009900; }
+			.text { height: 40px; }	
+			body { background: none repeat scroll 0 0 #ffffff; }
+			select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input 
+				{
+					height: 25px;
+					line-height: 14px;
+					padding: 5px 8px;
+				}
+				.radio-butoon-style {
+					float:left;
+					width:200px;
+					height:20px;
+					margin:10px;
+				}
+	.icon-img{ background:url('/assets/nicEditorIcons.gif') no-repeat scroll -17px 0px #FFF;width:20px;height:20px;float:left; }
+	.icon-bold { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -53px 0px #FFF;width:20px;height:20px;float:left; }
+	.icon-italic { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -125px 0px #FFF;width:20px;height:20px;float:left; }
+	.icon-underline { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -341px 0px #FFF;width:20px;height:20px;float:left; }
+	.icon-fontcolor { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -35px 0px #FFF;width:20px;height:20px;float:left; }

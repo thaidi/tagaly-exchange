@@ -1,0 +1,83 @@
+<!--
+Page to create retarget in campaigns page -->
+
+<script>
+
+window.onload=function()
+{
+            var table = window.parent.document.getElementById("retargetTable");
+            window.parent.document.getElementById("segments-table-container").style.display="block";
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+ 	    row.setAttribute("class","targeted");
+            var cell1 = row.insertCell(0);
+            var element1 = document.createElement("input");
+            element1.type = "checkbox";//Retarget Checkbox
+            element1.name="campaign[retargets][]";
+            element1.setAttribute("checked","checked");
+            element1.value="+"+"<%= @retargetDetail.id %>";
+            element1.id="campaign_retargets_" + "<%= @retargetDetail.id %>";
+            element1.setAttribute("class","retargets");
+            element1.style.display="none";
+            
+            var element2 = document.createElement("input");
+            element2.type = "radio";//Retarget Radio
+            element2.value = "Exclude";
+            element2.name="segment[526f491e3a7bc042e200002b][status]";
+            element2.setAttribute("id","segment_526f491e3a7bc042e200002b_status_Exclude");
+            element2.style.display="none";
+            
+            var element3 = document.createElement("input");
+            element3.type = "radio";//Retarget Radio
+            element3.value= "Ignore"
+            element3.name="segment[526f491e3a7bc042e200002b][status]";
+            element3.setAttribute("id","segment_526f491e3a7bc042e200002b_status_Ignore");
+            element3.style.display="none";
+            
+            var element4 = document.createElement("div");
+            element4.setAttribute("class","btn-group");
+            
+            var button1=document.createElement("button");
+            button1.type="button";
+            button1.id="target"+"<%= @retargetDetail.id %>" ;
+            button1.setAttribute("onclick","return toggleSegmentSelection(this,'Include');");
+            button1.setAttribute("class","btn btn-mini  btn-success active");
+            button1.setAttribute("value","<%= @retargetDetail.id %>");
+            button1.innerHTML = "Target";
+            
+            var button2=document.createElement("button");
+            button2.type="button";
+            button2.id="exclude"+"<%= @retargetDetail.id %>" ;
+            button2.setAttribute("onclick","return toggleSegmentSelection(this,'Exclude');");
+            button2.setAttribute("class","btn btn-mini ");
+            button2.setAttribute("value","<%= @retargetDetail.id %>");
+            button2.innerHTML="Exclude";
+            
+            var button3=document.createElement("button");
+            button3.type="button";
+            button3.id="ignore"+"<%= @retargetDetail.id %>" ;
+            button3.setAttribute("onclick","return toggleSegmentSelection(this,'Ignore');");
+            button3.setAttribute("class","btn btn-mini ");
+            button3.setAttribute("value","<%= @retargetDetail.id %>");
+            button3.innerHTML="Ignore";
+            
+            element4.appendChild(button1);
+            element4.appendChild(button2);
+            element4.appendChild(button3);
+            
+            
+            cell1.appendChild(element1);
+            cell1.appendChild(element2);
+            cell1.appendChild(element3);
+            cell1.appendChild(element4);
+
+            var cell2 = row.insertCell(1);
+            cell2.innerHTML = "<%= @retargetDetail.retargetName %>";
+ 
+            var cell3 = row.insertCell(2);
+            cell3.innerHTML="0";
+            window.parent.document.getElementById("closeretargetFrame").click();
+            window.parent.document.getElementById("adnewretargets").src=window.parent.document.getElementById("adnewretargets").src
+}
+</script>
+

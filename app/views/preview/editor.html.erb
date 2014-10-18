@@ -1,0 +1,141 @@
+
+	<!--loading jQuery and depended libs-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="/assets/zevol.colorpicker.js" type="text/javascript"></script>
+	<!--loading jQuery UI and other css-->
+	<link id="jquiCSS" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/ui-lightness/jquery-ui.css" type="text/css" media="all">
+	<link href="/assets/demo.css" rel="stylesheet" /> 
+	<link href="/assets/evol.colorpicker.css" rel="stylesheet" />
+	
+<script>
+$(document).ready(function(){
+	$('#cpBoth').colorpicker();
+	$('#cpDiv').colorpicker({ color:'#31859b' });
+	$('#ccUrl').colorpicker();
+	$('#ccDiv').colorpicker({ color:'#31859b' });
+});
+$( document ).ready(function() {
+	var fontColor = $("#cpBoth").val();
+	var ccUrlfontColor = $("#ccUrl").val();
+	document.getElementById("headline_Preview").style.color = fontColor;
+	document.getElementById("url_Preview").style.color = ccUrlfontColor;
+	$("html").click(function (e) {
+		var fontColor = $("#cpBoth").val();
+		var ccUrlfontColor = $("#ccUrl").val();
+		document.getElementById("headline_Preview").style.color = fontColor;
+		document.getElementById("url_Preview").style.color = ccUrlfontColor;
+	}); 
+	$("#url_Preview").click(function (e) {
+		document.getElementById("url").style.display = "inline";
+		document.getElementById("headline").style.display = "none";
+		return false;
+	});
+	$("#headline_Preview").click(function (e) {
+		document.getElementById("headline").style.display = "inline";
+		document.getElementById("url").style.display = "none";
+		return false;
+	});
+	$(".icon-bold").click(function (e) {
+		var currentId = $(this).parent().attr('id');
+		var clickidPreview = currentId + "_Preview";
+		var elem = document.getElementById(clickidPreview).style.fontWeight;
+		if(typeof elem !== 'undefined' && elem !== null) { document.getElementById(clickidPreview).style.fontWeight = "bold"; }
+		if(elem === 'bold') { document.getElementById(clickidPreview).style.fontWeight = ""; }
+	});
+	$(".icon-italic").click(function (e) {
+		var currentId = $(this).parent().attr('id');
+		var clickidPreview = currentId + "_Preview";
+		var elem = document.getElementById(clickidPreview).style.fontStyle;
+		if(typeof elem !== 'undefined' && elem !== null) { document.getElementById(clickidPreview).style.fontStyle = "italic"; }
+		if(elem === 'italic') { document.getElementById(clickidPreview).style.fontStyle = ""; }
+	});
+	$(".icon-underline").click(function (e) {
+		var currentId = $(this).parent().attr('id');
+		var clickidPreview = currentId + "_Preview";
+		var elem = document.getElementById(clickidPreview).style.textDecoration;
+		if(typeof elem !== 'undefined' && elem !== null) { document.getElementById(clickidPreview).style.textDecoration = "underline"; }
+		if(elem === 'underline') { document.getElementById(clickidPreview).style.textDecoration = ""; }
+	});
+	$( ".fontfamily" ).change(function (e) {
+		var fontFamily = $(this).val();
+		var currentId = $(this).parent().parent().attr('id');
+		var clickidPreview = currentId + "_Preview";
+		if(fontFamily == 'Font type') {
+			document.getElementById(clickidPreview).style.fontFamily = '';
+		} else {
+			document.getElementById(clickidPreview).style.fontFamily = fontFamily;
+		}
+	});
+	$( ".fontsize" ).change(function (e) {
+		var fontsize = $(this).val();
+		var currentId = $(this).parent().parent().attr('id');
+		var clickidPreview = currentId + "_Preview";
+		if(fontsize == 'Font size') {
+			document.getElementById(clickidPreview).style.fontSize = '12px';
+		} else {
+			document.getElementById(clickidPreview).style.fontSize = fontsize;
+		}
+	});
+	$(document).click(function(e){
+		if( $(e.target).closest("#headline").length > 0 ) { return false; }
+		if( $(e.target).closest("#url").length > 0 ) { return false; }
+		if(document.getElementById("url").style.display == 'inline') { document.getElementById("url").style.display = "none"; }
+		if(document.getElementById("headline").style.display == 'inline') { document.getElementById("headline").style.display = "none"; }
+	});
+});
+</script>
+<style>
+	.icon-img{ background:url('/assets/nicEditorIcons.gif') no-repeat scroll -17px 0px #FFF;width:20px;height:20px;float:left; }
+	.icon-bold { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -53px 0px #FFF;width:20px;height:20px;float:left; }
+	.icon-italic { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -125px 0px #FFF;width:20px;height:20px;float:left; }
+	.icon-underline { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -341px 0px #FFF;width:20px;height:20px;float:left; }
+	.icon-fontcolor { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -35px 0px #FFF;width:20px;height:20px;float:left; }
+</style>
+	<div style='width:200px;height:100px;background:#FFF;border:2px solid #000000' id='preview'>
+		<div id='headline_Preview'>This is Head Line</div>
+		<div id='url_Preview'>www.sampleurl.com</div>
+	</div>
+	<div style="height: 26px; position: absolute; left: 241px; padding: 5px; background: none repeat scroll 0% 0% rgb(238, 237, 236); top: 23px; border: 2px solid rgb(0, 0, 0);display:none;" class='editor' id='headline'>
+		<div class='icon-bold'></div>
+		<div class='icon-italic'></div>
+		<div class='icon-underline'></div>
+		<div style='width:34px;height:20px;float:left;margin-left:-7px'><input id="cpBoth" type="hidden" value="#000000" /></div>
+		<div style='float:left'> 
+			<select style='height:26px;' class='fontfamily'>
+				<option>Font type</option><option>Times New Roman</option><option>Trebuchet MS </option><option>Tahoma </option>
+				<option>'Lucida Grande' </option><option>'Lucida Console' </option><option>Helvetica </option><option>Georgia 
+				</option><option>Arial</option><option>serif</option><option>sans-serif</option><option>monospace</option>
+				<option>message-box</option><option>'DejaVu Sans Mono'</option><option>-moz-fixed</option>
+			</select> 
+		</div>
+		<div style='float:left' > 
+			<select style='height:26px;' class='fontsize'>
+				<option>Font size</option> <option>10px</option> <option>11px</option> <option>12px</option>  <option>13px</option> 
+				<option>14px</option>  <option>15px</option> <option>16px</option>  <option>17px</option> <option>18px</option>
+				<option>19px</option>
+			</select> 
+		</div>
+	</div>
+
+	<div style="height: 26px; position: absolute; left: 241px; padding: 5px; background: none repeat scroll 0% 0% rgb(238, 237, 236); top: 23px; border: 2px solid rgb(0, 0, 0);display:none;" class='editor' id='url'>
+		<div class='icon-bold'></div>
+		<div class='icon-italic'></div>
+		<div class='icon-underline'></div>
+		<div style='width:34px;height:20px;float:left;margin-left:-7px'><input id="ccUrl" type="hidden" value="#000000" /></div>
+		<div style='float:left'> 
+			<select style='height:26px;'  class='fontfamily'>
+				<option>Font type</option><option>Times New Roman</option><option>Trebuchet MS </option><option>Tahoma </option>
+				<option>'Lucida Grande' </option><option>'Lucida Console' </option><option>Helvetica </option><option>Georgia 
+				</option><option>Arial</option><option>serif</option><option>sans-serif</option><option>monospace</option>
+				<option>message-box</option><option>'DejaVu Sans Mono'</option><option>-moz-fixed</option>
+			</select> 
+		</div>
+		<div style='float:left'> 
+			<select style='height:26px;'  class='fontsize'>
+				<option>Font size</option> <option>10px</option> <option>11px</option> <option>12px</option>  <option>13px</option> 
+				<option>14px</option>  <option>15px</option> <option>16px</option>  <option>17px</option> <option>18px</option>
+				<option>19px</option>
+			</select> 
+		</div>
+	</div>

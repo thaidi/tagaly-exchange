@@ -1,0 +1,118 @@
+<script>
+	$( document ).ready(function() {
+		$( ".close" ).click(function() {
+			window.location.assign("/placements/");
+		});
+	});
+</script>
+		<style>
+input.submit.mid {
+    min-width: 115px;
+}
+.preview {
+	padding:5px;
+}
+			.nav-tabs 
+				{
+					border-bottom: 0px solid ;
+				}
+			.contentwrap 
+				{
+					max-width: 100%;
+				}
+			ul.balance li
+				{
+					border-left: 1px solid #E1E1E1;
+				}
+			ul.balance li:first-child 
+				{
+					border-left: medium none;
+				}	
+			ul.balance li
+				{
+					border-right: medium none;
+				}
+			ul.balance li:first-child 
+				{
+					border-right: medium none;
+				}
+			.contentwrap .content
+				{
+					padding-right: ;
+				}
+			.browsecontainer .bcpad 
+				{
+					margin: 0 0 0 0px;
+					padding: 20px;
+					width: 1018px;
+				}
+			h3 a 
+				{ 
+					font-size: 18px; 
+				}
+			h3 a:hover
+				{
+					text-decoration: none;
+				}
+			
+			.myads-beta 
+				{
+					color: #B31308;
+					font-size: 10px;
+					font-weight: normal;
+					padding-left: 4px;
+					position: relative;
+					top: -3px;
+				}
+			.pcontent
+				{
+					width: 1195px;
+				}
+			.span9 
+				{
+					width: 945px;
+				}
+			.pull-right 
+				{
+					float: left;
+				}			
+			.myads-title-bar-button 
+				{
+					font-weight: bolder;
+					padding: 0 7px 0 15px;
+				}
+			.gwt-Anchor 
+				{
+					display: inline;
+				}
+			.sma a
+				{
+					font-size:10px;
+				}	
+			.status-active 
+				{
+					color: #009900;
+				}
+			.text {
+				height: 40px;
+			}	
+			
+		</style>
+
+									<div class="span12">
+<section>
+        <header>
+            <h2>Placement Code </h2>
+		<a class="close" href="#"><img width="20px" height="20px" style="float:right;margin:10px" src="https://cdn4.iconfinder.com/data/icons/brightmix/128/monotone_close_exit_delete.png"></a>
+        </header>
+<div style="margin:10px 0px 0px 20px;">Please copy this code and paste in your web site</div>
+<div style='padding:20px;'>
+<pre>
+<xmp>
+ <%= raw @data %>
+</xmp>
+</pre>
+</div>
+				</div>
+			</section>
+</div>

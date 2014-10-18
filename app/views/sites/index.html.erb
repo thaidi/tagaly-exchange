@@ -1,0 +1,228 @@
+<% #### Sites list page #### %>
+	
+   <style>
+   .pcontent.plain {
+      /* border-top: 5px solid rgb(96, 82, 69);*/
+       }
+   .row {
+       margin-left: -20px;
+   }
+   .pcontent {
+       background: none repeat scroll 0px 0px rgb(221, 221, 221);
+       border-top: medium none rgb(255, 255, 255);
+       padding: 15px 14px 1px;
+       width: 940px;
+   }
+   .circle {
+	border-radius: 50%;
+	width: 20px;
+	height: 20px; 
+	/* width and height can be anything, as long as they're equal */
+	}
+   html body {
+       font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+   }
+   body {
+       color: rgb(51, 51, 51);
+       font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+       font-size: 13px;
+       line-height: 18px;
+       background: none repeat scroll 0 0 #95999C;
+   }
+   .widget-header h3 {
+       color: rgb(69, 69, 69);
+       display: inline;
+       font-size: 14px;
+       font-weight: 800;
+       left: 15px;
+       line-height: 18px;
+       margin-right: 0px;
+       position: relative;
+       text-shadow: 0px 1px rgb(255, 255, 255);
+       text-transform: uppercase;
+       top: 2px;
+   }
+   a {
+       color: rgb(0, 136, 204);
+       text-decoration: none;
+   }
+   .widget-header h3 small {
+       text-transform: none;
+   }
+   h3 small {
+       font-size: 13px;
+   }
+   h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
+       color: rgb(153, 153, 153);
+       font-weight: normal;
+   }
+   .widget-header h3 {
+       color: rgb(69, 69, 69);
+       font-size: 14px;
+       font-weight: 800;
+       line-height: 18px;
+       text-shadow: 0px 1px rgb(255, 255, 255);
+       text-transform: uppercase;
+   }
+
+   #new_site_button{
+   	margin-left:20px;
+   }
+   </style>
+   <% if flash[:notice] %>
+ <div align='center' style='background: none repeat scroll 0 0 #FFE4C4;color: green;'>
+	<%= flash[:notice] %>
+    </div>
+    <% else %>
+    <div align='center' style='background: none repeat scroll 0 0 #FFE4C4;color: red;'>
+	<%= flash[:error] %>
+    </div>
+    <% end %>
+<div class="container main">
+     <div class="row">
+   	<div class="span12">
+   		<div class="pcontent plain">
+      <div class="row">
+      	<div class="span12">
+      		<h2 style="text-shadow:0 1px white;"> My Account</h2> <hr style="margin-top:10px;">
+      	</div>
+      </div> 
+      <div class="row">
+      	<div class="span3">
+      		<ul class="nav nav-tabs nav-stacked">
+         <li class=""> 
+         	<a href="setting.html"><i class="icon-user"></i> My User Settings</a>
+         </li> 
+         <li class="active">
+         	<a href="/sites"><i class="icon-hdd"></i> Site Manager</a>
+         </li>
+         <li class="">
+         	<a href="team.html"><i class="icon-group"></i> Team</a> 
+         </li>
+         <li class="">
+           <a href="statements.html"><i class="icon-inbox"></i> Invoice History</a>
+         </li>
+         
+          <li class="">
+           <a href="creditcards.html"><i class="icon-credit-card"></i> Credit Cards</a>
+         </li>
+      		   
+         <li class="">
+           <a href="notifications.html"><i class="icon-envelope"></i> Notifications</a> 
+         </li>
+      		</ul>
+      	</div>
+      	<div class="span9">
+      		<div class="widget" style="overflow:inherit;">
+         <div class="widget-header">
+         	<div class="pull-right">
+         	<a rel="tooltip" id="new_site_button" class="btn btn-success btn-mini" href="/sites/new" data-original-title="Click to create new site"><i class="icon-plus-sign icon-white"></i> Add new Site</a>
+         	</div>
+         	<h3>
+         		<i class="icon-hdd" style="margin-top:1px;"></i> Your Sites
+         		<small>Create new sites to manage campaigns for new clients or businesses.</small>
+         		<div style="margin-right:20px;display:none;" class="btn-group pull-right">
+            <a class="btn active" href=""><i class="icon-list"></i></a>
+            <a class="btn" href=""><i class="icon-th"></i></a>
+         		</div> 
+         	</h3>
+         </div>
+         <div class="widget-content">
+		 <div class="pull-right">
+		 <div class="btn-group pull-right" style="margin-bottom:10px;">
+                        <a href="#" data-toggle="dropdown" class="btn btn-small dropdown-toggle">
+                          <% if params[:type]=='all' || params[:type]==nil %><i class='icon-globe'></i>&nbsp; All <% elsif params[:type]=='active' %><i class='icon-play'></i> &nbsp;<b>Active</b> <% else %>&nbsp; <b><i class='icon-stop'></i>Inactive </b><% end %>
+                          <span class="caret"></span>
+                        </a>
+		 <ul class="dropdown-menu">
+			<li><a href="/sites?type=all"><i class='icon-globe'></i>&nbsp;All</a></li>
+			<li><a href="/sites?type=active"><i class='icon-play'></i>&nbsp;Active</a></li>
+			<li><a href="/sites?type=deactive"><i class='icon-stop'></i>&nbsp;Inactive</a></li>
+		 </ul>
+		 </div>
+		 </div>
+           <table style="background:#fff;word-break: break-all;" class="table table-striped table-bordered">
+           <thead class="widget-header">
+            <tr>  
+							<th width="10%"> Name </th>  
+							<th width="40%"> URL </th>
+							<th width="10%"> Status </th> 
+							<th width="20%"> Actions </th>
+            </tr>
+          </thead>
+          <tbody>
+          
+          <!-- Iterate each site to display the details -->
+          
+          <% if @sitesList.present? %>
+            <% @sitesList.each do |site| %>
+            <tr>
+            	<td>
+            	  <a href="/dashboard/<%= site.id %>" ><%= site.siteName %></a> <!--<% if site.siteStatus !="deactive" %><span style="color:green;font-size:35px;margin-left:-5px;">.</span><% else %><span style="color:#AFACAC;font-size:35px;margin-left:-5px;">.</span><% end %>-->
+            	</td>
+            	<td>
+				<% destinationURL=site.siteUrl %>
+            	  <a href="<%= site.siteUrl %>"><% if destinationURL.length > 35 %> <%= destinationURL[0,35].to_s + "..." %> <% else %> <%= destinationURL %> <% end %></a> 
+            	</td>
+            	<!--<td width="1%" style="text-align:center;">
+            	  <%= site.description %>
+            	</td>-->
+				<td style="text-align:center;">
+					<% if site.siteStatus=="deactive" %>
+            	  Inactive
+				  <% else %>
+				  	<%= site.siteStatus.titlecase  
+				  %>
+				  <% end %>
+            	</td>
+            	<td style="text-align:center;">
+            	  <a href="/sites/tag?id=<%= site.id %>" target="_blank" rel="tooltip" data-original-title="tag"><i  class="icon-tag"></i></a>
+            	  <!-- Manage site setting option-->
+            	  <div class="btn-group pull-right">
+                        <a href="#" data-toggle="dropdown" class="btn btn-small dropdown-toggle">
+                          <i class="icon-cog"></i>Options
+                          <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                          <li class="site-edit">
+                            <a href="/sites/<%= site.id %>/edit" target="_blank"><i class="icon-edit"></i> Edit Settings</a>
+                          </li>
+                            <li>
+							
+                             <% if site.siteStatus !="active" %>
+                             	 <%= link_to "<i class='icon-play'></i> Activate".html_safe, "/sites/changestatus?id=#{site.id}&option=activate" %>
+                             	
+                             <% else %> 
+                             <%= link_to "<i class='icon-stop'></i> Deactivate".html_safe, "/sites/changestatus?id=#{site.id}&option=Deactivate", data: { confirm: "Are you sure? This site will be removed from the account navigation, but you can always reactivate it here." } %>
+                           
+                           <% end %>
+                             
+                            </li>
+                           <!-- <li>
+                            	<%= link_to '<i class="icon-trash" rel="tooltip" data-original-title="delete"></i> Delete Site'.html_safe, site_path(site),method: :delete, data: { confirm: 'Are you sure? Any retargeting lists, ads, and conversion goals in this site will also be deleted. This action cannot be undone.?' } %>
+                              
+                            </li>-->
+                        </ul>
+                      </div>
+                    <!-- Manage site setting option-->
+            	
+            	</td>
+            </tr>
+			<% end %>
+			<% else %>
+				<tr>
+					<td colspan="5">No <% if params[:type]=="deactive" %> Inactive <% elsif params[:type]=="all"%> <% else %> <%= params[:type].titlecase %> <% end %> sites are present!  </td>
+				</tr>
+				
+            <% end %>
+         		<tbody>
+         	</table>
+         </div>
+      		</div>
+      	</div>
+      </div>
+   		</div>
+   	</div>
+   </div>
+</div>
+

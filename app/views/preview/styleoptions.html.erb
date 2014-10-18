@@ -1,0 +1,37 @@
+<% if params[:adType] != "nativeAd" %>
+	<% if @allstyles.present? %>
+		<% @allstyles.each do |key, value| %>
+		<% value['name'] = Rack::Utils.unescape(value['name']) %> 
+			<% if value["styleType"] == 'Default' || value["styleType"] == 'textAd' %>
+				<option value="<%= key %>" <% if params["styleid"] == key %> selected = "selected" <% end %>><%= value["name"] %></option> 
+			<% end %>
+		<% end %>
+	<% end %>
+	<option value='new'>Create new Style</option>
+<% else %>
+
+<table style="margin-left:20px">
+<% @allstyles.each do |key, value| %>
+	<% if value["styleType"] == "nativeAd" %>
+<tr>
+	<td>
+		<input type="radio" name="nativeAdunitStyleType" id="radio_<%= key %>" value="<%= key %>"  />
+	</td>
+<td>
+		<div class="nativeAds-preview" id="<%= key %>">
+			<div> <h6><%= Rack::Utils.unescape(value["name"]) %></h6> </div>
+			<div style="width:300px;height:100px;border:1px solid #<%= value['border'] %>;border-radius:<%= value['cornerStyle'] %>;background-color:#<%= value['background'] %>;">
+				<div style="float:left"> <img src="/assets/120x60.png"> </div>
+				<ul style="padding: 0px; margin: 0px;">
+					<li class="headline_nativeads" style="<% if value['headlineBold'] == 1  %><%= 'font-weight:bold;' %><% end %><% if value['headlineItalic'] == 1  %>font-style:italic;<% end %><% if value['headlineUnderline'] == 1  %>text-decoration:underline;<% end %>color:<%= value['headlineColor'] %>;<% if value['headlineFontSize'] != 'none'  %>font-size:<%= value['headlineFontSize'] %>;<% end %><% if value['headlineFontFamily'] != 'none'  %>font-family:<%= value['headlineFontFamily'] %>;<% else %>font-family:medium;<% end %>" > Your Headline goes here.</li>
+					<li style="<% if value['desBold'] == 1  %>font-weight:bold;<% end %><% if value['desItalic'] == 1  %>font-style:italic;<% end %><% if value['desUnderline'] == 1  %>text-decoration:underline;<% end %>color:<%= value['desColor'] %>;<% if value['desFontSize'] != 'none'  %>font-size:<%= value['desFontSize'] %>;<% end %><% if value['desFontFamily'] != 'none'  %>font-family:<%= value['desFontFamily'] %>;<% else %>font-family:small;<% end %>" class="description_nativeads"> Native ad test. Your ad description goes here with atmst 70 characters length. </li>
+				</ul>
+			</div>
+		</div>
+</td>
+	<% end %>
+<% end %>
+</table>
+<center><button id="nextStep" class="btn" disabled > Next Step >> </button></center>
+
+<% end %>

@@ -1,0 +1,497 @@
+<script>
+window.setInterval(f, 1000);
+function f(){
+	cooky = getCookies();
+	if(cooky == ""){
+		window.location.href = "/logout";
+	}
+}
+function getCookies() {
+    if (document.cookie.length > 0) {
+        c_start = document.cookie.indexOf("user_name=");
+        if (c_start != -1) {
+            c_start = c_start + "user_name".length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) {
+                c_end = document.cookie.length;
+            }
+            return unescape(document.cookie.substring(c_start, c_end));
+        }
+    }
+    return "";
+}
+</script>
+<% 
+	id = params[:id]
+%>
+		<link data-turbolinks-track="true" href="/stylesheets/application.css" media="all" rel="stylesheet" />
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />
+		<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+		<script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+		<script type="text/javascript" src="/assets/bootstrap-dropdown.js"></script>
+		<script src="https://js.stripe.com/v1/" type="text/javascript"></script>
+		<script src="/assets/jsfile.js"></script>
+		<script src="/assets/campaignfunctions.js"></script>
+    <link href="/assets/app.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+    <link rel="stylesheet" href="/assets/dropdown.css" type="text/css" />
+    <script src="https://js.stripe.com/v1/" type="text/javascript"></script>
+		<script type="text/javascript" src="/assets/bootstrap-dropdown.js"></script>
+		<link href="/assets/smaple.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+		<link rel="stylesheet" href="/assets/bsa.min.css" type="text/css" />
+		<link rel="stylesheet" href="/assets/adblock.css" type="text/css" />
+		<link rel="stylesheet" href="/assets/skinny.css" type="text/css" media="screen and (max-width: 1100px)" />
+		<script>
+			$(document).ready(function () {
+				$(".image").on("click",function(){
+					//alert($(this).closest('li').find('.libraryad').val());
+				});
+				$(".checkme").click(function(){
+					$(".checkme").each(function(){
+						$(this).removeClass("selected");
+					});
+					$(this).addClass("selected");
+				});
+			});
+		</script>
+    <script>
+		  <% if @adDetails.present? %>
+		  	var setImage = 1;
+		  <% else %>
+		  	var setImage = 0;
+		  <% end %>
+
+    	function banner_submitform() {
+    		var AdName = document.getElementById("banner_ad_name").value;
+				var destination_url = document.getElementById("banner_destination_url").value;
+				var imageCode = document.getElementById("imageCode_banner").value;
+				if(AdName.trim() == ''){
+					document.getElementById("banner_AdNameError").innerHTML = "Please provide Ad name";
+					document.getElementById("banner_AdNameError").style.display = "block";
+					return false;
+				} else {
+					checkAdName(AdName,'banner');
+				}
+				if(destination_url == ''){
+					document.getElementById("banner_DestUrlError").innerHTML = "Please give a valid URL";
+					document.getElementById("banner_DestUrlError").style.display = "block";
+					return false;
+				} else {
+					if(!destination_url.match(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/)) {
+						document.getElementById("banner_DestUrlError").innerHTML = "Please give a valid URL!";
+						document.getElementById("banner_DestUrlError").style.display = "block";
+						return false;
+					} else {
+						if( destination_url.length > 1024 ) {
+							document.getElementById("banner_DestUrlError").innerHTML = "Url cannot be longer than 1024 char length";
+							document.getElementById("banner_DestUrlError").style.display = "block";
+							return false;
+						}
+						else
+						{
+							document.getElementById("banner_DestUrlError").style.display = "none";
+						}
+					}
+				}
+				if(imageCode.trim() == '' || imageCode.trim() != 'Ok'){
+					document.getElementById("banner_ImageError").innerHTML = "Please upload any image";
+					document.getElementById("banner_ImageError").style.display = "block";
+					return false;
+				}
+    	}
+    	function checkAdName(adName,type) {
+				var hostname = "http://"+window.location.hostname+":3000/ads/checkAdName";
+				$.ajax({
+					type: "GET",
+					url: hostname,
+					data: "adName=" + adName ,
+					success: function(data){
+						if(data=="yes") {
+							if(type=='text') {
+								document.getElementById("AdNameError").innerHTML="Ad Name already exists!";
+		 						document.getElementById("AdNameError").style.display="block";
+							} else if(type=='native') {
+								document.getElementById("native_AdNameError").innerHTML="Ad Name already exists!";
+		 						document.getElementById("native_AdNameError").style.display="block";
+							} else if(type=='banner') {
+								document.getElementById("banner_AdNameError").innerHTML="Ad Name already exists!";
+		 						document.getElementById("banner_AdNameError").style.display="block";
+							}
+							adExists=false;
+							return false;
+						} else {
+							if(type=='text') {
+		 						document.getElementById("AdNameError").style.display="none";
+							} else if(type=='native') {
+		 						document.getElementById("native_AdNameError").style.display="none";
+							} else if(type=='banner') {
+		 						document.getElementById("banner_AdNameError").style.display="none";
+							}
+							adExists=true;
+						}
+					}
+				});
+				return ;
+			}
+    </script>
+		<script type="text/javascript">
+			$(document).ready(function () {
+            $('.dropdown-toggle').dropdown();
+		var bannerSizes = "<%= Tagaly3::BannerSizes %>".split(",");
+		var bannerWeights = "<%= Tagaly3::BannerWeights %>".split(",");
+		var somenum = "<%= @adunitDetails['format'] %>";
+		$("#upload_datafile_banner").change(function(e) {
+			$('#banneradPreviewImage').attr('src', "");
+			$('#banneradPreviewImage').css('display', "none");
+			
+			document.getElementById("banner_ImageError").innerHTML = "";
+		  document.getElementById("banner_ImageError").style.display = "none";
+			var _URL = window.URL || window.webkitURL;
+			var _validFileExtensions = [".jpg",".gif", ".png",".jpeg",".swf",".fla"];
+			var ext = $('#upload_datafile_banner').val().split('.').pop().toLowerCase();
+			if($.inArray(ext, ['gif','png','jpg','jpeg','swf','fla']) == -1) {
+				  alert("Invalid File, Please upload images with extension 'gif' , 'png' , 'jpg' , 'jpeg' , 'swf' only.");
+			} else {
+				if($.inArray(ext, ['swf','fla']) >= 0){
+					var switchVal = 0;
+					var iSize = $(this)[0].files[0].size ;
+/*
+					var somenum = bannerSizes.indexOf(iSize);
+					for(i=0;i<bannerWeights.length;i++){
+						if(iSize == bannerWeights[i]) {
+							switchVal = 0;
+							break;
+						} else {
+							switchVal = 1;
+						}
+					}
+
+					if(switchVal == 1){
+						document.getElementById("imageCode_banner").value ='';
+						document.getElementById("banner_ImageError").innerHTML = " Image size should be less than " + reqFileSize + "kb. Please refer <a class='bannerPrefImg' href='#'>image sizes</a> for valid image sizes.";
+						document.getElementById("banner_ImageError").style.display='inline';
+						document.getElementById("banner_ImageError").style.height='53px';
+						return false;
+					}
+					if(switchVal == 0){
+						$("#banner_swffla_div").show();
+						var inputs = this;
+						$("#imageCodeFormat").val(ext)
+					}
+*/
+				} else {
+						var file, img;
+						if ((file = this.files[0])) {
+							img = new Image();
+							img.onload = function(e) {
+								var width = this.width;
+								var height = this.height;
+								var size = file.size;
+								var widhe = width+"x"+height
+								var switchVal = 0;
+								// var somenum = bannerSizes.indexOf(widhe);
+								if(somenum == widhe) { 
+									if (size > bannerWeights[somenum]){
+										switchVal = '1';
+										reqFileSize = (bannerWeights[somenum] /1024);
+									}
+								} else {
+									switchVal = '2';
+								}
+								if(switchVal == 1){
+									document.getElementById("imageCode_banner").value ='';
+									document.getElementById("banner_ImageError").innerHTML = " Image size should be less than " + reqFileSize + "kb. ";
+									document.getElementById("banner_ImageError").style.display='block';
+									document.getElementById("banner_ImageError").style.height='53px';
+									return false;
+								} 
+								if(switchVal == 2){
+									document.getElementById("imageCode_banner").value ='';
+									document.getElementById("banner_ImageError").innerHTML = "The image you uploaded is not supported. Please upload " + somenum + " size image only.";
+									document.getElementById("banner_ImageError").style.display='block';
+									document.getElementById("banner_ImageError").style.height='53px';
+									return false;
+								}
+								if(switchVal == 0){
+									document.getElementById("imageCode_banner").value ='Ok';
+									document.getElementById("bannerImageSize").value = widhe;
+									$('#banneradPreviewImage').css('display', "block");
+									$('#banneradPreviewImage').attr('src', img.src);
+								}
+							};
+							img.src = _URL.createObjectURL(file);        
+				  	}
+					}
+				}
+		});
+			});
+		 function progress(e){
+        if(e.lengthComputable){
+            //this makes a nice fancy progress bar
+            $('progress').attr({value:e.loaded,max:e.total});
+        }
+    }
+		</script>
+		
+		<style>
+			body {
+					background: none repeat scroll 0 0 #ffffff;
+				}
+				
+			select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input 
+				{
+					height: 25px;
+					line-height: 14px;
+					padding: 5px 8px;
+				}
+			
+		</style>
+
+		<body style="height: 550px;">
+		<div id="realpage">
+			<div class="contentwrap cf full">
+				<div class="breathablewrap">
+					<div class="heading cf">
+						<!--<a class="backto fright" href="/campaigns/uploadcreatives">Back to Cart</a>-->
+						<div class="breadcrumbs">
+							<a href="/cart">View Cart<strong></strong></a>
+							<a class="off">Add Creative</a>	
+						</div>	
+						<div rel="Add Creative | Tagaly" id="realpagetitle"></div>
+						<span class="title">Add Creative</span>
+					</div>
+					<div class="content nobg cf">
+						<ul class="boxsummary creative cf">
+
+							<li>
+								<div class="bspad">
+									<span class="title">Banner Ads</span>
+									<em class="sub"><%= @adunitDetails['format'] %></em>
+								</div>
+							</li>
+							<li>
+								<div class="bspad">
+									<span class="title">Flash</span>
+									<em class="sub">Animation Accepted</em>
+								</div>
+							</li>
+							<li>
+								<div class="bspad">
+									<span class="title">JPG, GIF, and PNG</span>
+									<em class="sub">Image Requirements</em>
+								</div>
+							</li>
+						</ul>
+						<div class="separator border cf"></div>
+<%
+
+	adunitIdC = id
+	adType = "Create" 
+	adName = "" 
+	destUrl = "" 
+	imgUrl = ""
+	uploadType = "" 
+	if @banneradDetails.present? 
+		if @banneradDetails[adunitIdC].present? 
+			adType = @banneradDetails[adunitIdC]["adType"]
+			if adType == "Create"
+				adName = @banneradDetails[adunitIdC]["adName"]
+				imgUrl = @banneradDetails[adunitIdC]["imgUrl"]
+				destUrl = @banneradDetails[adunitIdC]["destination_url"]
+			else
+				lidAdId = @banneradDetails[adunitIdC]["lidAdId"]
+			end 
+		end 
+	end
+%>
+						<div class="pad cf">
+							<div class="seventyleft cf" style="width:100%">
+							<ul style="margin-top:1px;" class="nav nav-tabs">
+            <li id="new_fb_ad_btn" class="<% if adType == 'Create' %>active <% end %> <%= adType %>">
+              <a data-toggle="tab" href="#new_facebook_ad_form">
+              <i class="icon-facebook-sign"></i> Upload New Creative
+              </a>
+            </li>
+            <li id="new_pagepost_ad_btn" class="<% if adType == 'Library' %>active <% end %>">
+              <a data-toggle="tab" href="#new_pagepost_ad_form">
+              <i class="icon-th-list"></i> Select From Library
+              </a>
+            </li>
+      
+          </ul>
+          <div class="tab-content">
+            <div id="new_facebook_ad_form" class="tab-pane <% if adType == 'Create' %>active <% end %>">
+              <% #### banner Ad form starts here %>
+              <input type="hidden" id="format" value="<%= @adunitDetails['format'] %>" />
+              <%= 
+              form_tag('/campaigns/uploadEdit', multipart: true ,class: "form-horizontal",id: "bannerform") do
+              %>
+		  <input type='hidden' name='authenticity_token' value="<%= form_authenticity_token() %>" />
+			<input type="hidden" name="id" value="<%= params[:id] %>"/>
+			<input type="hidden" name="ad[adSize]" value="<%= @adunitDetails['format'] %>"/>
+			<input type="hidden" name="bannerImageSize" id='bannerImageSize' value=""/>
+			<% if imgUrl != '' %>
+				<input type="hidden" name="uploadType" id='uploadType' value="old"/>
+				<input type="hidden" name="imageCode_banner" id='imageCode_banner' value="Ok"/>
+				<input type="hidden" name="prevUploadImgUrl" value="<%= imgUrl %>" />
+			<% else %>
+				<input type="hidden" name="uploadType" id='uploadType' value="new"/>
+				<input type="hidden" name="imageCode_banner" id='imageCode_banner' value=""/>
+			<% end %>
+
+	<% if params[:frame] == "frame" %>
+		<input type='hidden' name='frame' value='frame'/>
+	<% end %>
+              <fieldset>
+								<div class="control-group">
+									<div class="control-label">
+										Ad Name: 
+									</div>
+									<div class="controls">
+										<%= text_field(:ad, :ad_name,:id=>"banner_ad_name",:autofocus => "autofocus",:placeholder=>"My banner ad",:onchange=>"checkAdName(this.value,'banner')", :maxlength=>"200",:value=>adName) %>
+									<div class="error" id="banner_AdNameError" style="margin-top: 5px; margin-left: 23px;"></div>
+									</div>
+								</div>
+								<div class="control-group">
+									<div class="control-label">
+										Destination URL: 
+									</div>
+									<div class="controls">
+										<%= text_field(:ad, :destination_url,:id=>"banner_destination_url",:rel=>"tooltip",:title=>"http://www.zady.com",:placeholder=>"http://www.myapplication.com",'data-trigger' => "normal_ad_utm_show_link" ,'data-target' => "utm-builder",:value=>destUrl) %>
+									</div>
+									<div class="controls">
+									<div class="error" id="banner_DestUrlError"  style="margin-top: 5px; margin-left: 23px;"></div> 
+									</div>
+								</div>
+
+                <div class="control-group">
+                  <label for="ad_Your ad (40kb max filesize)" class="control-label">Your ad </label>
+                  <div class="controls">
+                    <div><%= file_field 'upload', 'datafile',:id=>"upload_datafile_banner" %></div>
+										<div id='banner_swffla_div' style='display:none;'>
+											<select id='banner_swffla' name='ad[ImageSizeFroSwfOrFla]' style='margin-top:15px;'></select>
+										</div>
+                  </div>
+									<div class="controls">
+										<div class="error" id="banner_ImageError" style="margin-left: 23px; width: 400px; margin-top: 4px; padding: 3px;"></div>
+									</div>
+                </div>
+
+<div class="control-group" align='center'>
+	<h6>Image Preview</h6>
+	<div>
+	<%
+		if @adDetails.present?
+			src="/uploads/"+@adDetails['adImageUrl']
+		else
+			src=""
+		end
+	%>
+	<img src="/uploads/<%= imgUrl %>" id="banneradPreviewImage" style="<% if imgUrl == "" %>display:none;<% end %>"/>
+		<object  data="" id="bannerswfpreview"></object>
+	</div>
+	
+</div>
+                <div class="actions form-actions">
+                <input type="hidden" name="oldImage" id="oldImage" value="old"/>
+                <input type="hidden" name="oldImageUrl" id="oldImageUrl" value="<% if @adDetails.present? %><%= @adDetails['adImageUrl'] %><% end %>"/>
+	            <input type='hidden' value='CPC' id='banner_pricing_val' name='ad[pricing_val]'/>
+	            <!--<input type='hidden' value='' id='bannerImageSize' name='ad[bannerImageSize]' value="<%= @adunitDetails['format'] %>" />-->
+		<input type='hidden' id='imageCode_banner' value=''/>
+		<input type='hidden' name='adUnitId' value='<%= params[:id] %>'/>
+		<input type='hidden' id='imageCodeFormat' name='ad[imageCodeFormat]' value=''/>
+                 
+                  <%= text_field(:ad, :ad_type , :id=>"ad_type",:value=>"BannerAd",:type=>"hidden") %>
+                    <%= text_field(:ad, :authenticity_token , :id=>"authenticity_token",:value=>form_authenticity_token(),:type=>"hidden") %>
+                  <%= text_field(:ad, :utm ,:class=>"utmparameters", :id=>"utm",:value=>"",:type=>"hidden") %>
+                  <%= text_field(:ad, :campaignid ,:id=>"banneradcampaignid",:value=>"",:type=>"hidden") %>
+                  <%= text_field(:ad, :existingadids ,:id=>"banneradids",:value=>"",:type=>"hidden") %>
+                  <input type="submit" value="Upload and submit for review" name="commit" class="btn btn-primary btn-large" onclick="return banner_submitform()">
+                </div>
+              </fieldset>
+              <% end %>
+              <% #### Banner Ad form ends here %>
+            </div>
+		<div id="new_pagepost_ad_form" class="tab-pane <% if adType == 'Library' %> active <% end %>">
+		<div id="preexisting" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+			            	<div class="creatives cf">
+			            	<!-- Select from library form -->
+			            	<form action="/campaigns/uploadEdit" method="post">
+			            	     <input type="hidden" name="id" value="<%= params[:id] %>"/>
+	            <input type='hidden' value='' name='ad[bannerImageSize]' value="<%= @adunitDetails['format'] %>" />
+					      <input type="hidden" name="fromLibrary" value="yes"/>
+					      <input type="hidden" name="adunitId" value="<%= params[:id] %>"/>
+					      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token() %>"/>
+					     <%
+					      if @adDetails.present?
+						%>
+						  <input type="hidden" name="adid" value="<%= @adDetails['adId'] %>"/>
+						<% end %>
+			                    <ul class="selections  cf"> 
+			        		<%
+checkCount = 0;
+							if @libraryAds.present? && @libraryAds.count >0 
+			        		@libraryAds.each do |key,libraryad|
+checkCount = checkCount + 1
+			        		%>
+<% adSizesForLi = libraryad["adSize"].split(/x/) %>
+<% liWidth = adSizesForLi[0].to_i  + 20 %>
+<% liHeight = adSizesForLi[1].to_i  + 20 %>
+
+			        	            <li class="checkme <% if checkCount == @libraryAds.count %> selected <% end %>" style="width:<%= liWidth %>px;height:<%= liHeight %>px;"> 
+			                            <!--<span class="check"></span> -->
+			                            <label for="<%= key %>"> 
+								<input type="radio" checked="checked" class="libraryad" id="<%= key %>" value="<%= key %>&&&<%= libraryad['adImageUrl'] %>" name="libraryad" class="radio">
+			                                <img alt="130" src="/uploads/<%= libraryad['adImageUrl'] %>" class="image">
+			                            </label> 
+			                        </li>
+			                        <% end 
+									end
+									%>
+			        							                    </ul>
+			        							                    
+			        							                    <br>
+			   <div class="submit bcenter cf">
+			   	<% if @libraryAds.present? && @libraryAds.count >0 %>
+			   	<!-- Display the submit button only when ad is present -->
+				<button rel="" id="submitbutton" value="submit" name="submit1" class="button primary" type="submit">
+				<span><em> Save </em></span>
+				</button>
+				<% else %>
+				<!-- Display does not exist msg -->
+				<div align="center">
+					No ads are present for the selected size! Please create a new ad.
+				</div>
+				<% end %>
+				</div>
+				</form><!-- select from library form end -->
+			        		</div><!-- END div.creatives -->
+			</div>
+		</div>
+            </div>
+
+												
+			            			        
+			        </div>
+								           <div id="new_web_ad_form" class="tab-pane ">
+
+							</div><!-- END div.thirtyright -->
+						</div><!-- END div.pad -->
+					</div>
+				</div>
+
+						<style type="text/css">
+						.block1 a { background: rgba(255, 0, 0, 0.4) !important; }
+						.block2 a { background: rgba(0, 255, 0, 0.4) !important; }
+						.block3 a { background: rgba(255, 0, 255, 0.4) !important; }
+						.block4 a { background: rgba(0, 0, 255, 0.4) !important; }
+						.block5 a { background: rgba(255, 255, 0, 0.4) !important; }
+						.block6 a { background: rgba(0, 255, 255, 0.4) !important; }
+						.block7 a { background: rgba(127, 127, 0, 0.4) !important; }
+						.block8 a { background: rgba(127, 0, 127, 0.4) !important; }
+						</style>
+						<script src="/stuff/newcreative.js" type="text/javascript"></script>
+			</div> <!-- END div#realpage -->
+		</div>
+		</body>

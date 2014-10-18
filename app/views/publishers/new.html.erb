@@ -1,0 +1,76 @@
+<!DOCTYPE html> 
+<html>
+  <head>
+    <title>signup Form</title>
+    <link href="/assets/smaple.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+    <style>
+      body {
+        background-color: #444444;
+      }
+      [class^="icon-"], [class*=" icon-"] {
+        background-image: url(/assets/glyphicons-halflings.png)
+      }
+    </style>
+    <script type="text/javascript" src="/assets/signup.js"></script>
+  </head>
+  <body>
+    <div style="position:relative;width:500px;border:1px solid #999;margin:60px auto 100px;border-radius:0px;" class="widget " id="loginw"> 
+      <div style="border:0;padding:30px 35px;" class="widget-content">			
+        <h1 style="margin-bottom:5px;text-align:center;" class="ubuntu">Sign up for Publisher</h1>
+        <h3 style="display:none;font-weight:normal;color:#999;">The first $60 you spend is on the house!</h3>
+        <br>     
+        <div style="width:250px;margin:0 auto;">
+          <%= form_for @publisher do |f| %>
+            <% if @publisher.errors.any? %>
+              <div class="error_messages">
+                <div style="color:red;text-align=center;"> <%= flash[:error] %></div>
+              </div>
+            <% end %>
+            <div class="controls signupz">
+              <div class="input-prepend">
+                <span class="add-on"><i class="icon-envelope"></i></span>
+                <%= f.text_field :email,:placeholder=>"Work Email (xxx@xxx.com)",:id=>"workemail",:type=>"email",:autofocus=>"autofocus" %>
+                <div class="error" style="margin-left:0px;" id="workemailerror"></div>
+              </div>
+            </div>
+            <br>
+            <div class="controls signupz">
+              <div class="input-prepend">
+                <span class="add-on"><i class="icon-lock"></i></span>
+                <%= f.password_field :password ,:id=>"pwd",:placeholder=>"Password" %>
+                <div class="error" style="margin-left:0px;" id="pwderror"></div>
+              </div>
+            </div>
+            <div style="margin-bottom:20px;" class="controls">
+              <div class="input-prepend">
+                <span class="add-on"><i class="icon-lock"></i></span>
+                <%= f.password_field :password_confirmation,:id=>"cpwd",:placeholder=>"Confirm Password" %>
+                <div class="error" style="margin-left:0px;" id="cpwderror"></div>
+              </div>
+            </div>
+            <div class="controls" style="height:20px;" >
+		<input type="checkbox" style="margin-bottom: 63px;" value="1" name="user[newsletter_optin]" id="user_newsletter_optin" required checked="checked">
+		<p style="display: inline-block">
+		  <small>
+		    Receive the Publisher newsletter
+		  </small>
+		</p>
+	    </div>				
+            <div class="controls"  >
+              <p style="color:#999;font-size:11px;line-height:13px;">
+              <input type="checkbox" style="" value="1" name="user[newsletter_optin]" id="user_newsletter_optin" checked="checked" required> By signing up you agree to our <a href="" target="blank">terms of service</a> and <a href="" target="new">privacy policy</a>.</p>
+            </div>
+            <div style="display:none;" class="control-group">
+              <input type="checkbox" value="1" name="termsofuse_confirmation" id="termsofuse_confirmation" checked required> Yes, I agree to the <a href="" target="blank">terms of use</a>
+            </div>
+            <div class="control-group">
+              <input type="submit" onclick="return check()" value="SIGN UP" style="color:#fff;width:245px;" name="commit" class="btn btn-danger btn-large">
+            </div>
+          <% end %>   		
+        </div>
+      </div> 
+    </div>
+  </body>
+</html>
+

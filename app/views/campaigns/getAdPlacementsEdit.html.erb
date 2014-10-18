@@ -1,0 +1,58 @@
+<%
+	if params[:adunits].present?
+		@allAdunits.each do | adunitId , adunitdetails |
+			if @adunits.include? adunitId
+%>
+											<tr>
+													<td>
+														<div class="cf" id='cf<%= adunitId %>' >
+															<span class="cartbanner">
+																<img src="/assets/nocreative.png">
+															</span>
+															<a class="title" title="<%= adunitdetails['adUnitName'] %>" href="">
+																<%= adunitdetails['adUnitName'] %>
+															</a>
+															<%= adunitdetails['description'] %>
+														</div>
+													</td>
+													<td>
+														<div>
+															<span class="location"><%= adunitdetails['format'] %></span><br>
+															<span id="price_<%= adunitId %>"><%= adunitdetails['price'] %></span> per 1K Imps
+															<input type='hidden' name="price[<%= adunitId %>]" value="<%= adunitdetails['price'] %>" />
+														</div>
+													</td>
+													<td>
+														<div> --- </div>
+													</td>
+													<td>
+															<select name="qty[<%= adunitId %>]" class="qty" id="qty_<%= adunitId %>" name="qty">
+																<option value="50">50,000</option>
+																<option value="60">60,000</option>
+																<option value="70">70,000</option>
+																<option value="80">80,000</option>
+																<option value="90">90,000</option>
+																<option value="100">100,000</option>
+															</select> Impressions
+													</td>
+													<td>
+														<% cost = 0 %>
+														<%  @totalCost = @totalCost.to_f + cost.to_f %>
+														 $ <span id="cost_<%= adunitId %>" class="costs"><%= number_with_precision(cost, precision: 2) %> </span>
+													</td>
+													<td>
+														<div class="cf">
+															<a class="button green small" id="aMyModal<%= adunitId %>" style="background-color:#53951D;" title="Upload banner for: Premium Rectangle" data-animation="fade" data-reveal-id="myModal<%= adunitId %>" href="#" ><span><em>Upload Creative</em></span></a>
+															<a id="<%= adunitId %>" class="removeicon" href="javascript:void(0)"><span>X</span></a>
+															<div class="error" id="error<%= adunitId %>" style="display: none; margin-top: 36px; width: 145px; padding: 5px;">
+																Please Upload Creative
+															</div>
+														</div>
+													</td>
+											</tr>
+<%	
+			end
+		end
+	end
+%>
+</pre>

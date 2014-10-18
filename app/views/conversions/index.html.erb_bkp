@@ -1,0 +1,124 @@
+<script></script>
+<%
+=begin
+  Conversion goals index page
+=end
+%>
+<!-- Display error or success message starts here -->
+<% if flash[:notice] %>
+  <div style="width:480px;margin:30px auto;" class="alert-success">
+  <%= flash[:notice] %>
+   </div>
+ <% else %>
+    <div style="color:red;text-align=center;"> <%= flash[:error] %></div>
+ <% end %>
+ 
+<!-- Display error or success message ends here -->
+
+<div class="pcontent"  >
+  <h4 style="margin-top:0;margin-bottom:0;" id="notice" class="alert-header"> </h4>
+     <div class="widget">
+   	<div class="widget-header">
+   		<div class="pull-right">
+      <a data-toggle="modal" class="btn btn-success btn-mini" href="/conversions/new"><i class="icon-plus-sign icon-white"></i> Add new conversion goal</a>
+   		</div>
+   		<h3>
+      <a href="" style="color:#333;"><i class="icon-exchange"> </i> Conversion Goals</a>
+      <small>Define and edit the user actions you want to measure on your site. <a href="" target="blank">Learn more »</a></small>
+   		</h3>
+   	</div>
+   	<div class="widget-content">
+   		<table class="table table-striped table-bordered sortable" id="conversions-table">
+	<thead class="widget-header">
+		<tr>
+			<th> Conversion Goal Name </th>
+      <th> Created </th>
+			<th> Type </th>
+			<th> Conversion Path </th>
+			<th> Conversions </th>
+			<th> Total Cost </th>
+			<th> CPA </th>
+			<th> View-through Conversions </th>
+   		<th> Last Fired <i rel="tooltip" class="icon-info-sign" data-original-title="Last time this conversion goal was triggered in or outside a campaign."></i></th>
+		</tr>
+	</thead>
+<% if @ConversionsDataStats.present? %>
+	<tbody>
+<% @ConversionsDataStats.each do |key,camps| %>
+<%
+		if @ConversionsDataStats[key]["conversions"].to_i != 0
+			cpa = (@ConversionsDataStats[key]["cost"].to_i / @ConversionsDataStats[key]["conversions"].to_i )
+		else
+			cpa = 0;
+		end
+%>
+	<tr>
+		<td> <%= @ConversionsDataStats[key][key]["conversionName"] %> </td>
+    <td> Created On </td>
+		<td> <%= @ConversionsDataStats[key][key]["conversionType"] %> </td>
+		<td> <%= @ConversionsDataStats[key][key]["conversionTypeValue"] %> </td>
+		<td> <%= @ConversionsDataStats[key]["conversions"] %> </td>
+		<td> <%= @ConversionsDataStats[key]["cost"] %> </td>
+		<td> <%= cpa %> </td>
+		<td> <%= @ConversionsDataStats[key]["viewThroughConversions"] %> </td>
+    <td> Last Fired On </td>
+	</tr>
+<% end %>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan='4'>Totals</td>
+			<td> <%= @ConversionsDataTotals["totConversions"] %> </td>
+			<td> <%= @ConversionsDataTotals["totCost"] %> </td>
+<%
+		if @ConversionsDataTotals["totConversions"].to_i != 0
+			tCpa = (@ConversionsDataTotals["totCost"].to_i / @ConversionsDataTotals["totConversions"].to_i )
+		else
+			tCpa = 0;
+		end 
+%>
+			<td> <%= tCpa %> </td>
+			<td> <%= @ConversionsDataTotals["totCiewThroughConversions"] %> </td>
+		</tr>
+	</tfoot>
+<%
+else
+      	%>
+      	  <tr><td colspan='6'><p> Sorry, no conversions found yet! </p></td></tr>
+      	<%
+      	end
+      	%>
+</table>
+   		<div class="undernote">
+      <i style="margin-top:-2px;" class="icon-refresh"></i> Refreshed every 3 hours.
+   		</div>
+   		<br>
+<!--
+   		<h3>Conversion Explorer <i class="icon-info-sign" rel="tooltip" data-original-title="Browse info about the latest conversions."></i></h3>
+   		<div style="border-radius:4px;" class="widget tabbable">
+      <div style="border-radius:4px 4px 0 0;" class="widget-header">
+      	<ul style="padding-left:10px;margin-top:6px;" class="nav nav-tabs">
+      		<li class="active"> 
+         <a href=""> <i class="icon-exchange"></i> All Conversions </a>
+      		</li>	
+      		<li class="">
+         <a href=""> View-Through Conversions </a>
+      		</li>
+      		<li class="">
+         <a href=""> Click-Through Conversions </a>
+      		</li>
+      		<h4 style=""><a rel="tooltip" class="btn btn-mini pull-right" href="" data-original-title="Export your conversion data for the past 30 days in csv format."><i style="margin-top:3px;" class="icon-download"></i> Export Data</a> </h4>
+      	</ul>
+      </div>
+      <div class="tab-content widget-content">
+      	<p> Sorry, no conversions found yet! </p>
+      </div>
+   		</div>
+   		<div class="undernote">
+      <i style="margin-top:-2px;" class="icon-refresh"></i> Refreshed every 24 hours.
+   		</div>
+   	</div>
+-->
+   </div>
+</div>
+

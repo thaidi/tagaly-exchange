@@ -1,0 +1,1399 @@
+<title>Tagaly</title>
+<link id="fontstyles" rel="stylesheet" href="/assets/fonts.css" type="text/css" />
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="/assets/jscolor.js"></script>
+<script src="/assets/uploadJs.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+<style>
+<% @fonts.each do |font| %>
+	@font-face {
+		font-family: <%= font.name %>;
+		src: url(/fonts/<%= font.url %>);
+	}
+<% end %>
+</style>
+		<style>
+			.bubble{ position: relative;width: 100px;height: 20px;padding: 2px;background: #000000;-webkit-border-radius: 2px;-moz-border-radius: 2px;border-radius: 2px; }
+			.bubbleDivAfter { content: '';position: absolute;border-style: solid;border-width: 10px 10px 0;border-color: #000 transparent;display: block;width: 0;z-index: 1;bottom: -10px;left: 10px; }
+			.radiodiv { margin-left: 15px; line-height: 12px; font-size: 14px; }
+			.color { width: 60px; }
+			.nativeadstable td { vertical-align : top; }
+			ul { margin:0px;padding:0px; }
+			.div2Ofli { display:none; }
+			.spanOfDivLi {display:none; }
+			.spanOfLi3 { float:left; }
+			.icon-img{ background:url('/assets/nicEditorIcons.gif') no-repeat scroll -17px 0px #FFF;width:20px;height:20px;float:left; }
+			.icon-bold { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -53px 0px #FFF;width:20px;height:20px;float:left; }
+			.icon-italic { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -125px 0px #FFF;width:20px;height:20px;float:left; }
+			.icon-underline { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -341px 0px #FFF;width:20px;height:20px;float:left; }
+			.icon-number { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -324px 0px #FFF;width:20px;height:20px;float:left; }
+			.icon-circle { background:url('/assets/circle_icon.png') no-repeat scroll 0px 0px #FFF;width:20px;height:20px;float:left; border-radius: 50% }
+			.icon-fontcolor { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -35px 0px #FFF;width:20px;height:20px;float:left; }
+			#effect { position: absolute; float: left; margin-left: 12px; margin-top: 20px; width: 70px; }
+			#blink { color: #008000; font-size: 14px; }
+			#nativestep1 { width:340px; border-radius:10px; padding:10px; border: 1px solid #95999C; background: none repeat scroll 0 0 #ffffff; float:left; margin-right : 5px; }
+			#nativestep2 { float:left; width:800px; border-radius:10px; border: 1px solid #95999C; padding:10px; background: none repeat scroll 0 0 #ffffff; margin: 0px 0px 10px 10px; }
+			.resize { position:absolute; border-color:black; border-style:solid; border-width:1px; }
+			.ui-resizable-nw{ width: 7px; height: 7px; background-color: #D0F2F0; border-color:#45C1B1; border-style:solid; border-width:1px; top:0px; left:0px; }
+			.ui-resizable-se{ width: 7px; height: 7px; background-color: #D0F2F0; border-color:#45C1B1; border-style:solid; border-width:1px; bottom:0px; right:0px; }
+			.ui-resizable-sw{ width: 7px; height: 7px; background-color: #D0F2F0; border-color:#45C1B1; border-style:solid; border-width:1px; bottom:0px; left:0px; }
+			.ui-resizable-ne{ width: 7px; height: 7px; background-color: #D0F2F0; border-color:#45C1B1; border-style:solid; border-width:1px; top:0px; right:0px; }
+			.textAreaForEdit { margin-left:10px; width: 350px; height: 75px; }
+		</style>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+		<script type="text/javascript">
+function submitNativeStyle() {
+	checkBox = $('.checkbox');
+	checked = false;
+	
+	checkBox.each(function () {
+		if($(this).is(":checked")) {
+			checked = true;
+		}
+	});
+	stylename = $('#stylename').val();
+	width = $('#nativeAdunitFiledsWidth').val();
+	height = $('#nativeAdunitFiledsHeight').val();
+	if(stylename == "") {
+		$(".errorMsg").html("Style name cannot be null.");
+		$(".errorMsg").show();
+		return false;	
+	} else {
+		$(".errorMsg").html("");
+		$(".errorMsg").hide();
+	}
+	if(width == "") {
+		$(".errorMsg").html("Width cannot be null.");
+		$(".errorMsg").show();
+		return false;	
+	} else {
+		if(isNaN(width)) {
+			$(".errorMsg").html("Width should be an integer.");
+			$(".errorMsg").show();
+			return false;
+		} else {
+			$(".errorMsg").html("");
+			$(".errorMsg").hide();
+		}
+	}
+	if(height == "") {
+		$(".errorMsg").html("Height cannot be null.");
+		$(".errorMsg").show();
+		return false;
+	} else {
+		if(isNaN(height)) {
+			$(".errorMsg").html("Height should be an integer.");
+			$(".errorMsg").show();
+			return false;
+		} else {
+			$(".errorMsg").html("");
+			$(".errorMsg").hide();
+		}
+	}
+	if(!checked) {
+		$(".errorMsg").html("You haven't selected any field. Select atleast one feilds.");
+		$(".errorMsg").show();
+		return false;
+	}	
+
+	var	elementToGetAllCSS,id,text;
+	var adunitForm = $("#adunitFormDiv");
+	adunitForm.empty();
+	mainDiv = $('.nativeAdunits-ul');
+	width = $('#nativeAdunitFiledsWidth').val();
+	height = $('#nativeAdunitFiledsHeight').val();
+	stylename = $('#stylename').val();
+	format = width + "x" + height;
+	elementToGetAllCSS = document.getElementById("nativeAdunits-ul-main").style.cssText;
+	adunitForm.append($("<input type='hidden' name='placements[canvasStyles]' value='"+ elementToGetAllCSS +"'>"));
+	adunitForm.append($("<input type='hidden' name='placements[format]' value='"+ format +"'>"));
+	adunitForm.append($("<input type='hidden' name='placements[stylename]' value='"+ stylename +"'>"));
+	mainDiv.children('div').each(function () {
+		id = this.id; elementToGetAllCSS = document.getElementById(id).style.cssText; text = this.innerHTML;
+		idvalue = id.substr(10);
+		sodId = "radio" + idvalue;
+		sodValue = $("[name='"+ sodId +"']:checked").val();
+		staticOrDynamic = $("[name='value']");
+if(idvalue == "coloredtextbox" || idvalue == "headline" || idvalue == "description" || idvalue == "comments" || idvalue == "authorname" || idvalue == "placeholder" || idvalue == "secondheadline" || idvalue == "categorytitle" || idvalue == "more" || idvalue == "nsotp" || idvalue == "owtoti" || idvalue == "ncotp" || idvalue == "readmore" || idvalue == "multiplecategories" || idvalue == "quotesbelowthephoto" || idvalue == "enabletags" || idvalue == "categorytitleiconorbox" || idvalue == "timeago" || idvalue == "horizontalline" || idvalue == "dividerline" || idvalue == "followmacontwitter" || idvalue == "categorysubtab" || idvalue == "authorbyline" ){
+	adunitForm.append($("<input type='hidden' name='placements[styleData]["+ id +"][name]' value='"+ id +"'>"));
+	adunitForm.append($("<input type='hidden' name='placements[styleData]["+ id +"][valuetype]' value='"+ sodValue +"'>"));
+	adunitForm.append($("<input type='hidden' name='placements[styleData]["+ id +"][styles]' value='"+ elementToGetAllCSS +"'>"));
+	adunitForm.append($("<input type='hidden' name='placements[styleData]["+ id +"][text]' value='"+ text +"'>"));
+} else if (idvalue == "image" || idvalue == "authorimage" || idvalue == "caret" || idvalue == "youtubesnapshot" || idvalue == "videosnapshot" || idvalue == "facebooklikeoranysocialmediawidget" || idvalue == "facebookshare" || idvalue == "googleplusshare" || idvalue == "linkedinshare" || idvalue == "twittershare" || idvalue == "seriesoficons") {
+	if(idvalue == "image") {
+		uploadFileId="file";
+		imgId = "imglinAdunitsimage";
+	} else if(idvalue == "authorimage") {		
+		uploadFileId="file1";
+		imgId = "imglinAdunitsauthorimage";
+	} else if(idvalue == "caret") {
+		uploadFileId="file2";
+		imgId = "imglinAdunitscaret";
+	} else if(idvalue == "facebooklikeoranysocialmediawidget") {	
+		uploadFileId="fblikeIcon";
+		imgId = "imgfacebooklikeoranysocialmediawidget";
+	} else if(idvalue == "facebookshare") {	
+		uploadFileId="fbshareIcon";
+		imgId = "imgfacebookshare";
+	} else if(idvalue == "googleplusshare") {	
+		uploadFileId="gplusIcon";
+		imgId = "imggoogleplusshare";
+	} else if(idvalue == "linkedinshare") {	
+		uploadFileId="linkedinIcon";
+		imgId = "imglinkedinshare";
+	} else if(idvalue == "twittershare") {	
+		uploadFileId="twitterIcon";
+		imgId = "imgtwittershare";
+	} else if(idvalue == "youtubesnapshot") {	
+		uploadFileId="youtubeSnapshot";
+		imgId = "imgyoutubesnapshot";
+	} else if(idvalue == "videosnapshot") {	
+		uploadFileId="videoSnapshot";
+		imgId = "imgvideosnapshot";
+	} else if(idvalue == "seriesoficons") {
+		uploadFileId="videoSnapshot";
+		imgId = "imgseriesoficons";
+	}
+	elementToGetAllCSSForImg = document.getElementById(imgId).style.cssText;
+	adunitForm.append($("<input type='hidden' name='placements[styleData]["+ id +"][name]' value='"+ id +"'>"));
+	adunitForm.append($("<input type='hidden' name='placements[styleData]["+ id +"][valuetype]' value='"+ sodValue +"'>"));
+	adunitForm.append($("<input type='hidden' name='placements[styleData]["+ id +"][styles]' value='"+ elementToGetAllCSS +"'>"));
+	adunitForm.append($("<input type='hidden' name='placements[styleData]["+ id +"][imgCss]' value='"+ elementToGetAllCSSForImg +"'>"));
+} else if (idvalue == "dateofposts") {
+	dateType= $("#seldateofpostFormat").val();
+	adunitForm.append($("<input type='hidden' name='placements[styleData]["+ id +"][name]' value='"+ id +"'>"));
+	adunitForm.append($("<input type='hidden' name='placements[styleData]["+ id +"][valuetype]' value='"+ sodValue +"'>"));
+	adunitForm.append($("<input type='hidden' name='placements[styleData]["+ id +"][styles]' value='"+ elementToGetAllCSS +"'>"));
+	adunitForm.append($("<input type='hidden' name='placements[styleData]["+ id +"][dateType]' value='"+ dateType +"'>"));
+}
+	});
+	document.getElementById("adunitForm").submit();
+
+}
+	        function ChangeType (elem) {
+	            var list = document.getElementById ("myList");
+	            
+	            // Returns the index of the selected option
+	            var whichSelected = elem.selectedIndex;
+
+	            // Returns the text of the selected option
+	            var listType = elem.options[whichSelected].text;
+
+	            list.type = listType;
+	        }
+
+			$(document).ready(function() {
+			    $('.icon-number').click(function() {
+			    	$('#effect').toggle('slow');
+			    });
+			});
+
+			function showbrowse(ima){	
+				document.getElementById(ima).style.display="inline";
+			}
+
+			function showMe (it, box) {
+			  var vis = (box.checked) ? "block" : "none";
+			  document.getElementById(it).style.display = vis;
+			}
+			function getDateOptions() {
+				var d=new Date();
+				var dd = d.getDate();
+				var mm = d.getMonth();
+				var yy = d.getFullYear();
+				var monthName = ["Jan","Feb","Mar","Apr", "May","Jun","Jul","Aug", "Sep","Oct","Nov","Dec"];
+				var mmm = monthName[mm];
+				var mm = mm + 1;
+				var y = String(yy).substring(2);
+				var options = "<option value='dd-mm-yy'>" + dd + "-" + mm + "-" + yy + "</option>";
+				options +=  "<option value='yy-mm-dd'>" + yy + "-" + mm + "-" + dd + "</option>";
+				options += 	"<option value='dd/mm/yy'>" + dd + "/" + mm + "/" + yy + "</option>";
+				options +=  "<option value='yy/mm/dd'>" + yy + "/" + mm + "/" + dd + "</option>";
+				options +=  "<option value='ddthmmmyy'>" + dd + "th " + mmm + " " + yy + "</option>";
+				options +=  "<option value='ddthmmmy'>" + dd + "th " + mmm + " " + y + "</option>";
+				options +=  "<option value='ddmmm'>" + dd + "th " + mmm + "</option>";
+				return options;
+			}
+			function methodToFixLayout(e) {
+				var winHeight = parseInt($(".nativeAdunitFieldsStep3").height()) + 22 ;
+				var winWidth = parseInt($(".nativeAdunitFieldsStep3").width()) + 22 ;
+				$("#nativestep2").width(winWidth);
+				$("#nativestep2").height(winHeight);
+				$(".nativeAdunits-ul").width($(".nativeAdunitFieldsStep3").width());
+				$(".nativeAdunits-ul").height($(".nativeAdunitFieldsStep3").height());
+				$("input[name='nativeAdunitFiledsWidth']").val($(".nativeAdunitFieldsStep3").width());
+				$("input[name='nativeAdunitFiledsHeight']").val($(".nativeAdunitFieldsStep3").height());
+			}
+			$(document).ready(function() {
+				$(".nativeAdunitFieldsStep3").on("resize", methodToFixLayout);
+				$(document).click(function(e){
+					container1 = $(".nativeAdunitFieldsStep3");
+					if($(e.target).hasClass("nativeAdunitFieldsStep3")) {
+						width = $(".nativeAdunits-ul").width();
+						height = $(".nativeAdunits-ul").height();
+						$(".nativeAdunitFieldsStep3").addClass("resize");
+						$(".nativeAdunitFieldsStep3").resizable({handles: 'se , e , s'});
+					} else {
+						container1.removeClass("resize");
+						container1.removeClass("ui-resizable");
+						try {
+							container1.resizable("destroy");
+						} catch(err){
+							console.log(err.message);
+						}
+					}
+				});
+				$("#colorChangeForLi").val("000000");
+				$("#backgroundcolorChangeForLi").val("FFFFFF");
+				$("#mainDivBackground").val("FFFFFF");
+				$("#mainDivBorderLeft").val("0");
+				$("#mainDivBorderRight").val("0");
+				$("#mainDivBorderTop").val("0");
+				$("#mainDivBorderBottom").val("0");
+				$("#bordercolorLeft").val("000000");
+				$("#bordercolorRight").val("000000");
+				$("#bordercolorTop").val("000000");
+				$("#bordercolorBottom").val("000000");
+				$("#stylesCodeAndDisplay").hide();
+				var options = getDateOptions();
+				$("#seldateofpostFormat").append(options);
+				$("#mainDivBackground").change(function(){
+						var color = "#"+$(this).val();
+						$(".nativeAdunits-ul").css("background-color",color)
+				});
+
+				$(".bordercolor").change(function(e) {
+					var bordercolorId = $(this).attr("id");
+					var bordercolor = "#" + $(this).val();
+					if(bordercolorId == 'bordercolorTop') {
+						$(".nativeAdunits-ul").css("border-top-color",bordercolor);
+					} else if(bordercolorId == 'bordercolorRight') {
+						$(".nativeAdunits-ul").css("border-right-color",bordercolor);
+					} else if(bordercolorId == 'bordercolorBottom') {
+						$(".nativeAdunits-ul").css("border-bottom-color",bordercolor);
+					} else if(bordercolorId == 'bordercolorLeft') {
+						$(".nativeAdunits-ul").css("border-left-color",bordercolor);
+					}
+				});
+				$(".bordervalues").change(function(e){
+					var bordervaluesId = $(this).attr("id");
+					var borderVal = $(this).val();
+					if(isNaN(borderVal)){
+						$("#borderError").html("Give a valid border size");
+						$('#borderError').show();
+						$('#borderError').delay(5000).fadeOut(400);
+						$(this).val("0");
+						return false;
+					} else {
+						if(borderVal < 1){
+							$("#borderError").html("Give a valid border size");
+							$('#borderError').show();
+							$('#borderError').delay(5000).fadeOut(400);
+							$(this).val("0");
+							return false;
+						}
+					}
+					if(bordervaluesId == 'mainDivBorderTop') {
+						var bordercolorForId = $("#bordercolorTop").val();
+						borderVal = borderVal + "px solid #" + bordercolorForId;
+						$(".nativeAdunits-ul").css("border-top",borderVal);
+					} else if(bordervaluesId == 'mainDivBorderRight') {
+						var bordercolorForId = $("#bordercolorRight").val();
+						borderVal = borderVal + "px solid #" + bordercolorForId;
+						$(".nativeAdunits-ul").css("border-right",borderVal);
+					} else if(bordervaluesId == 'mainDivBorderBottom') {
+						var bordercolorForId = $("#bordercolorBottom").val();
+						borderVal = borderVal + "px solid #" + bordercolorForId;
+						$(".nativeAdunits-ul").css("border-bottom",borderVal);
+					} else if(bordervaluesId == 'mainDivBorderLeft') {
+						var bordercolorForId = $("#bordercolorLeft").val();
+						borderVal = borderVal + "px solid #" + bordercolorForId;
+						$(".nativeAdunits-ul").css("border-left",borderVal);
+					}
+				});
+				$("#seldateofpostFormat").change(function(){
+					var seldateofpostFormatvalue = $(this).val();
+					$("#linAdunitsdateofposts").html(seldateofpostFormatvalue);
+				});
+				$(document).on("click",'#save',function(event) {
+					var styles = $("#stylesForLi").val();
+					var id = $("#changeForValues").val();
+					if(id == 'linAdunitsimage') {
+						id = 'imglinAdunitsimage';
+					} else if(id == 'linAdunitsauthorimage') {
+						id = 'imglinAdunitsauthorimage';
+					} else if(id == 'linAdunitscaret') {
+						id = 'imglinAdunitscaret';
+					}
+					try {
+						var eachStyle = styles.split(';');
+						eachStyle.forEach(function(entry) {
+							var arr = entry.split(':');
+							if(arr.length == 2) {
+								if(id == "linAdunitsdividerline") {
+									$("#"+id).children("hr").css(arr[0].trim(),arr[1].trim());
+									$("#linAdunitsdividerline").css(arr[0].trim(),arr[1].trim());
+									if(arr[0].trim() == 'width') {
+										var widlength = arr[1].trim().length - 2;
+										var widthofli = arr[1].trim().substr(0,widlength);
+										$(".liwidth").val(widthofli);
+									}
+									if(arr[0].trim() == 'height') {
+										var heilength = arr[1].trim().length - 2;
+										var heithofli = arr[1].trim().substr(0,heilength);
+										$(".liheight").val(heithofli);
+									}
+								} else {
+									$("#"+id).css(arr[0].trim(),arr[1].trim());
+									if(arr[0].trim() == 'width') {
+										var widlength = arr[1].trim().length - 2;
+										var widthofli = arr[1].trim().substr(0,widlength);
+										$(".liwidth").val(widthofli);
+									}
+									if(arr[0].trim() == 'height') {
+										var heilength = arr[1].trim().length - 2;
+										var heithofli = arr[1].trim().substr(0,heilength);
+										$(".liheight").val(heithofli);
+									}
+									if(id== "linAdunitscategorytitleiconorbox") {
+										if(arr[0].trim() == 'background-color') {
+											$(".bubbleDivAfter").css("border-color",arr[1].trim() + " rgba(0, 0, 0, 0)");
+										}
+									}
+								}
+							}
+						});
+						totalWidth = $("#nativeAdunitFiledsWidth").val();
+						rightOfDiv = $("#"+id).css("right");
+						thisWidth = $("#"+id).width();
+						rightOfDivLength = rightOfDiv.length - 2;
+						rightOfDivParsedInt = parseInt(rightOfDiv.substr(0,rightOfDivLength));
+						if (thisWidth > totalWidth) {
+							$("#"+id).width(totalWidth);
+							$("#"+id).css({"left" : "0px"});
+							var idOfUl = $("#changeForValues").val();
+							if(idOfUl == 'linAdunitsimage') {
+								var elementToGetAllCSS = document.getElementById("imglinAdunitsimage").style.cssText;
+							} else {
+								var elementToGetAllCSS = document.getElementById(idOfUl).style.cssText;
+							}
+							var attrValue = String(idOfUl).substring(10);
+							$("#stylesForLi").val(elementToGetAllCSS.replace(/;/g, '; \n').replace(/ /g, ''));
+						} else {
+							if(rightOfDivParsedInt < (totalWidth - thisWidth) ) {
+								itShouldBe = (totalWidth - thisWidth) + "px";
+								$("#"+id).css({"left" : itShouldBe});
+								var idOfUl = $("#changeForValues").val();
+								if(idOfUl == 'linAdunitsimage') {
+									var elementToGetAllCSS = document.getElementById("imglinAdunitsimage").style.cssText;
+								} else {
+									var elementToGetAllCSS = document.getElementById(idOfUl).style.cssText;
+								}
+								var attrValue = String(idOfUl).substring(10);
+								$("#stylesForLi").val(elementToGetAllCSS.replace(/;/g, '; \n').replace(/ /g, ''));
+								
+							}
+						}
+					}
+					catch(err) {
+						//console.log(err)
+					}
+					return false;
+				});
+
+				$(".radioBtn").click( function() {
+					var displayType = $(this).val();
+					if(displayType == 'code'){
+						$("#codeStyle").show();
+						$("#designStyle").hide();
+						var idOfUl = $("#changeForValues").val();
+						if(idOfUl == 'linAdunitsimage') {
+							var elementToGetAllCSS = document.getElementById("imglinAdunitsimage").style.cssText;
+						} else {
+							var elementToGetAllCSS = document.getElementById(idOfUl).style.cssText;
+						}
+						var attrValue = String(idOfUl).substring(10);
+						$("#stylesForLi").val(elementToGetAllCSS.replace(/;/g, '; \n').replace(/ /g, ''));
+					} else {
+						$("#codeStyle").hide();
+						$("#designStyle").show();
+					}
+				});
+				
+				$(".anchor").click(function (e) {
+					var currentId = $("#changeForValues").val();
+					try {
+						var anchorCheck = $("#"+currentId).children("a");
+						if($("#"+currentId).children("a").html() == undefined ){
+							htmlData = "<a href='javascript:void(0)' >" + $("#"+currentId).html() + "</a>";
+							$("#"+currentId).html(htmlData);
+						} else {
+							anchorData = $("#"+currentId).children("a").html();
+							$("#"+currentId).html(anchorData);
+						}
+					} catch(err) {
+						console.log(err);
+					}
+				});
+				$(".icon-bold").click(function (e) {
+					var currentId = $("#changeForValues").val();
+					var fontWeight = $("#"+currentId).css('font-weight');
+					if(fontWeight == "400"){
+						$("#"+currentId).css("font-weight","bold")
+					} else  {
+						$("#"+currentId).css("font-weight","")
+					}
+				});
+				$(".icon-italic").click(function (e) {
+					var currentId = $("#changeForValues").val(); 
+					var fontStyle = $("#"+currentId).css('font-style');
+					if(fontStyle != "italic"){
+						$("#"+currentId).css("font-style","italic");
+					} else {
+						$("#"+currentId).css("font-style","");
+					}
+				});
+				$(".icon-underline").click(function (e) {
+					var currentId = $("#changeForValues").val(); 
+					var textDecoration = $("#"+currentId).css('text-decoration');
+					if (textDecoration.indexOf("underline") >= 0) {
+						$("#"+currentId).css('text-decoration', 'none');
+					} else {
+						$("#"+currentId).css('text-decoration', 'underline');
+					}
+				});
+				$(".icon-circle").click(function (e) {
+					var currentId = $("#changeForValues").val();
+					if(currentId == 'linAdunitsimage') {
+						borderradius = $("#imglinAdunitsimage");
+					} else if(currentId == 'linAdunitsauthorimage') {
+						borderradius = $("#imglinAdunitsauthorimage");
+					} else if(currentId == 'linAdunitscaret') {
+						id = 'imglinAdunitscaret';
+					}
+					else {
+						console.log("else part log")
+					}
+					// var borderradius = $("#"+currentId);
+					borderradius.css('border-radius', '50%');
+						// borderradius.style.borderRadius = "50px";
+					
+				});
+				$(".icon-number").click(function (e) {
+					var currentId = $("#changeForValues").val(); 
+					var currenthtml = $("#"+currentId).html();
+					bullet = currenthtml.split("\n");
+					var array = bullet;
+					if($("#"+currentId).children("ul").html() == undefined){
+						var textValue = "<ul id='myList' type=''>";
+						for (var i=0; i<array.length; i++) {
+							textValue = textValue + "<li>" + array[i] + "</li>";
+						}  
+						textValue = textValue + "</ul>";
+						$("#"+currentId).html(textValue);
+					}
+				});
+				$( ".fontfamily" ).change(function (e) {
+					var fontFamily = $(this).val();
+					var currentId = $("#changeForValues").val(); 
+					if(fontFamily == 'Font family') {
+						$("#"+currentId).css('font-family', 'none');
+						$("#divFontFamily").hide();
+					} else if (fontFamily == 'new'){
+						$("#divFontFamily").show();
+					} else {
+						$("#"+currentId).css('font-family', fontFamily);
+						$("#divFontFamily").hide();
+					}
+				});
+				$("#textFontFamily").change( function(){
+					var fontType = $("#textFontFamily").val();
+					var currentId = $("#changeForValues").val(); 
+					$("#"+currentId).css('font-family', fontType );
+				});
+				$( ".fontsize" ).change(function (e) {
+					var fontsize = $(this).val();
+					var currentId = $("#changeForValues").val(); 
+					if(fontsize == 'Font size') {
+						$("#"+currentId).css('font-size', 'none');
+					} else {
+						$("#"+currentId).css('font-size', fontsize);
+					}
+				});
+				$(".liwidth").change(function(){
+					var widthSize = $(this).val();
+					var currentId = $("#changeForValues").val();
+					if(currentId == 'linAdunitsimage') {
+						currentId == 'imglinAdunitsimage';
+					} else if (currentId == 'linAdunitsauthorimage'){
+						currentId == 'imglinAdunitsauthorimage';
+					} else if(currentId == 'linAdunitscaret') {
+						currentId = 'imglinAdunitscaret';
+					}
+					if(widthSize.trim() == '') {
+						$("#widthNHeightError").html("Give width and height of native ads");
+						return false;
+					} else {
+						if(isNaN(widthSize)){
+							$("#widthNHeightError").html("Give width and height of native ads");
+							return false;
+						} else {
+							if(widthSize < 1){
+								$("#widthNHeightError").html("Give width and height of native ads");
+								return false;
+							}
+						}
+					}
+					$("#"+currentId).css("width" , widthSize+"px");
+					if(currentId.indexOf("image") >= 0) {
+						$("#"+currentId).children("img").css("width",widthSize+"px");
+					}
+id = currentId;
+						totalWidth = $("#nativeAdunitFiledsWidth").val();
+						rightOfDiv = $("#"+id).css("right");
+						thisWidth = $("#"+id).width();
+						rightOfDivLength = rightOfDiv.length - 2;
+						rightOfDivParsedInt = parseInt(rightOfDiv.substr(0,rightOfDivLength));
+						if (thisWidth > totalWidth) {
+							$("#"+id).width(totalWidth);
+							$("#"+id).css({"left" : "0px"});
+							var idOfUl = $("#changeForValues").val();
+							if(idOfUl == 'linAdunitsimage') {
+								var elementToGetAllCSS = document.getElementById("imglinAdunitsimage").style.cssText;
+							} else {
+								var elementToGetAllCSS = document.getElementById(idOfUl).style.cssText;
+							}
+							var attrValue = String(idOfUl).substring(10);
+							$("#stylesForLi").val(elementToGetAllCSS.replace(/;/g, '; \n').replace(/ /g, ''));
+						} else {
+							if(rightOfDivParsedInt < (totalWidth - thisWidth) ) {
+								itShouldBe = (totalWidth - thisWidth) + "px";
+								$("#"+id).css({"left" : itShouldBe});
+								var idOfUl = $("#changeForValues").val();
+								if(idOfUl == 'linAdunitsimage') {
+									var elementToGetAllCSS = document.getElementById("imglinAdunitsimage").style.cssText;
+								} else {
+									var elementToGetAllCSS = document.getElementById(idOfUl).style.cssText;
+								}
+								var attrValue = String(idOfUl).substring(10);
+								$("#stylesForLi").val(elementToGetAllCSS.replace(/;/g, '; \n').replace(/ /g, ''));
+								
+							}
+						}
+				});
+				$(".liheight").change(function(){
+					var widthSize = $(this).val();
+					var currentId = $("#changeForValues").val();
+					if(currentId == 'linAdunitsimage') {
+						currentId == 'imglinAdunitsimage'
+					} else if (currentId == 'linAdunitsauthorimage'){
+						currentId == 'imglinAdunitsauthorimage'
+					} else if(currentId == 'linAdunitscaret') {
+						currentId = 'imglinAdunitscaret';
+					}
+					if(widthSize.trim() == '') {
+						$("#widthNHeightError").html("Give width and height of native ads");
+						return false;
+					} else {
+						if(isNaN(widthSize)){
+							$("#widthNHeightError").html("Give width and height of native ads");
+							return false;
+						} else {
+							if(widthSize < 1){
+								$("#widthNHeightError").html("Give width and height of native ads");
+								return false;
+							}
+						}
+					}
+					$("#"+currentId).css("height" , widthSize+"px");
+					if(currentId.indexOf("image") >= 0) {
+						$("#"+currentId).children("img").css("height",widthSize+"px");
+					}
+				});
+						$("#colorChangeForLi").change(function(){
+							var colorValue = $(this).val();
+							var currentId = $("#changeForValues").val();
+							$("#"+currentId).css("color","#"+colorValue);
+						});
+						$("#backgroundcolorChangeForLi").change(function(){
+							var colorValue = $(this).val();
+							var currentId = $("#changeForValues").val();
+							$("#"+currentId).css("background-color","#"+colorValue);
+						});
+			$('body').on('click','#saveTextArea',function(e){
+					if ( $(e.target).closest('.textAreaForEdit').length === 0 ) {
+						try {
+							var textInTextarea = $(".textAreaForEdit").val();
+							if(textInTextarea) {
+								var idOfTextInTextarea = $(".textAreaForEdit").attr("id");
+								var idToUpdateText = String(idOfTextInTextarea).substring(8);
+								$("#textarea").empty();
+								$("#"+idToUpdateText).empty();
+/*
+								if(idToUpdateText == "textArealinAdunitsbubbleDivAfter") {
+									textInTextarea = textInTextarea + "<div class='bubbleDivAfter'></div>";
+								}
+*/
+								$("#"+idToUpdateText).html(textInTextarea);
+							}
+						}
+						catch(err) {
+							console.log(err);
+						}
+						return false;
+					}
+					return false;
+				});
+
+				$(".nativeAdunits-ul").on("dblclick",'.li-nativeAdunits',function(e) {
+					if ( $(e.target).closest('.textAreaForEdit').length === 0 ) {
+						var idOfClass = $(this).attr("id");
+						if(idOfClass != 'linAdunitsimage' && idOfClass != 'linAdunitsauthorimage' && idOfClass != 'linAdunitsvideosnapshot' && idOfClass != 'linAdunitsfacebookshare' && idOfClass != 'linAdunitsgoogleplusshare' && idOfClass != 'linAdunitstwittershare' && idOfClass != 'linAdunitslinkedinshare' && idOfClass != "linAdunitsyoutubesnapshot" && idOfClass != "linAdunitsfacebookshare" && idOfClass != "linAdunitsgoogleplusshare" && idOfClass != "linAdunitstwittershare" && idOfClass != "linAdunitslinkedinshare" && idOfClass != "linAdunitscategorytitleiconorbox" && idOfClass != "linAdunitsvideosnapshot" && idOfClass != "linAdunitsfacebooklikeoranysocialmediawidget"  && idOfClass != "linAdunitscirclephotos" && idOfClass != "linAdunitsdividerline" && idOfClass != "linAdunitshorizontalline") {
+							var htmlCode = $(this).html();
+							$("#textarea").children("h4").remove();
+							$("#textarea").children(".textAreaForEdit").remove();
+							$("#textarea").children("#saveTextArea").remove()
+							$("#textarea").append("<h4 style='margin: 4px 10px;'>Edit your text here</h4><textarea class='textAreaForEdit' id='textArea"+idOfClass+"'>"+ htmlCode +"</textarea><button id='saveTextArea'> Save </button>");
+						} 
+/*
+else if (idOfClass == "linAdunitsbubbleDivAfter") {
+							var htmlCode = $(this).html();
+							htmlCode = htmlCode.replace("<div class='bubbleDivAfter'></div>","");
+							$("#textarea").append("<h4 style='margin: 4px 10px;'>Edit your text here</h4><textarea class='textAreaForEdit' id='textArea"+idOfClass+"'>"+ htmlCode +"</textarea>");
+						}
+*/
+					}
+				});
+				$(".nativeAdunits-ul").on("click",'.li-nativeAdunits',function(event) {
+					$("#stylesCodeAndDisplay").show();
+					$("#codeStyle").show();
+					$("#designStyle").hide();
+					$('.radioBtn[value="code"]').prop('checked', true);
+					var idOfUl = $(this).attr('id');
+					if(idOfUl == 'linAdunitsimage') {
+						idOfUl = "imglinAdunitsimage";
+	//					$("#file").show();
+					} else if(idOfUl == 'linAdunitsauthorimage') {
+						idOfUl = "imglinAdunitsauthorimage";
+		//				$("#file1").show();
+					} else if(idOfUl == 'linAdunitscaret') {
+						idOfUl = "imglinAdunitscaret";
+/*
+						$("#div3").show();
+						$("#file2").show();
+*/
+					} else if (idOfUl == 'linAdunitsdateofposts') {
+						$("#dateofpostFormat").show();
+					}
+					if (idOfUl != 'linAdunitsdateofposts') {
+						$("#dateofpostFormat").hide();
+					}
+					// if(idOfUl.indexOf("image") >= 0 ){ $("#file").show(); } else { /*$("#file").hide();*/  }
+					var elementToGetAllCSS = document.getElementById(idOfUl).style.cssText;
+					var attrValue = String(idOfUl).substring(10);
+					var eachStyle = elementToGetAllCSS.split(';');
+					eachStyle.forEach(function(entry) {
+						var arr = entry.split(':');
+						if(arr.length == 2) {
+							if(arr[0].trim() == 'width') { 
+								var widlength = arr[1].trim().length - 2;
+								var widthofli = arr[1].trim().substr(0,widlength);
+								$(".liwidth").val(widthofli); 
+							}
+							if(arr[0].trim() == 'height') {
+								var heilength = arr[1].trim().length - 2;
+								var heithofli = arr[1].trim().substr(0,heilength);
+								$(".liheight").val(heithofli); 
+							}
+						}
+					});
+					$("#changeForValues").val(idOfUl);
+					$("#stylesForLi").val(elementToGetAllCSS.replace(/;/g, '; \n').replace(/ /g, ''));
+					$("#setStyleType").html('Styles for ' + attrValue);
+					$("#setStyleType1").html('Styles for ' + attrValue);
+					$(".nativeAdunitFieldsStep4").show();
+				});
+		      	$('input:checkbox').removeAttr('checked');
+		      	$('input:radio').removeAttr('checked');
+
+				$("input[name='nativeAdunitFiledsWidth']").change(function(){
+						var nativeAdunitFiledsWidth = $(this).val();
+						if(nativeAdunitFiledsWidth.trim() == '') {
+							$(".error").html("Give width and height of native ads");
+							return false;
+						} else {
+							if(isNaN(nativeAdunitFiledsWidth)){
+								$(".error").html("Give width and height of native ads");
+								return false;
+							} else {
+								if(nativeAdunitFiledsWidth < 1){
+									$(".error").html("Give width and height of native ads");
+									return false;
+								}
+							}
+						}
+						nwidth = parseInt(nativeAdunitFiledsWidth) + 22 ;
+						$(".nativeAdunitFieldsStep2").css({"width": nwidth + "px"});
+						$(".nativeAdunitFieldsStep3").css({"width": nativeAdunitFiledsWidth + "px"});
+						$(".nativeAdunits-ul").css({"width": nativeAdunitFiledsWidth + "px"});
+				});
+
+				$("input[name='nativeAdunitFiledsHeight']").change(function(){
+						var nativeAdunitFiledsHeight = $(this).val();
+						if(nativeAdunitFiledsHeight.trim() == '') {
+							$(".error").html("Give width and height of native ads");
+							return false;
+						} else {
+							if(isNaN(nativeAdunitFiledsHeight)){
+								$(".error").html("Give width and height of native ads");
+								return false;
+							} else {
+								if(nativeAdunitFiledsHeight < 1){
+									$(".error").html("Give width and height of native ads");
+									return false;
+								}
+							}
+						}
+						nheight = parseInt(nativeAdunitFiledsHeight) + 22 ;
+						$(".nativeAdunitFieldsStep2").css({"height": nheight + "px"});
+						$(".nativeAdunitFieldsStep3").css({"height": nativeAdunitFiledsHeight + "px"})
+						$(".nativeAdunits-ul").css({"height": nativeAdunitFiledsHeight + "px"});
+				});
+			
+				$("input[name='nativeAdunitFiledsRadio']").click(function(){
+					var valueOfCheckedBtn = $(this).val();
+					var idToRemoveAndAdd = "linAdunits" + valueOfCheckedBtn;
+					thisvalue = $(this).val();
+					if($(this).is(':checked')){
+/*
+if(thisvalue == "youtubesnapshot") {
+	$("#div9").show();
+} else if(thisvalue == "facebookshare") {
+	$("#div5").show();
+} else if(thisvalue == "googleplusshare") {
+	$("#div6").show();
+} else if(thisvalue == "twittershare") {
+	$("#div8").show();
+} else if(thisvalue == "linkedinshare") {
+	$("#div7").show();
+} else if(thisvalue == "categorytitleiconorbox") {
+	$("#div9").show();
+} else if(thisvalue == "videosnapshot") {
+	$("#div10").show();
+} else if(thisvalue == "facebooklikeoranysocialmediawidget") {
+	$("#div4").show();
+} else if(thisvalue == "caret") {
+	$("#div3").show();
+}
+*/
+totalWidth = $("#nativeAdunitFiledsWidth").val();
+totalHeight = $("#nativeAdunitFiledsHeight").val();
+left = 0;
+						firsttext = "<div class='radiodiv'> <label><input type='radio' value='static' name='radio";
+						secondtext = ">Static</label> <label><input type='radio' value='dynamic' name='radio";
+						thirdtext = ">Dynamic</label></div>";
+						statictext = firsttext + thisvalue + "' checked " + secondtext + thisvalue + "' " + thirdtext;
+						dynamictext = firsttext + thisvalue + "' " + secondtext + thisvalue + "' checked" + thirdtext;
+							if($(this).val() == 'headline') {
+left = (totalWidth / 3)
+							$(this).parent().parent().append(dynamictext);
+							$("#blink").html("Headline has appeared on canvas, Please drag and drop to adjust its position");
+							$('#blink').show();
+							$('#blink').delay(5000).fadeOut(400);
+								$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:65px;left:"+ left +"px;' title='Double click on the element to edit the text' class='li-nativeAdunits drag-element' id='linAdunits"+ $(this).val() +"'> Headline </div>");
+								$( ".drag-element" ).draggable({ containment: ".nativeAdunits-ul" });
+							} else if($(this).val() == 'coloredtextbox') {
+							$(this).parent().parent().append(statictext);
+							$("#blink").html("Colored Textbox has appeared on canvas, Please drag and drop to adjust its position");
+							$('#blink').show();
+							$('#blink').delay(5000).fadeOut(400);
+								$(".nativeAdunits-ul").append("<div style='z-index:1;background-color:red;color:white;font-size:12px;position:absolute;width:100px;padding:3px;font-weight:bold;text-transform:uppercase;' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Colored Text</div>");
+								$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+							} else if($(this).val() == 'description') {
+left = (totalWidth / 3)
+							$(this).parent().parent().append(dynamictext);
+							$("#blink").html("Description has appeared on canvas, Please drag and drop to adjust its position");
+							$('#blink').show();
+							$('#blink').delay(5000).fadeOut(400);
+								$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:80px;left:"+ left +"px;top:30px;' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Description</div>");
+								$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+							} else if($(this).val() == 'image') {
+							tableData = "<table><tr><td>" + dynamictext + "</td><td><input type='file' id='file' name='upload[image]' class='upload' style='display: inline;'></td></tr></table>";
+							$(this).parent().parent().append(tableData);
+							$("#blink").html("Please upload an image and the image will appear on the canvas");
+							$('#blink').show();
+							$('#blink').delay(5000).fadeOut(400);
+								imgid = "#imglinAdunitsimage";
+								$(".nativeAdunits-ul").append("<div class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'><img id='imglinAdunits"+ $(this).val()+"'  class='drag' src='' >");
+								$( ".drag" ).draggable({ containment: ".nativeAdunits-ul" });
+					
+							$(document).click(function(e){
+								if ($("#linAdunitsimage") !== null) {
+								container2 = $("#linAdunitsimage") ; 
+								container1 = $("#imglinAdunitsimage");
+								if(e.target.id != "imglinAdunitsimage") {
+									container1.removeClass("resize");
+									container1.removeClass("ui-resizable");
+									try {
+										container1.resizable("destroy");
+									} catch(err){
+										console.log(err.message);
+									}
+								} else {
+									width = $(".nativeAdunits-ul").width();
+									height = $(".nativeAdunits-ul").height();
+									$("#imglinAdunitsimage").addClass("resize");
+									$("#imglinAdunitsimage").resizable({handles: 'ne, se, sw, nw, e, w, n, s' , maxWidth: width ,maxHeight: height});
+								}
+								}
+							});
+						} else if($(this).val() == 'comments') {
+							left = totalWidth - 120;
+							topp = totalHeight - 20;
+
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Comments has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:120px;left:"+ left +"px;top:"+ topp +"px;' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Comments</div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'dateofposts') {
+left = totalWidth - 120;
+topp = totalHeight - 60;
+							//$(this).parent().parent().append(dynamictext);
+						$("#blink").html("Date of Posts has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:95px;left:"+ left +"px;top:"+ topp +"px;' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Date of Posts</div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'authorname') {
+topp = totalHeight - 40;
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Author Name has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:96px;top:"+ topp +"px;' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Author Name</div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'authorbyline') {
+topp = totalHeight - 20;
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Author Byline has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:96px;top:"+ topp +"px;' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Author Byline</div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'categorysubtab') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Category Subtab has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:96px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Category Subtab </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'authorimage') {
+							tableData = "<table><tr><td>" + statictext + "</td><td><input type='file' id='file1' name='upload[authorimage]' class='upload' style='display: inline;'></td></tr></table>";
+							$(this).parent().parent().append(tableData);
+						$("#blink").html("Please upload an image below and the imaged will appear on the canvas.");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:0;' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <img id='imglinAdunitsauthorimage' class='drag' src='' >");
+							$( ".drag" ).draggable({ containment: ".nativeAdunits-ul" });
+
+							$(document).click(function(e){
+								container1 = $("#imglinAdunitsauthorimage");
+								if(e.target.id != "imglinAdunitsauthorimage") {
+									container1.removeClass("resize");
+									container1.removeClass("ui-resizable");
+									try {
+										container1.resizable("destroy");
+									} catch(err){
+										console.log(err.message);
+									}
+								} else {
+									width = $(".nativeAdunits-ul").width();
+									height = $(".nativeAdunits-ul").height();
+									$("#imglinAdunitsauthorimage").addClass("resize");
+									$("#imglinAdunitsauthorimage").resizable({handles: 'ne, se, sw, nw' , maxWidth: width ,maxHeight: height});
+								}
+							});
+
+						} else if($(this).val() == 'placeholder') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Static Placeholder has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:90px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Place Holder</div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'secondheadline') {
+							$(this).parent().parent().append(dynamictext);
+						$("#blink").html("Second Headline has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:116px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Second Headline</div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'categorytitle') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Category Title has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:101px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Category Title</div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'more') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("More ______ has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:101px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> More ______</div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'timeago') {
+							//$(this).parent().parent().append(statictext);
+						$("#blink").html("Time Ago has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:90px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> 5 Hours Ago</div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'nsotp') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("New Source on the Photo has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:185px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> News Source on the Photo </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'owtoti') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Overlay with title on the image has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:220px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Overlay with title on the image </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'videosnapshot') {
+							tableData = "<table><tr><td>" + statictext + "</td><td><input type='file' id='videoSnapshot' name='upload[videoSnapshot]' class='upload' style='display: inline;'></td></tr></table>";
+							$(this).parent().parent().append(tableData);
+						$("#blink").html("Video Snapshot has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:110px' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <img src='/assets/videoSnap.gif' id='img" + $(this).val() + "' width='30px' height='30px' > </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'ncotp') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Num Comments on Photo has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:205px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Num comments on the photo </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'rci') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Round Corner Images has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:155px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Round Corner Images </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'atobp') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Any Type of Bullet Points has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:180px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Any Type of Bullet Points </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'seriesoficons') {
+							tableData = "<table><tr><td>" + statictext + "</td><td><input type='file' id='videoSnapshot' name='upload[videoSnapshot]' class='upload' style='display: inline;'></td></tr></table>";
+							$(this).parent().parent().append(tableData);
+						$("#blink").html("Series of Icons has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:100px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <img src='/assets/shareicons.png' width='100px' height='30px'/> </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'iconsinsteadofbulletpoints') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Icons Instead of Bullet Points has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:201px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Icons instead of bullet points </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'readmore') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Read More >> has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:102px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Read More >> </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'shareicons') {
+							tableData = "<table><tr><td>" + statictext + "</td><td><input type='file' id='shareicons' name='upload[shareicons]' class='upload' style='display: inline;'></td></tr></table>";
+							$(this).parent().parent().append(tableData);
+						$("#blink").html("As many share icons anywhere in the div has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:100px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <img src='/assets/shareicons.png' id='img" + $(this).val() + "' width='100px' height='30px' > </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'shadowycorneredboxes') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Shadowy Cornered Boxes has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:180px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Shadowy Cornered Boxes </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'horizontalline') {
+							// $(this).parent().parent().append(statictext);
+						$("#blink").html("Horizontal line has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:150px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <hr/> </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'facebooklikeoranysocialmediawidget') {
+							tableData = "<table><tr><td>" + statictext + "</td><td><input type='file' id='fblikeIcon' name='upload[facebooklike]' class='upload' style='display: inline;'></td></tr></table>";
+							$(this).parent().parent().append(tableData);
+						$("#blink").html("Facebook Like or any social media widget has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:150px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <img src='/assets/like.png' id='img" + $(this).val() + "' /></div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'multiplecategories') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Multiple Categories has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:135px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Multiple categories </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'quotesbelowthephoto') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Quotes below the photo has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:166px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> Quotes below the photo </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'circlephotos') {
+							// $(this).parent().parent().append(statictext);
+						$("#blink").html("Circle Photos has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:0;width:50px;height:50px;border-radius:25px;opacity:0.3;filter:alpha(opacity=30);background-color:#000;'  class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'></div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'enabletags') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Enable Tags has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:86px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> List of Tags </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'dividerline') {
+							//$(this).parent().parent().append(statictext);
+						$("#blink").html("Divider Line has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:1px;height:150px;background-color:black;' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <hr style='width: 1px; height: 150px;'>  </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'youtubesnapshot') {
+							tableData = "<table><tr><td>" + statictext + "</td><td><input type='file' id='youtubeSnapshot' name='upload[youtubesnapshot]' class='upload' style='display: inline;'></td></tr></table>";
+							$(this).parent().parent().append(tableData);
+						$("#blink").html("Youtube snapshot has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400); 
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:30px' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <img src='/assets/youtube_icon.png' id='img" + $(this).val() + "' width='30px' height='30px' > </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'facebookshare') {
+							tableData = "<table><tr><td>" + statictext + "</td><td><input type='file' id='fbshareIcon' name='upload[fbshareIcon]' class='upload' style='display: inline;'></td></tr></table>";
+							$(this).parent().parent().append(tableData);
+						$("#blink").html("Facebook share has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400); 
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:30px' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <img src='/assets/facebook_icon.png' id='img" + $(this).val() + "' width='30px' height='30px' > </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						}  else if($(this).val() == 'googleplusshare') {
+							tableData = "<table><tr><td>" + statictext + "</td><td><input type='file' id='gplusIcon' name='upload[gplusshare]' class='upload' style='display: inline;'></td></tr></table>";
+							$(this).parent().parent().append(tableData);
+						$("#blink").html("Google + Share  has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400); 
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:30px' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <img src='/assets/google.png' id='img" + $(this).val() + "' width='30px' height='30px' > </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						}  else if($(this).val() == 'twittershare') {
+							tableData = "<table><tr><td>" + statictext + "</td><td><input type='file' id='twitterIcon' name='upload[twittershare]' class='upload' style='display: inline;'></td></tr></table>";
+							$(this).parent().parent().append(tableData);
+						$("#blink").html("Twitter Share has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400); 
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:30px' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <img src='/assets/twitter.png' id='img" + $(this).val() + "' width='30px' height='30px' > </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						}  else if($(this).val() == 'linkedinshare') {
+							tableData = "<table><tr><td>" + statictext + "</td><td><input type='file' id='linkedinIcon' name='upload[linkedInshare]' class='upload' style='display: inline;'></td></tr></table>";
+							$(this).parent().parent().append(tableData);
+						$("#blink").html("LinkedIn has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400); 
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:30px' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <img src='/assets/linkedin.png' id='img" + $(this).val() + "' width='30px' height='30px' > </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'caret') {
+							tableData = "<table><tr><td>" + statictext + "</td><td><input type='file' id='file2' name='upload[caretimage]' class='upload' style='display: inline;'></td></tr></table>";
+							$(this).parent().parent().append(tableData);
+						$("#blink").html("Caret Icon has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400); 
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:30px' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> <img id='imglinAdunits"+ $(this).val() +"' src='' width='30px' height='30px' > </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'categorytitleiconorbox') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Category Title Icon or Box has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:100px;background-color:#000;color:red;' title='Double click on the element to edit the text' class='li-nativeAdunits bubble' id='linAdunits"+ $(this).val() +"'> Category<div class='bubbleDivAfter'></div> </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'followmacontwitter') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("FOLLOW MAC ON TWITTER has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:220px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> FOLLOW <a href='www.facebook.com'>MAC</a> ON <a href='www.facebook.com'>TWITTER</a> </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						} else if($(this).val() == 'fullstory') {
+							$(this).parent().parent().append(statictext);
+						$("#blink").html("Full Story has appeared on canvas, Please drag and drop to adjust its position");
+						$('#blink').show();
+						$('#blink').delay(5000).fadeOut(400);
+							$(".nativeAdunits-ul").append("<div style='z-index:1;position:absolute;width:83px' title='Double click on the element to edit the text' class='li-nativeAdunits' id='linAdunits"+ $(this).val() +"'> [Full Story] </div>");
+							$( ".li-nativeAdunits" ).draggable({ containment: ".nativeAdunits-ul" });
+						}
+							$(this).parent().parent().children(".radiodiv").show();
+							imageHandling();
+					} else {
+/*
+							if(thisvalue == "youtubesnapshot") {
+								$("#div9").hide();
+							} else if(thisvalue == "facebookshare") {
+								$("#div5").hide();
+							} else if(thisvalue == "googleplusshare") {
+								$("#div6").hide();
+							} else if(thisvalue == "twittershare") {
+								$("#div8").hide();
+							} else if(thisvalue == "linkedinshare") {
+								$("#div7").hide();
+							} else if(thisvalue == "categorytitleiconorbox") {
+								$("#div9").hide();
+							} else if(thisvalue == "videosnapshot") {
+								$("#div10").hide();
+							} else if(thisvalue == "facebooklikeoranysocialmediawidget") {
+								$("#div4").hide();
+							} else if(thisvalue == "caret") {
+								$("#div3").show();
+							}
+*/
+						$(".nativeAdunits-ul").children("#"+ idToRemoveAndAdd).remove();
+						$(this).parent().parent().children(".radiodiv").remove();
+						$(this).parent().parent().children("table").remove();
+					}
+				});
+			});
+		</script>
+
+<form action="" method="POST" id='adunitForm' enctype="multipart/form-data">
+		<div style='width:1200px'>
+			<h1> User Interface Tool For Native ads</h1>
+<div class="errorMsg" style="background-color: #FFECCE; border: 1px solid #E9C59B; color: #E3302C; display: none; padding: 2px 6px;"> </div>
+<table class='nativeadstable' style="margin-top:10px;">
+<tr>
+<td>
+			<div class="nativeAdunitFieldsStep1" id="nativestep1">
+				<div><label>Style Name: <input type="text" id="stylename"> </label></div>
+				<div><label>Width: <input type="text" id="nativeAdunitFiledsWidth" name="nativeAdunitFiledsWidth" value="300"> </label></div>
+				<div><label>Height: <input type="text" id="nativeAdunitFiledsHeight" name="nativeAdunitFiledsHeight" value="200"> </label></div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="coloredtextbox"> Colored Text Box </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="headline"> Headline </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="description" > Description </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" id= 'image' value="image">  Image </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="comments">  Comments </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="dateofposts">  Date of Posts </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="authorname">  Author Name </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="authorbyline">  Author Byline </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" id='authorimage' value="authorimage">  Author Image </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="placeholder">  Static Placeholder </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="secondheadline">  Second Headline </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="categorytitle">  Category Title </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="categorysubtab">  Category Subtab </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="more">  More ______ </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="timeago">  Time Ago </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="nsotp">  News Source on the Photo </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="owtoti">  Overlay with title on the image </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="ncotp">  Num comments on the photo </label> </div>
+				<!--<div> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="rci">  Round Corner Images </label> </div>
+				<div> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="atobp">  Any Type of Bullet Points </label> </div>-->
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="seriesoficons">  Series of icons </label> </div>
+				<!--<div> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="iconsinsteadofbulletpoints"></label>  Icons instead of bullet points </label> </div>-->
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="readmore">  Read More >> </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="shareicons">  As many share icons anywhere in the div </label> </div>
+				<!--<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="shadowycorneredboxes">  Shadowy Cornered Boxes </label> </div>-->
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="horizontalline">  Horizontal line </label> </div>	
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="dividerline">  Divider line </label> </div>	
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="multiplecategories">  Multiple categories </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="quotesbelowthephoto">  Quotes below the photo </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="circlephotos">  Circle photos </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="enabletags">  List of Tags </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="caret">  Caret Icon </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="youtubesnapshot">  Youtube snapshot </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="videosnapshot">  Video Snapshot </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="facebooklikeoranysocialmediawidget">  Facebook Like or any social media widget </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="facebookshare">  Facebook Share </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="googleplusshare">  Google + Share </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="twittershare">  Twitter Share </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="linkedinshare">  LinkedIn Share </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="categorytitleiconorbox"> Category Title Icon or Box </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="followmacontwitter"> FOLLOW MAC ON TWITTER </label> </div>
+				<div><label> <input type="checkbox" class="checkbox" name="nativeAdunitFiledsRadio" value="fullstory"> Full Story </label> </div>
+				<div class='error'></div>
+			</div>
+
+</td>
+<td>
+<table>
+	<tr>
+<td>
+
+				<div style="display: none;" id="blink"></div>
+</td>
+</tr>
+<tr>
+<td>
+
+			<div class="nativeAdunitFieldsStep2" id="nativestep2" style="position:relative;width: 322px; height: 222px;">
+				<div class="nativeAdunitFieldsStep3" style="position:absolute;padding:10px;border:1px solid #000000;float:left;">
+					<div class="nativeAdunits-ul" id='nativeAdunits-ul-main' style="overflow:hidden; width: 300px; height: 200px;position:relative;word-wrap:break-word;"></div>
+				</div>
+			</div>
+<input type='hidden' id='changeForValues' value=''>
+</td>
+	</tr>
+
+	<tr>
+<td>
+
+	<div id='textarea'></div>
+			<div id='stylesCodeAndDisplay'>
+				<div class="radioButtons">
+					<label> <input type="radio" name='codeOrDesign' class='radioBtn' value='code' > Code </label>
+					<label> <input type="radio" name='codeOrDesign' class='radioBtn' value='design' > Design </label>
+				</div>
+				<div id='codeStyle'>
+					<div> <h4 id='setStyleType'> Styles for : </h4> </div>
+					<div><textarea type='text' value='' style="width: 526px; height: 122px;" id='stylesForLi'></textarea></div>
+					<div>
+						<button class='btn' id='save'> Save </button>
+						<div class='styleError'></div>
+					</div>
+				</div>
+				<div id='designStyle'>
+					<div> <h4 id='setStyleType1'> Styles for : </h4> </div>
+					<div id='url' class='editor' style="border: 2px solid rgb(0, 0, 0); display: inline-block; padding: 5px; margin: 10px;">
+						<div class='icon-bold'></div>
+						<div class='icon-italic'></div>
+						<div class='icon-underline'></div>
+						<div class='icon-number'></div>
+						<div id='effect' style="display: none;">
+							<select onchange="ChangeType (this);">
+						        <option />1
+						        <option />a
+						        <option />A
+						        <option />i
+						        <option />I
+						        <option />circle
+						        <option />disc
+						        <option />square
+						    </select>
+						</div>
+						<div class='icon-circle' title="Circle Images (Images Only)"></div>
+						<div style='float:left;margin-left:2px'><input type='text' style="width:80px" id='colorChangeForLi' class='color' value='000000'></div>
+						<div style='float:left;margin-left:2px'><input type='text' style="width:80px" id='backgroundcolorChangeForLi' class='color' value='FFFFFF'></div>
+						<div style='float:left;margin-left:2px'>
+							<select class='fontfamily' style='height:26px;width:160px;'><option>Font type</option><option>Times New Roman</option><option>Trebuchet MS </option><option>Tahoma </option><option>'Lucida Grande' </option><option>'Lucida Console' </option><option>Helvetica </option><option>Georgia </option><option>Arial</option><option>serif</option><option>sans-serif</option><option>monospace</option><option>message-box</option><option>'DejaVu Sans Mono'</option>
+<% if @fonts.length > 0 %>
+	<% @fonts.each do |font| %>
+		<option><%= font.name %></option>
+	<% end %>
+<% end %>
+</select>
+						</div>
+						<div style='float:left;margin-left:2px'> 	<select class='fontsize' style='height:26px;width:100px;'><option>Font size</option> <option>10px</option> <option>11px</option> <option>12px</option>  <option>13px</option> <option>14px</option>  <option>15px</option> <option>16px</option>  <option>17px</option>  <option>18px</option> <option>19px</option>  <option>20px</option> <option>21px</option> <option>22px</option> <option>23px</option><option>24px</option> <option>25px</option> <option>26px</option> <option>27px</option> <option>28px</option><option>29px</option> <option>30px</option></select>
+						</div>							
+						<div style='float:left;margin-left:2px'>Width: <input class='liwidth' type='text' style='width:35px;'></div>
+						<div style='float:left;margin-left:2px'>Height: <input class='liheight' type='text' style='width:35px;'></div>
+						<div style='float:left;margin-left:2px;font-weight:bold;' class='anchor'><a href="javascript:void(0)">Anchor</a></div>
+						<div id='widthNHeightError'></div>
+						<div id='divFontFamily' style="display:none;margin-left:135px;"><br><input type='text' id='textFontFamily'></div>
+					</div>
+				</div>
+			</div>
+
+	<input type='hidden' value="<%= form_authenticity_token() %>" name='authenticity_token'>
+<div id='adunitFormDiv'></div>
+			<div id="dateofpostFormat" style='display:none;'>
+				Date Format : 
+				<select id='seldateofpostFormat'>
+				</select>
+			</div>
+<!--
+			<div id="div1" style="display:none">
+				<label> Image : </label>
+				<input type="file" class='upload' name="upload[image]" id="file" >
+			</div>
+			<div id="div2" style="display:none">
+				<label> Author Image : </label>
+				<input type="file" class='upload' name="upload[authorimage]" id="file1" >
+			</div>
+			<div id="div3" style="display:none">
+				<label> Caret Image : </label>
+				<input type="file" class='upload' name="upload[caretimage]" id="file2" >
+			</div>
+			<div id="div4" style="display:none">
+				<label> Facbook Like : </label>
+				<input type="file" class='upload' name="upload[facebooklike]" id="fblikeIcon" >
+			</div>
+			<div id="div5" style="display:none">
+				<label> Facebook Share : </label>
+				<input type="file" class='upload' name="upload[facebookshare]" id="fbshareIcon" >
+			</div>
+			<div id="div6" style="display:none">
+				<label> Google + Share : </label>
+				<input type="file" class='upload'  name="upload[gplusshare]"  id="gplusIcon" >
+			</div>
+			<div id="div7" style="display:none">
+				<label> LinkedIn Share : </label>
+				<input type="file" class='upload'   name="upload[linkedInshare]"  id="linkedinIcon" >
+			</div>
+			<div id="div8" style="display:none">
+				<label> Twitter Share : </label>
+				<input type="file" class='upload' id="twitterIcon" name="upload[twittershare]" >
+			</div>
+			<div id="div9" style="display:none">
+				<label> Youtube Snapshot : </label>
+				<input type="file" class='upload' id="youtubeSnapshot" name="upload[youtubesnapshot]" >
+			</div>
+			<div id="div10" style="display:none">
+				<label> Video Snapshot : </label>
+				<input type="file" class='upload' id="videoSnapshot" name="upload[videosnapshot]">
+			</div>
+-->
+			<div id="blink" style="display:none"> </div>
+<div>
+<h3> Canvas Styles: </h3>
+<div>Background Color: <input type='text' class='color' id='mainDivBackground'></div>
+</div>
+<div>
+<div>Borders: </div>
+<div>Top: <input  style='width:35px' type='text' class='bordervalues' id='mainDivBorderTop' value='0'><input type='text' class="color bordercolor" value="FFFFFF" id="bordercolorTop"></div>
+<div>Right: <input style='width:35px' type='text' class='bordervalues' id='mainDivBorderRight' value='0'><input type='text' class="color bordercolor" value="FFFFFF" id="bordercolorRight"></div>
+<div>Bottom: <input style='width:35px' type='text' class='bordervalues' id='mainDivBorderBottom' value='0'><input type='text' class="color bordercolor" value="FFFFFF" id="bordercolorBottom"></div>
+<div>Left: <input style='width:35px' type='text' class='bordervalues' id='mainDivBorderLeft' value='0'><input type='text' class="color bordercolor" value="FFFFFF" id="bordercolorLeft"></div>
+</div>
+<div id='borderError'></div>
+			</div>
+</td>
+</tr>
+<tr>
+	<td>
+<input type='button' onclick='submitNativeStyle()' value="Submit Native Style">
+</td>
+</tr>
+</table>
+</td>
+</tr>
+
+</table>			
+		</div>
+</form>

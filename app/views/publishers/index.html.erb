@@ -1,0 +1,90 @@
+<script></script>
+		<style>
+			.nav-tabs  { border-bottom: 0px solid ; 	}
+			.contentwrap  {	max-width: 100%;}
+			ul.balance li{	border-left: 1px solid #E1E1E1;	border-right: medium none;	width: 270px;margin-right: 20px;}
+			ul.balance li:first-child {	height:217px; }
+			.contentwrap .content{	padding-right: 0px;}
+			.browsecontainer{	 margin: 0px;}
+			.browsecontainer .bcpad {	margin: 0 0 0 0px;	padding: 20px;}
+			h3 { color : #fff; }
+			h3 a {	float: right; 	font-size: 18px; 	margin-right: 20px;}
+			.go { 	background: none repeat scroll 0 0 #f7f7f7;
+					border: 1px solid #E1E1E1;
+					border-radius: 15px;
+					width: 21%; }
+			.tod {
+					color: #3F3B3B;
+					font-size: 40px;
+					margin: 24px 0; }
+			.tod1 {
+					color: #3F3B3B;
+					font-size: 30px;
+					margin: 20px 0px; }
+			.tod2 {
+					color: #3F3B3B;
+					font-size: 30px;
+					margin-top: 35px; }
+			.val {
+					color: #3F3B3B;
+					font-size: 30px;
+					margin-top: 35px;
+					margin-left: 57px; }
+.content.cf { background-color: #4C4646; }
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+			ul.balance li:first-child {	height:180px; }
+			ul.balance li {	width:238px; margin-right: 10px;}
+}
+		</style>
+<div class="contentwrap cf ">
+
+					<div class="browsecontainer cf" style="width=76%">
+						<div class="span12" style="width:100%">
+							<div class=" cf"></div>				
+<% if @dataForToday.count != 0 %>
+							<div class="modpad nopad cf">
+								<h3 style="color:black;">Estimated Earnings <a href="/reports/publisher/adUnit"> View reports </a>	</h3>
+								<div id="columns">
+								<ul id="column1" class="balance cf" style="margin-bottom: 65px;">
+									<li class="go">
+										<strong>Today So Far</strong><br>
+										<div class="tod"> $ <%= @dataForToday["totals"]["totCost"] %> </div>
+									</li>
+									<li class="go">
+										<strong>Yesterday</strong>	<br>
+										<div class="tod1"> $ <%= @dataForYest["totals"]["totCost"] %> </div><br>
+										<div class="tod2">
+											<% if @dataForYest["totals"]["totCost"] >= @dataForSameDayLastWeek["totals"]["totCost"] %> + <% else %> - <% end %>
+											$ <%= (@dataForYest["totals"]["totCost"] - @dataForSameDayLastWeek["totals"]["totCost"]).abs %> 
+										</div><br> vs same day last week
+									</li>
+									<li class="go">
+										<strong>This Month So Far</strong> <br>
+										<div class="tod1"> $ <%= @dataForThisMonth["totals"]["totCost"] %> </div> <br>
+										<div class="tod2">
+											<% if @dataForThisMonth["totals"]["totCost"] >= @dataForLastMonthSameDay["totals"]["totCost"] %> + <% else %> - <% end %>
+											$ <%= (@dataForThisMonth["totals"]["totCost"] - @dataForLastMonthSameDay["totals"]["totCost"]).abs %> 
+										</div> <br>
+											vs same day last month
+									</li>
+									<li class="go">
+										<strong>Last Month</strong> <br>
+										<div class="tod1"> $ <%= @dataForLastMonth["totals"]["totCost"] %> </div><br> 
+										<div class="tod2"> 
+										<% if @dataForLastMonth["totals"]["totCost"] >= @dataForBeforeMonth["totals"]["totCost"] %> + <% else %> - <% end %>
+										$ <%= (@dataForLastMonth["totals"]["totCost"] - @dataForBeforeMonth["totals"]["totCost"]).abs %> 
+										</div>
+										<br> vs month before
+									</li>
+								</ul>
+							</div>
+<% else %>
+<% if params[:aft] == '1' %> 
+	<div align="center"><p>Website submitted successfully. Please create ad placement <a href="/adunits/">here</a></p> </div>
+<% else %>
+	<div> You didn't create any ad placement yet, create an ad placement <a href="/adunits/">here</a>.</div>
+<% end %>
+<% end %>
+						</div><!-- END div.browsercontainer -->
+					</div><!-- END div.content -->
+						<div class="separator mtop cf"></div>

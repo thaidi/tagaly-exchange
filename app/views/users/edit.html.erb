@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		
+		<title> sample page </title>		
+		<link rel="stylesheet" href="/assets/bsa.min.css" type="text/css" />
+		<style>
+			body {
+					background: none repeat scroll 0 0 #ffffff;
+				}
+				
+			select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input 
+				{
+					height: 25px;
+					line-height: 14px;
+					padding: 5px 8px;
+				}
+			
+		</style>
+		 
+	</head>
+	
+	<body>
+		<div id="realpage">
+			<div class="contentwrap cf full">
+				<div class="breathablewrap">
+					
+					<div class="content nobg cf" style="width:830px;">
+						<div class="pad cf" style="width:765px;">
+							<div class="seventyleft">
+								<h3>Add Property</h3>
+								
+								<%= form_for @publishersite,:html => {:class => "form standard"} do |u| %>
+								<%= u.text_field :created_by ,:type=>"hidden",:value=>session[:user_id]  %>
+								<%= u.text_field :csrftoken ,:type=>"hidden",:value=>"5d0e1a7d6d345bc8aafbf900d7c5144a"  %>
+									<!--<input type="hidden" value="5d0e1a7d6d345bc8aafbf900d7c5144a" name="_csrftoken">-->
+									<div class="reg">
+										<label for="titleid">Website Title</label>
+										<div class="inputpad cf">
+											<%= u.text_field :website_title , :id=>"website_title" ,:autofocus => "autofocus" ,:required=>"required",:maxlength=>"27",:class=>"infield large maxlengthme errbottom text"  %>
+											<!--<input type="text" maxlength="27" label="Website Title" class="infield large maxlengthme errbottom text " value="" name="title" id="titleid">-->
+											<div class="limit"><span id="nocleft" class="remaining good">27</span> characters remaining</div>
+										</div>
+									</div>
+									<div class="alt">
+										<label for="addressid">Website URL (without the http://)</label>
+										<div class="inputpad cf">
+										<%= u.text_field :website_url , :id=>"website_url" ,:required=>"required",:class=>"large errbottom text"  %>
+											<!--<input type="text" class="large errbottom text " label="Website URL (without the http://)" value="" name="address" id="addressid">-->
+											<div class="fdesc">Please only enter a URL in the form of domain.tld or subdomain.domain.tld</div>
+										</div>
+									</div>
+									<div class="reg">
+										<label for="descriptionid">Description</label>
+										<div class="inputpad cf">
+										<%= u.text_area :description , :id=>"description" ,:required=>"required",:cols => 56, :rows => 3  %>
+											<!--<textarea class="large errbottom" name="description" cols="56" rows="3"></textarea>-->
+										</div>
+									</div>
+									<div class="alt">
+										<label for="channelid">Channel</label>
+										<div class="inputpad cf">
+										<%= select_tag(:channel, options_for_select([['', 0],['All Things Apple', 22],['Automotive', 121],['Business &amp; Finance', 20],['Education', 137],['Entertainment', 47],['Family &amp; Parenting', 128],['Gaming', 120],['Food &amp; Drink', 129],['Government &amp; Politics', 131],['Home &amp; Architecture', 138],['Pets', 130],['Sports', 124],['Style &amp; Beauty', 123],['Technology', 5],['Travel', 105],['Web Design &amp; Development', 1],['Weddings', 102],['Visual Arts &amp; Design', 139]],@publishersite.channel)) %>
+											<!--<select id="channelid" name="channel">
+												<option selected="" value="0">-</option>
+												<option value="22">All Things Apple</option>
+												<option value="121">Automotive</option>
+												<option value="20">Business &amp; Finance</option>
+												<option value="137">Education</option>
+												<option value="47">Entertainment</option>
+												<option value="128">Family &amp; Parenting</option>
+												<option value="120">Gaming</option>
+												<option value="129">Food &amp; Drink</option>
+												<option value="131">Government &amp; Politics </option>
+												<option value="138">Home &amp; Architecture</option>
+												<option value="130">Pets</option>
+												<option value="124">Sports</option>
+												<option value="123">Style &amp; Beauty</option>
+												<option value="5">Technology</option>
+												<option value="105">Travel</option>
+												<option value="1">Web Design &amp; Development</option>
+												<option value="102">Weddings</option>
+												<option value="139">Visual Arts &amp; Design</option>
+											</select>-->
+										</div>
+									</div>
+									<div class="reg">	
+										<label for="languageid">Language</label>
+										<div class="inputpad cf">
+										<%= select_tag(:language, options_for_select([['', 0],['English', 1],['German', 2],['French', 3],['Italian', 4],['Dutch', 5],['Japanese', 6],['Korean', 7],['Chinese', 8],['Romanian', 9],['Spanish', 10],['Portuguese', 11]],@publishersite.language)) %>
+											<!--<select id="languageid" name="language">
+												<option value="0">-</option>
+												<option selected="" value="1">English</option>
+												<option value="2">German</option>
+												<option value="3">French</option>
+												<option value="4">Italian</option>
+												<option value="5">Dutch</option>
+												<option value="6">Japanese</option>
+												<option value="7">Korean</option>
+												<option value="8">Chinese</option>
+												<option value="9">Romanian</option>
+												<option value="10">Spanish</option>
+												<option value="11">Portuguese</option>
+											</select>-->
+											<div class="fdesc">Please select the primary language of your site. If your site is in more than one language, you should select the language for which you get the most traffic.</div>
+										</div>
+									</div>
+									<div class="alt">
+										<label for="impressionsid">Average Monthly Impressions</label>
+										<div class="inputpad cf">
+										<%= u.text_field :avg_mon_imps , :id=>"avg_mon_imps" ,:required=>"required"  %>
+										<%= u.text_field :authenticity_token , :type=>"hidden",:value=>form_authenticity_token() %>
+											<!--<input type="text" class="medium text " label="Average Monthly Impressions" value="" name="impressions" id="impressionsid">-->
+											<div class="fdesc">Please give us a rough estimate of how many impressions your site receives in an average month.</div>
+										</div>
+									</div>
+									<div class="submit bcenter cf">
+										<button rel="" id="submitbutton" value="submit" name="submit1" class="button primary" type="submit"> <span><em> Submit </em></span> </button>
+									</div>
+								<% end %>
+							</div>
+							<div class="thirtyright">
+								<div class="helpnote mtop">
+									<div class="helppad">
+										<h4>Criteria / Suggestions:</h4>
+										<p>There are exceptions to every rule, but here are some general guidelines for sites that are accepted into our inventory.</p>
+										<ul class="text">
+											<li>Greater than 50K impressions per month. For new sites, if you (or your team) have a history of creating really successful websites we will accept you.</li>
+											<li>Your website must be live, finished, and have fresh content.</li>
+											<li>No porn, anything illegal, or containing even remotely *questionable* content.</li>
+											<li>If you have a ton of untargeted ads on your site already, we're not going to approve you.</li>
+											<li>Getting denied does not mean that we will not approve you at a future date.</li>
+										</ul>
+									</div>
+								</div>
+							</div><!-- END div.pad -->
+						</div><!-- END div.content -->
+					</div>
+				</div>
+			</div>
+				<script>
+				$(function () {
+					$('form').submit(function () {
+						$(this).find('#submitbutton').attr('disabled', 'disabled');
+						$('&lt;input type="hidden" name="submit1" value="submit"&gt;').appendTo(this);
+					});
+				})
+				</script>
+		</div>
+		
+	</body>
+</html>

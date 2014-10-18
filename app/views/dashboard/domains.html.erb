@@ -1,0 +1,126 @@
+<link rel="stylesheet" type="text/css" href="/assets/dashboardframe.css">
+<style>
+table{
+	font-size:11px;
+}
+</style>
+<script>
+window.onload = function() {
+    parent.iframeLoaded();
+    window.parent.document.getElementById('domainsData').style.height = document.body.scrollHeight + 'px';
+}
+</script>
+<script type="text/javascript" src="/assets/jquery.js"></script>
+						<table style="margin-bottom:0;" class="table table-striped table-bordered summary-table sortable">
+							<thead class="widget-header">
+								<tr>
+									<th class="tbllft">Site</th>
+									<th>Impressions</th>
+									<th>Clicks</th>
+									<th>CTR</th>
+									<th>CPM</th>
+									<th>CPC</th>
+									<th>CPA</th>
+									<!-- <th>CTC</th> -->
+									<!-- <th>VTC</th> -->
+									<th>Conv.</th>
+									<th>Spend</th>
+									<!-- <th>Options</th> -->
+								</tr>
+							</thead>
+		<tbody>
+<% @DomianDataStats.each do |key,domains| %>
+<%
+   if @DomianDataStats[key]["clicks"].to_i != 0
+	convRate = @DomianDataStats[key]["conversions"].to_i / @DomianDataStats[key]["clicks"].to_i
+   elsif
+	convRate = 0
+   end
+   if @DomianDataStats[key]["impressions"].to_i != 0
+	ctr = (@DomianDataStats[key]["clicks"].to_i / @DomianDataStats[key]["impressions"].to_i)*100
+   elsif
+	ctr = 0
+   end
+   if @DomianDataStats[key]["conversions"].to_i != 0
+	cpa = @DomianDataStats[key]["cost"].to_i / @DomianDataStats[key]["conversions"].to_i
+   elsif
+	cpa = 0
+   end
+   if key=="totals"
+     break
+   end
+%>
+  <tr>
+ 
+    <td>
+			<a href="#"> <%= key %></a>
+		</td>
+    <td> <%= @DomianDataStats[key]["impressions"] %></td>
+    <td> <%= @DomianDataStats[key]["clicks"] %> </td>
+    <td> <%= @DomianDataStats[key]["CTR"] %></td>
+    <td> <%= @DomianDataStats[key]["CPM"] %> </td>
+    <td> <%= @DomianDataStats[key]["CPC"] %> </td>
+    <td> <%= @DomianDataStats[key]["CPA"] %> </td>
+		<!-- <td> <%= @DomianDataStats[key]["CTC"] %> </td>
+   	<!-- <td> <%= "Ctc" %> </td>
+    <td> <%= "Ctc %" %> </td>
+    <td> <%= "Vtc" %> </td>
+    <td> <%= "Vtc %" %> </td>-->
+    <td> <%= @DomianDataStats[key]["conversions"] %> </td>
+    <td> <%= @DomianDataStats[key]["cost"] %> </td>
+  </tr> 
+<% end %>
+		</tbody>
+		<tfoot>
+		<%
+			if @DomianDataStats.count>1
+		 		if @DomianDataTotals.present? %>
+			<tr class="">
+<%
+   if @DomianDataTotals["totClicks"].to_i != 0
+	totconvRate = @DomianDataTotals["totConversions"].to_i / @DomianDataTotals["totClicks"].to_i
+   elsif
+	totconvRate = 0
+   end
+   if @DomianDataTotals["totImpressions"].to_i != 0
+	# totctr = @DomianDataTotals["totClicks"].to_i * 100 / @DomianDataTotals["totImpressions"].to_i
+	totctr = 0
+   elsif
+	totctr = 0
+   end
+   if @DomianDataTotals["totConversions"].to_i != 0
+	totcpa = @DomianDataTotals["totCost"].to_i / @DomianDataTotals["totConversions"].to_i
+   elsif
+	totcpa = 0
+   end
+%>
+    <td>Total</td>
+    <td> <%= @DomianDataTotals["totImpressions"] %> </td>
+    <td> <%= @DomianDataTotals["totClicks"] %> </td>
+    <td> <%= @DomianDataTotals["totCTR"] %> </td>
+    <td> <%= @DomianDataTotals["totCPM"] %> </td>
+    <td> <%= @DomianDataTotals["totCPC"] %>  </td>
+    <td> <%= @DomianDataTotals["totCPA"] %></td>
+  <!--  <td> <%= @DomianDataTotals["totCTC"] %></td>
+   <!-- <td> <%= "Ctc" %> </td>
+    <td> <%= "Ctc %" %> </td>
+    <td> <%= "Vtc" %> </td>
+    <td> <%= "Vtc %" %> </td>-->
+    <td> <%= @DomianDataTotals["totConversions"] %> </td>
+    <td> <%= @DomianDataTotals["totCost"] %> </td>
+			</tr>
+
+			<% end %>
+			<% else %>
+				<tr>
+					<td colspan="9">No domains are present for the site!</td>
+				</tr>
+			<% end %>
+		</tfoot>
+	</table>
+
+<% session[:dashboardGraphType] = "Domains" %>
+<% session[:dashboardTotalImpressions] = @DomianDataTotals["totImpressions"] %>
+<% session[:dashboardTotalCost] = @DomianDataTotals["totCost"] %>
+<% session[:dashboardTotalClicks] = @DomianDataTotals["totClicks"] %>
+<% session[:dashboardTotalConversions] = @DomianDataTotals["totConversions"] %>

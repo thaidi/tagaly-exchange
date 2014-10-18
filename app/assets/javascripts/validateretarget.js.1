@@ -1,0 +1,143 @@
+function validateForm()
+{
+	var validatelistname=0;
+	var validateduration=0;
+	var validatertype=0;
+	if(document.getElementById("listname").value.trim()=="")
+	{
+		document.getElementById("retargetnameerror").style.display="block";
+		document.getElementById("retargetnameerror").innerHTML="Please fill in the retarget name!";
+		validatelistname=0; ;
+	}
+	else
+	{
+		validatelistname=1;
+		document.getElementById("retargetnameerror").style.display="none";
+		
+			
+	}
+	if(document.getElementById("duration").value.trim()=="")
+	{
+		document.getElementById("durationerror").style.display="block";
+		document.getElementById("durationerror").innerHTML="Please fill in the duration!";
+		validateduration=0; 
+	}
+	else if(isNaN(document.getElementById("duration").value))
+	{
+		document.getElementById("durationerror").style.display="block";
+		document.getElementById("durationerror").innerHTML="Duration should be a valid number!";
+		validateduration=0; 
+	}
+	else
+	{
+		document.getElementById("durationerror").style.display="none";
+		validateduration=1;	
+	}
+	var pattern=/^\/[a-z0-9]*_*-*.*\**$/i ;
+	if(document.getElementById("retarget_retargeting_type_path").checked==true)
+		{
+			if(document.getElementById("path_value").value != "")
+			{
+			//alert(document.getElementById("path_value").value);
+				if(pattern.test(document.getElementById("path_value").value)==true)
+				{
+					validatertype=1;;
+				}
+				else
+				{
+					document.getElementById("patherror").style.display="block";
+					document.getElementById("patherror").innerHTML="Please fix in the path";
+					validatertype=0;
+				}
+				
+			}
+			else 
+			{
+			
+				if(document.getElementById("path_value").value.trim() =="")
+				{
+					document.getElementById("patherror").style.display="block";
+					document.getElementById("patherror").innerHTML="Please fill in the path";
+					validatertype=0;
+				}
+			}
+		 }
+		 if(document.getElementById("retarget_retargeting_type_query").checked==true)
+		{
+			if(document.getElementById("queryvalue").value.trim() =="")
+			{
+				document.getElementById("queryerror").style.display="block";
+				document.getElementById("queryerror").innerHTML="Please fill in the query";
+				validatertype=0;
+			}
+			else
+			{
+				validatertype=1;
+			}
+		}
+		if(document.getElementById("retarget_retargeting_type_regex").checked==true)
+		{
+			if(document.getElementById("regexp").value.trim() =="")
+			{
+				document.getElementById("regexerror").style.display="block";
+				document.getElementById("regexerror").innerHTML="Please fill in the regular expression!";
+				validatertype=0;
+			}
+			else
+			{
+				validatertype=1;
+			}
+		 }
+		 
+		
+		 if(validateduration==0 || validatelistname==0 || validatertype==0)
+		 {
+		 	return false;
+		 }
+		 else
+		 {
+		 	document.getElementById("waitmsg").style.display="block";
+		 	var xmlhttp;  
+		 	
+			   str=document.getElementById("listname").value;
+			if (str=="")
+			  {
+			  document.getElementById("txtHint").innerHTML="";
+			  return;
+			  }
+			if (window.XMLHttpRequest)
+			  {// code for IE7+, Firefox, Chrome, Opera, Safari
+			  xmlhttp=new XMLHttpRequest();
+			  }
+			else
+			  {// code for IE6, IE5
+			  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			  }
+			  xmlhttp.onreadystatechange=function()
+			  {
+			  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			    {
+			    	document.getElementById("waitmsg").style.display="none";
+			    	if(xmlhttp.responseText=="OK")
+			    	{
+			    		document.getElementById("retargetnameerror").style.display="none";
+			    		validatelistname=1;
+			    		//alert("returned");
+			    		document.forms[0].submit();
+			    	}
+			    	else
+			    	{
+			    		document.getElementById("retargetnameerror").style.display="block";
+					document.getElementById("retargetnameerror").innerHTML="Retarget name not available!";
+					validatelistname=0; ;
+					return false;
+			    	
+			    	}
+			    }
+			  }
+			xmlhttp.open("GET","http://54.225.91.236:3000/retargets/checklistnameavl?q="+str,true);
+			xmlhttp.send();
+			return false ;
+		 	
+		 }
+}

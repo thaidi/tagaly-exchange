@@ -1,0 +1,484 @@
+
+		<link href="/assets/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" media="all" href="/assets/daterangepicker-bs3.css" />
+		<script type="text/javascript" src="/assets/moment.js"></script>
+		<script type="text/javascript" src="/assets/daterangepicker.js"></script>		
+		<script src="/assets/pop-up.js"></script>
+		<script src="/assets/popup.js"></script>
+		<link rel="stylesheet" type="text/css" href="/assets/main.css">
+		<style>
+.nav.nav-tabs.sego.trust li {
+	width:23%;
+}
+			.pcontent.plain {
+				width:102%;margin-left:-40px;
+			}
+			.widget {
+				width:102%;
+			}
+.dropdown-menu.dates li{ padding:0px 10px; }
+			.nav-tabs 
+				{
+					border-bottom: 0px solid ;
+				}
+			.contentwrap 
+				{
+					max-width: 100%;
+				}
+			ul.balance li
+				{
+					border-left: 1px solid #E1E1E1;
+				}
+			ul.balance li:first-child 
+				{
+					border-left: medium none;
+				}	
+			ul.balance li
+				{
+					border-right: medium none;
+				}
+			ul.balance li:first-child 
+				{
+					border-right: medium none;
+				}
+			.contentwrap .content
+				{
+					padding-right: ;
+				}
+			.browsecontainer .bcpad 
+				{
+					margin: 0 0 0 0px;
+					padding: 20px;
+					width: 1018px;
+				}			
+			.myads-beta 
+				{
+					color: #666666;
+					font-size: 10px;
+					font-weight: normal;
+					padding-left: 4px;
+					position: relative;
+					top: -3px;
+				}
+			.pcontent
+				{
+				/*	width: 1182px;*/
+				}
+			
+			.span12
+				{
+				/*	width: 1210px; */
+					margin: 0px 35px;
+				}
+			.span9 
+				{
+					width: 935px;
+				}
+			.myads-title-bar-button 
+				{
+					font-weight: bolder;
+					padding: 0 7px 0 15px;
+				}
+			.gwt-Anchor 
+				{
+					display: inline;
+				}
+			#panel
+				{
+					display:none;
+				}
+			#panel1
+				{
+					display:none;
+				}
+			.caret 
+				{
+					vertical-align: middle;
+				}
+			.btn .caret 
+				{
+					margin-left: 0;
+					margin-top: 0px;
+				}
+		</style>
+		
+		<script>
+
+	//for light box
+	$(document).ready(function($) {
+	// DOM Ready
+		$(function() {
+			$('#datesel-popup').bind('click', function(e) {
+				// Prevents the default action to be triggered. 
+				e.preventDefault();
+				// Triggering bPopup when click event is fired		
+				$('#datesel').bPopup();
+				return false;
+			});
+		});
+	});
+	$(document).ready(function () {
+		$("#Clicks").click(function () {
+			$( ".pubdash" ).removeClass("active")
+			$(this).addClass("active")
+			document.getElementById("graphData").style.opacity = "0.2"
+			document.getElementById("graphData").src = "/publishergraph/adunit/Clicks";
+			document.getElementById("graphData").style.opacity = "1";
+				return false;
+		});
+	});
+	$(document).ready(function () {
+		$("#Impressions").click(function () {
+			$( ".pubdash" ).removeClass("active")
+			$(this).addClass("active")
+			document.getElementById("graphData").style.opacity = "0.2"
+			document.getElementById("graphData").src = "/publishergraph/adunit/Impressions";
+			document.getElementById("graphData").style.opacity = "1"
+				return false;
+		});
+	});
+	$(document).ready(function () {
+		$("#Conversions").click(function () {
+			$( ".pubdash" ).removeClass("active")
+			$(this).addClass("active")
+			document.getElementById("graphData").style.opacity = "0.2"
+			document.getElementById("graphData").src = "/publishergraph/adunit/Conversions";
+			document.getElementById("graphData").style.opacity = "1"
+				return false;
+		});
+	});
+	$(document).ready(function () {
+		$("#Cost").click(function () {
+			$( ".pubdash" ).removeClass("active")
+			$(this).addClass("active")
+			document.getElementById("graphData").style.opacity = "0.2"
+			document.getElementById("graphData").src = "/publishergraph/adunit/Cost";
+			document.getElementById("graphData").style.opacity = "1"
+				return false;
+		});
+	});
+	$(document).ready(function () {
+		$(".dropdown-menu li a").click(function () {
+			var value = $(this).attr('id');
+			var hostname = "http://"+window.location.hostname+":3000/preview/setdates";
+			$.ajax({
+				type: "GET",
+				url: hostname,
+				data: "value=" + value,
+				success: function(data){
+					location.reload()
+				}
+			});
+		});
+		$("#gofordate").click(function () {
+			var fromDate = document.getElementById("startdate").value;
+			var toDate = document.getElementById("enddate").value;
+			var hostname = "http://"+window.location.hostname+":3000/preview/setdates";
+			$.ajax({
+				type: "GET",
+				url: hostname,
+				data: "fromDate=" + fromDate + "&toDate=" + toDate + "&value=14",
+				success: function(data){
+					location.reload()
+				}
+			});
+		});
+	});
+		</script>
+   <!--
+<div style="margin-bottom:0;margin-top:10px;padding-bottom:0; width: 98%; margin-left: 40px;" class="page-header clearfix">     
+			<h2 style="margin-bottom:0;margin-top:0;height:32px;">
+				<ul style="float:right" class="nav nav-pills dash campaign-selector">
+				<li class="dropdown " style='width:250px;'>
+						<a data-toggle="dropdown" style="color:#444;font-size:18px;font-weight:normal;line-height:26px;padding:5px 15px;height:36px;" class="dropdown-toggle btn" href="">
+							<div class="selected-campaign" style='float:right;width:100%'>
+								<i style="margin-top:4px;" class="icon-time"></i>
+		<div style='float:right'><b style="margin-top:12px;" class="caret"></b></div>
+		<div style='float:right;font-size:15px'><span class="campaign-name" ><%  %></span></div>
+		<div style='float:left;font-size:8px;margin-top:-10px;'>( <%=  %> To <%=  %> )</div>
+							</div>
+						</a>
+						<ul class="dropdown-menu dates" style='float:right;width:250px;'>
+							<li role="presentation">
+								<a href='#'><div id="datesel-popup" class="datesel">Custom Date</div></a>
+							</li>
+							<li role="presentation" class="divider"></li>
+							<li role="presentation"><a href='#' id='1'> Today</a></li>
+							<li role="presentation"><a href='#' id='2'> Yesterday</a></li>
+							<li role="presentation"><a href='#' id='3'> This Week(Sun - Today)</a></li>
+							<li role="presentation"><a href='#' id='4'> This Week(Mon - Today)</a></li>
+							<li role="presentation"><a href='#' id='5'> Last 7 Days</a></li>
+							<li role="presentation"><a href='#' id='6'> Last Week(Sun - Sat)</a></li>
+							<li role="presentation"><a href='#' id='7'> Last Week(Mon - Sun)</a></li>
+							<li role="presentation"><a href='#' id='8'> Last Business week(Mon - Fri)</a></li>
+							<li role="presentation"><a href='#' id='9'> Last 14 Days</a></li>
+							<li role="presentation"><a href='#' id='10'> This Month</a></li>
+							<li role="presentation"><a href='#' id='11'> Last 30 Days</a></li>
+							<li role="presentation"><a href='#' id='12'> Last Month</a></li>
+							<li role="presentation"><a href='#' id='13'> All time</a></li>
+						</ul>
+					</li>
+				
+				</ul>			  
+			</h2>    
+		</div>
+-->
+<div class="well" style='background-color:#FFF;border:none;border-radius:0px;'>
+		   <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+				<i class="glyphicon glyphicon-calendar icon-calendar icon-large"></i>
+				<span></span> <b style="vertical-align: middle;" class="caret"></b>
+		   </div>
+	<script type="text/javascript">
+			    $(document).ready(function()  {
+						jsStartDate = "<%= session[:startdate] %>";
+						jsEndDate = "<%= session[:enddate] %>";
+						var monthsStr = {"01":"January", "02":"February", "03":"March", "04":"April", "05":"May", "06":"June", "07":"July", "08":"August", "09":"September", "10":"October", "11":"November", "12":"December" };
+						syy = jsStartDate.substr(0,4);
+						smm = jsStartDate.substr(5,2);
+						sdd = jsStartDate.substr(8,2);
+						eyy = jsEndDate.substr(0,4);
+						emm = jsEndDate.substr(5,2);
+						edd = jsEndDate.substr(8,2);
+						var setStartDate = new Date();
+						var setEndDate = new Date();
+						setStartDate.setDate(sdd);
+						setStartDate.setMonth(smm -1);
+						setStartDate.setYear(syy);
+						setEndDate.setDate(edd);
+						setEndDate.setMonth(emm -1);
+						setEndDate.setYear(eyy);
+						var today = new Date();
+						var dd = today.getDate();
+						var mm = today.getMonth()+1;
+						var yyyy = today.getFullYear();
+						var alltoget = yyyy+"-"+mm+"-"+dd;
+					$('#reportrange').daterangepicker(
+						{
+							startDate: setStartDate,
+							endDate:  setEndDate,
+							minDate: "2012-01-01",
+							maxDate: '2014-12-31',
+							dateLimit: { days: 60 },
+							showDropdowns: true,
+							showWeekNumbers: true,
+							timePicker: false,
+							timePickerIncrement: 1,
+							timePicker12Hour: true,
+							ranges: {
+							   'Today': [moment(), moment()],
+							   'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+							   'Last 7 Days': [moment().subtract('days', 6), moment()],
+							   'Last 30 Days': [moment().subtract('days', 29), moment()],
+							   'This Month': [moment().startOf('month'), moment().endOf('month')],
+							   'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+						},
+						opens: 'left',
+						buttonClasses: ['btn btn-default'],
+						applyClass: 'btn-small btn-primary',
+						cancelClass: 'btn-small',
+						format: 'YYYY-MM-DD',
+						separator: ' to ',
+						locale: {
+							applyLabel: 'Submit',
+							fromLabel: 'From',
+							toLabel: 'To',
+							customRangeLabel: 'Custom Range',
+							daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr','Sa'],
+							monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+							firstDay: 1
+						}
+					 },
+					 function(start, end) {
+					  console.log("Callback has been called!");
+					  $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+					 }
+				  );
+				  //Set the initial state of the picker label
+
+				  $('#reportrange span').html(monthsStr[smm] + " "+ sdd + ", " + syy + " - " + monthsStr[emm] + " "+ edd + ", " + eyy);
+			   });
+			</script>
+</div>
+		<div class="span12">
+
+<% if @adunitsData['type'].present? %>
+<ul class="nav nav-tabs sego trust" style="text-align:left;  margin-left:-22px;margin-bottom:0px; width:100%">
+			<li id="Impressions" class="pubdash active" style="margin-left:20px;">
+				<a href="#tab1" data-toggle="tab">
+					<h2 id="stat-impression-total"><% if @adunitsData.present? %> <%= @adunitsData["totals"]["totImpressions"] %> <% else %> 0 <% end %></h2>
+					<h4><small><b>IMPRESSIONS SERVED</b></small></h4>
+					<div class="spark">
+						<div class="substat">
+							<div class="substat-head">eCPM</div>
+							<div class="substat-stat" id="stat-ecpm">---</div>
+						</div>
+						<div id="sparkline1" class="sparks"><canvas height="18" width="76" style="display: inline-block; width: 76px; height: 18px; vertical-align: top;"></canvas></div>
+					</div>
+				</a>
+			</li>
+			<li id="Clicks" class="pubdash" style="margin-left:0;">
+				<a href="#tab2" data-toggle="tab">
+					<h2 id="stat-click-total"><% if @adunitsData.present? %> <%= @adunitsData["totals"]["totClicks"] %> <% else %> 0 <% end %></h2>
+					<h4><small><b>CLICKS TO YOUR SITE</b></small></h4>
+					<div class="spark">
+						<div class="substat">
+							<div class="substat-head">CTR</div>
+							<div class="substat-stat" id="stat-ctr">---</div>
+						</div>
+						<div id="sparkline2" class="sparks">
+							<canvas height="18" width="76" style="display: inline-block; width: 76px; height: 18px; vertical-align: top;"></canvas>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li id="Conversions" class="pubdash" style="margin-left:0;">
+				<a href="#tab4" data-toggle="tab">
+					<h2 id="stat-conversion-total"><% if @adunitsData.present? %> <%= @adunitsData["totals"]["totConversions"] %> <% else %> 0 <% end %></h2>
+					<h4><small><b>CONVERSIONS</b> </small></h4>
+					<div class="spark">
+						<div class="substat">
+							<div class="substat-head">Conv. Value</div>
+							<div data-original-title="Post-Click: $0.00 | Post-View: $0.00" class="substat-stat" id="stat-revenue-total">$0.00</div>
+						</div>
+						<div id="sparkline4" class="sparks">
+							<canvas height="18" width="76" style="display: inline-block; width: 76px; height: 18px; vertical-align: top;"></canvas>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li id="Cost" class="pubdash" style="margin-left:0;margin-right:0;">
+				<a href="#tab3" data-toggle="tab">
+					<h2 id="stat-cost-total">$<% if @adunitsData.present? %> <%= @adunitsData["totals"]["totCost"] %> <% else %> 0 <% end %></h2>
+					<h4><small><b>COST</b></small></h4>
+					<div class="spark">
+						<div class="substat">
+							<div class="substat-head">eCPA</div>
+							<div class="substat-stat" id="stat-ecpa">---</div>
+						</div>
+						<div id="sparkline3" class="sparks">
+							<canvas height="18" width="76" style="display: inline-block; width: 76px; height: 18px; vertical-align: top;"></canvas>
+						</div>
+					</div>
+				</a>
+			</li>
+		</ul>
+ <iframe src="/publishergraph/<%= params[:id] %>/Impressions" id='graphData' style="width:102.5%; border: 1px solid #C7C7C7;  border-radius: 0 0 7px 7px; margin-left:-2px; height:320px;"></iframe>
+<% else %>
+<!--	<div style="width:102.5%; border: 1px solid #C7C7C7;margin-left:-5px;font-weight:bold;font-size:11px;">Graph data is empty, please add ad placements for your site.</div>-->
+<div style="width:102.5%;">
+<table id="dashboard-campaigns-table" class="table table-striped table-bordered summary-table sortable" style="margin-bottom:0;">
+	<tfoot><tr> <td>Graph data is empty, please add ad placements for your site.</td> </tr></tfoot>
+</table>
+</div>
+<% end %>
+</div>
+	<div class="span12">
+			<div class="row" style="margin-left: 0px;">
+				<div class="span12" style='width:98%'>
+					<div class="pcontent plain"> 
+						<div class="row">
+							<div class="span9">
+								<div class="widget" style='width:100%'>
+									<div class="widget-content">
+										<div class="">
+											<div class="btn-group pull-right" style="margin-top:6px;">
+												<a data-original-title="Export dashboard data filtered using the global settings above." class="btn dropdown-toggle" style="color:#333;" data-toggle="dropdown" href="#" rel="tooltip">
+													<i class="icon-th" style="margin-top:2px;color:#333;"></i> Download CSV Reports
+													<span class="caret"></span>
+												</a>
+												<ul class="dropdown-menu csv-export-links">
+													<li><a href="/reports/publisher/<%= params[:id] %>/export"><i class="icon-list-alt"></i> Download by Date</a></li>
+												</ul>
+											</div>										   
+										</div>
+										<div style="margin-top: 15px; width: 905px; margin-left: 0px;" class="span12">
+			<div class="tabbable widget">
+				<div style="border-bottom:0;width:98%" class="widget-header ">				
+					<ul style="padding-left:15px;margin-top:5px;" class="nav nav-tabs">
+						<li class="active">
+<%
+	rTypes = {"adUnit"=>"Ad Placement", "adSize"=>"Ad Size", "adType"=>"Ad Type", "siteId"=>"Site", "countries"=>"Countries Type", "deviceType"=>"Device Type"}
+	tableNameValues = {"adUnit"=>"Ad Placement Name", "adSize"=>"Ad Size", "adType"=>"Ad Type", "siteId"=>"Site Name", "countries"=>"Countries Type", "deviceType"=>"Device Type"}
+%>
+							<a class="table-tab-toggle" data-toggle="tab" href="#"><i class="icon-flag"></i> <%= rTypes["#{params[:id]}"] %> details</a>
+						</li>
+					</ul>
+				</div>
+				<div style="border-bottom-left-radius:5px;border-bottom-right-radius:5px;width: 873px;" class="tab-content widget-content stattables"> 
+					<div data-url="" id="" class="tab-pane active loaded">
+						<table style="margin-bottom:0;" class="table table-striped table-bordered summary-table sortable" id="dashboard-campaigns-table">
+							<thead class="widget-header">
+								<tr>
+									<th style="padding-left:25px;" rel="tooltip" data-original-title="Campaign name"><%= tableNameValues["#{params[:id]}"] %> </th>
+									<th rel="tooltip" data-original-title="Total impressions">Impr.</th>
+									<th rel="tooltip" data-original-title="Total clicks">Clicks</th>
+									<th rel="tooltip" data-original-title="Click-through rate">CTR</th>
+									<th rel="tooltip" data-original-title="Cost per thousand impressions">CPM</th>
+									<th rel="tooltip" data-original-title="Cost per click">CPC</th>
+									<th rel="tooltip" data-original-title="Blended cost per acquisition">CPA</th>
+									<th rel="tooltip" data-original-title="Total conversions">Conv.</th>
+									<th rel="tooltip" data-original-title="Total spend">Cost</th>
+								</tr>
+							</thead>
+							<tbody>
+<% if @adunitsData['type'].present? %>
+								<% @adunitsData['type'].each do |key,adunits| %>
+								<tr>
+									<td class="tbllft" >
+										<%
+											if params[:id] == "siteId" 
+												@sites.each do |site| 
+													if key.to_i == site.id.to_i
+										%>
+														<%= site.website_title %>		
+										<%
+													end 
+												end
+											else
+										%>
+											<%= key %>
+										<% end %>
+									</td>
+									<td> <%= adunits["totImpressions"] %> </td>									
+									<td> <%= adunits["totClicks"] %> </td>
+									<td> <%= adunits["totCTR"] %> </td>
+									<td> <%= adunits["totCPM"] %> </td>
+									<td> <%= adunits["totCPC"] %> </td>
+									<td> <%= adunits["totCPA"] %> </td>
+									<td><%= adunits["totConversions"] %></td>
+									<td><%= adunits["totCost"] %></td>
+								</tr>
+								<% end %>
+<% end %>
+							</tbody>
+<tfoot>
+<% if @adunitsData["totals"].present? %>
+								<tr>
+									<td class="tbllft" > Totals </td>
+									<td> <%= @adunitsData["totals"]["totImpressions"] %> </td>									
+									<td> <%= @adunitsData["totals"]["totClicks"] %> </td>
+									<td> <%= @adunitsData["totals"]["totCTR"] %> </td>
+									<td> <%= @adunitsData["totals"]["totCPM"] %> </td>
+									<td> <%= @adunitsData["totals"]["totCPC"] %> </td>
+									<td> <%= @adunitsData["totals"]["totCPA"] %> </td>
+									<td> <%= @adunitsData["totals"]["totConversions"] %></td>
+									<td> <%= @adunitsData["totals"]["totCost"] %></td>
+								</tr>
+<% else %>
+	<tr> <td>There is no data, Please add ad placements for your site.</td> </tr>
+<% end %>
+</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+										<br>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>

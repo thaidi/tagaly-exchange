@@ -1,0 +1,169 @@
+<script type="text/javascript">
+	function approveAd(id,divId){
+		loadingImage();
+		$.ajax({
+			type: "GET",
+			url: "/placements/adApproval",
+			data: "adId=" + id + "&status=Approved",
+			success: function(data){
+				setTimeout( function() {
+					closeImage();
+					$("."+divId).parent().parent().css("background-color","#DFF0D8");
+					$("."+divId).html("Order Approved");
+				}, 2000);
+			}
+		});
+	}
+	function rejectAd(id,divId){
+		loadingImage();
+		$.ajax({
+			type: "GET",
+			url: "/placements/adApproval",
+			data: "adId=" + id + "&status=Rejected",
+			success: function(data){
+				setTimeout( function() {
+					closeImage();
+					$("."+divId).parent().parent().css("background-color","#F2DEDE");
+					$("."+divId).html("Order Rejected");
+				}, 2000);
+			}
+		});
+	}
+	function closeImage(){
+		$(".block_page").remove();
+	}
+	function loadingImage(){
+		bodyHeight = $("body").height();
+		$('body').append("<div class='block_page' style='min-height:100%;position:absolute;top:0;left:0;height:"+ bodyHeight +"px;width:100%;z-index:10;background-color :rgba(0,0,0,0.6);'></div>");
+		var pop_up = $("<div class='modal_box' style='position:absolute;left: 48%;top: 250px;z-index:50;'><img src='http://www.jlg.com/images/layout/loadingGif.gif' style='width:80px;height:80px;'/></div>");
+		$(pop_up).appendTo('.block_page');
+	}
+	$(document).ready(function () {
+        $('.dropdown-toggle').dropdown(); 
+	});
+
+	$( document.body ).on( 'click', '.dropdown-menu li', function( event ) {
+
+	   var $target = $( event.currentTarget );
+	 
+	   $target.closest( '.btn-group' )
+	      .find( '[data-bind="label"]' ).text( $target.text() )
+	         .end()
+	      .children( '.dropdown-toggle' ).dropdown( 'toggle' );
+	 
+	   return false;
+	 
+	});
+/*
+	$('input[type="checkbox"].style3').checkbox({
+	    buttonStyle: 'btn-danger',
+		buttonStyleChecked: 'btn-success',
+	    checkedClass: 'icon-check',
+	    uncheckedClass: 'icon-check-empty'
+	});
+*/
+</script> 
+<style>
+	.span12 {
+		width:80%;
+	}
+</style>
+<%= csrf_meta_tag %>
+<div class="container main">
+  <div class="row">
+    <div class="span12">
+      <div class="pcontent plain" style="width:100%;background:none;border-top:none;">
+        <div class="row">
+          <div class="span9" style="width:96%;">
+            <div class="widget" style='overflow:inherit;'>
+              <div class="widget-header">
+                <h3>
+                <i class="icon-hdd" style="margin-top:1px;"></i> Your Orders
+                <small>Create new placements to manage orders from new clients <!-- or businesses-->.</small>
+                <div style="margin-right:20px;display:none;" class="btn-group pull-right">
+                  <a class="btn active" href=""><i class="icon-list"></i></a>
+                  <a class="btn" href=""><i class="icon-th"></i></a>
+                </div> 
+                </h3>
+              </div>
+              <div class="widget-content">
+								<div style="margin-bottom:10px;" class="btn-group pull-right">
+									<a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+										<i class="icon-globe"></i>&nbsp; <%= @type %> <span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu">
+										<li><a href="/adunits/orderapproval?type=All" onclick="javascript:window.location.href = '/adunits/orderapproval?type=All';"><i class="icon-globe"></i> All </a></li>
+										<li><a href="/adunits/orderapproval?type=PendingApproval" onclick="javascript:window.location.href = '/adunits/orderapproval?type=PendingApproval';"><i class="icon-question-sign"></i> Pending Approval </a></li>
+										<li><a href="/adunits/orderapproval?type=Approved" onclick="javascript:window.location.href = '/adunits/orderapproval?type=Approved';"><i class="icon-ok"></i> Approved </a></li>
+										<li><a href="/adunits/orderapproval?type=Rejected" onclick="javascript:window.location.href = '/adunits/orderapproval?type=Rejected';"><i class="icon-remove"></i> Rejected </a></li>
+									</ul>
+								</div>
+								<table class="table table-bordered sortable" id="conversions-table">
+									<thead class="widget-header">
+										<tr>
+											<th>Advertiser Name</th>
+											<th>Size of Placement</th>
+											<th>Start Time</th>
+											<th>End Time</th>
+											<th>Bid Type</th>
+											<th>Price</th>
+											<th>Volume</th>
+											<th width="18%" class="sorttable_nosort">Status</th>
+										</tr>
+									</thead>
+									<tbody>
+									<%
+										@adunitsData.each do |key,ad|
+										approvalStatus = ad["advertisementDetails"]["approvalStatus"]
+										if approvalStatus == "Approved"
+											bgColor = "#DFF0D8"
+										elsif approvalStatus == "Rejected"
+											bgColor = "#F2DEDE"
+										elsif approvalStatus == "PendingApproval"
+											bgColor = "#FCF8E3"
+										else
+											bgColor = ""
+										end
+									%>
+										<tr style="background-color:<%= bgColor %>">
+											<% siteId = ad["advertisementDetails"]["siteId"].to_i %>
+											<% adunitId = ad["advertisementDetails"]["adUnitId"].to_i %>
+											<% adId = ad["advertisementDetails"]["adId"].to_i %>
+											<td> <a href='<%= $sitesDetails[siteId]["url"] %>' target="_blank"><%= $sitesDetails[siteId]["name"] %> </a></td>
+											<td><%= ad["advertisementDetails"]["adSize"] %> </td>
+											<td><%= ad["campaignDetails"]["campaignStartDate"] %> </td>
+											<td><%= ad["campaignDetails"]["campaignEndDate"] %> </td>
+											<td><%= ad["campaignDetails"]["bidType"] %> </td>
+											<td><%= ad["campaignDetails"]["price"] %> </td>
+											<td><%= ad["campaignDetails"]["volume"] %> </td>
+											<td>
+												<%  if approvalStatus == "Approved" %>
+													<div> Order Approved </div>
+												<% elsif approvalStatus == "Rejected" %>
+													<div> Order Rejected </div>
+												<% elsif approvalStatus == "PendingApproval" %>
+												<div class="btn-group btn-input clearfix div<%= adId %>" style="width: 100%;">
+														<button type="button" class="btn btn-default dropdown-toggle btn-success active" data-toggle="dropdown">
+													 		<span data-bind="label"> Pending Approval </span> <span class="caret"></span>
+												 	</button>
+														<ul class="dropdown-menu" role="menu">
+															<li><a href="#" onclick="approveAd('<%= adId %>' , 'div<%= adId %>')">Approve</a></li>
+															<li><a href="#" onclick="rejectAd('<%= adId %>' , 'div<%= adId %>')">Reject</a></li>
+														</ul>
+												</div>
+												<% else %>
+													<div>--</div>
+												<% end %>
+											</td>
+										</tr>
+										<% end %>
+									</tbody>
+								</table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

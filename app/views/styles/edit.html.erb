@@ -1,0 +1,225 @@
+<link rel="stylesheet" href="/assets/bsa.min.css" type="text/css" />
+<link rel="stylesheet" href="/assets/styles.css" type="text/css" />
+<!--<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>-->
+<!--<script src="/assets/validations.js"></script>-->
+<style>
+	.template-placeholder { height:100px; margin:5px;}
+	.layout-type-class { float:left; padding:3px; margin:5px;}
+	.layout-type-class:hover { border: 3px solid #DDDDDD; }
+	.selected { border: 3px solid #000000; }
+	.selected:hover { border: 3px solid #000000; }
+</style>
+
+<style>
+<% @fonts.each do |font| %>
+	@font-face {
+		font-family: <%= font.name %>;
+		src: url(/fonts/<%= font.url %>);
+	}
+<% end %>
+</style>
+<script src="/assets/styles.js"></script>
+<script>
+	
+	$( document ).ready(function() {
+		var stylenames = new Array();
+		<%
+			if @allstyles.present?
+				@allstyles.each do |key, value|
+					if Rack::Utils.unescape(@allstyles[key]["name"]) != @parsed["name"]
+				%>
+						stylenames.push('<%= Rack::Utils.unescape(@allstyles[key]["name"]) %>');
+				<%
+					end
+				end
+			end
+		%>
+		$( "#submit" ).click(function() {
+			returnvalue = stylesValidation(stylenames);
+			if(returnvalue ==  false){ return false; }
+		});
+		$( "#submit_style" ).click(function() {
+			var stylename = (document.getElementById("stylename_nativead").value).trim();
+			if(stylename.length == 0) {
+				document.getElementById("nameerror_nativead").style.display = 'block';
+				document.getElementById("nameerror_nativead").style.marginLeft = "3px";
+				document.getElementById("nameerror_nativead").innerHTML = 'Name field cannot be blank';
+				return false;
+			}
+		});
+	});
+
+	$(document).ready( function() {
+		changeAdDisplay();
+		$(".color").change(function(){
+			changeAdDisplay();
+		})
+		$("#stylefontfamily").change(function(){
+			changeAdDisplay();
+		});
+		$( "input:radio[name='style[cornerstyle]']" ).change(function() {
+			changeAdDisplay();
+		});
+	});
+	function changeAdDisplay() {
+		var styleborder = $("#styleborder").val();
+		var styletitle = $("#styletitle").val();
+		var stylebackground = $("#stylebackground").val();
+		var styletext = $("#styletext").val();
+		var styleurl = $("#styleurl").val();
+		var stylefontfamily = $("#stylefontfamily").val();
+		var cornerstyle = $("input:radio[name='style[cornerstyle]']:checked").val();
+		$("#preview").css("border-radius",cornerstyle);
+		$("#preview").css("color","#"+styletext);
+		$("#preview").css("border","1px solid #"+styleborder);
+		$("#preview").css("background-color","#"+stylebackground);
+		$("#preview").css("font-family" , stylefontfamily);
+		$("#Urlpreview").css("color","#"+styleurl);
+		$("#headlinepreview").css("color","#"+styletitle);
+	}
+	
+</script>
+<script>
+
+</script>
+<div style="width:250px;margin:0 auto;">
+<input type='hidden' id='bordervalue' value='0px'/>
+</div>
+<div class="span12">
+<section>
+        <header>
+            <h2>Style Generator</h2>
+        </header>
+	<div align='center' style='color:#F4A460;font-weight:bold;font-size:14px;' class="div-textAds">
+<% if @parsed["styleType"] == 'textAd' %>
+	<form action="" class="form standard" method='post'>
+				<table>	
+			<tr>
+				<td>
+			<label for="segment_name" class="control-label" > Style Name </label>  
+			<input type='text' value='<%= @parsed["name"] %>' size='30' id='stylename' name='style[name]' />
+			<div class="error" id="nameerror"></div>
+				</td>
+				<td>
+			<label for="segment_name" class="control-label" > Border </label>  
+			<input type='text' class='color' value='<%= @parsed["border"] %>' size='30' id='styleborder' name='style[border]' />
+			<div class="error" id="bordererror"></div>
+				</td>
+				<td>
+			<label for="segment_name" class="control-label" > Title </label>  
+			<input type='text' class='color' value='<%= @parsed["title"] %>' size='30' id='styletitle' name='style[title]' />
+			<div class="error" id="titleerror"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+			<label for="segment_name" class="control-label" > Background </label>  
+			<input type='text' class='color' value='<%= @parsed["background"] %>' size='30' id='stylebackground' name='style[background]' />
+			<div class="error" id="backgrounderror"></div>
+				</td>
+				<td>
+			<label for="segment_name" class="control-label" > Text </label>  
+			<input type='text' class='color' value='<%= @parsed["text"] %>' size='30' id='styletext' name='style[text]' />
+			<div class="error" id="texterror"></div>
+				</td>
+				<td>
+			<label for="segment_name" class="control-label" > Url </label>  
+			<input type='text' class='color' value='<%= @parsed["url"] %>' size='30' id='styleurl' name='style[url]' />
+			<div class="error" id="urlerror"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>          
+						           
+		    <label for="segment_name" class="control-label" > Corner Style </label>  
+			    <div style='margin:5px 0px'>
+				<div style='float:left;'>
+					<input type='radio' value='0px' name='style[cornerStyle]' <% if @parsed["cornerStyle"] == "0px" %><%= "checked" %><% end %>/>
+				</div>
+				<div style='border: 1px solid #000000;height:25px;width:80px;margin-left:18px'>
+				</div>
+				</div><div style='margin:5px 0px'>
+				<div style='float:left;'>
+					<input type='radio' value='6px' name='style[cornerStyle]' <% if @parsed["cornerStyle"] == "6px" %><%= "checked" %><% end %>/>
+				</div>
+				<div style='border: 1px solid #000000;height:25px;width:80px;border-radius:6px;margin-left:18px'>
+				</div>
+</div><div style='margin:5px 0px'>
+				<div style='float:left;'>
+					<input type='radio' value='10px' name='style[cornerStyle]' <% if @parsed["cornerStyle"] == "10px" %><%= "checked" %><% end %>/>
+				</div>
+				<div style='border: 1px solid #000000;height:25px;width:80px;border-radius:6px;margin-left:18px'>
+				</div>
+</div>
+				</td>
+				<td>	
+		<label for="segment_name" class="control-label" > Font Family </label> 
+			<select name='style[fontfamily]' id='stylefontfamily'>
+			  <option value="Default font family">Default font family</option>
+			  <option value="Arial">Arial</option>
+			  <option value="Times">Times</option>
+			  <option value="Verdana">Verdana</option>
+			  <option value="Open Sans">Open Sans</option>
+			  <option value="Open Sans Light">Open Sans Light</option>
+			  <option value="Roboto Light">Roboto Light</option>
+			  <option value="Ubuntu Light">Ubuntu Light</option>
+			  <option value="Lora">Lora</option>
+				<% if @fonts.length > 0 %>
+					<% @fonts.each do |font| %>
+						<option><%= font.name %></option>
+					<% end %>
+				<% end %>
+			</select>
+			<div class="error" id="fontfamilyerror"></div>
+				</td>
+			</tr>
+			<tr><td colspan='3'>
+                        <center>
+			<input type='hidden' value="<%= form_authenticity_token() %>" name='authenticity_token' />
+<input type='hidden' name='style[styletype]' value='textAd' />
+			<input type='submit' id='submit' name = "save" class="btn btn-primary btn-large" value='Submit'/>
+</center></td>
+			</tr>
+		</table>
+</form>
+<% end %>
+</section>
+<section>
+  <header> <h2>Design and Preview</h2> </header>
+	<div style='width:245px' class='textAds-preview'>
+		<div id='ppreview' style='margin:5px'>
+			<div id='preview' style="font-size: small; padding: 2px; margin-left: 30px; width: 240px; display: block;">
+				<div id='headlinepreview' style="font-size: medium;"><u>Sample HeadLine To Check</u></div>
+				<div id="Urlpreview" class="preview" style="font-size: small; margin-top: 2px;">www.example.com<b style='margin-left:5px;margin-top:6px' class="caret"></b></div>
+				<div id='description'>
+					<div id='namepreview' class='preview'>Description Line 1</div>
+					<div id='descriptionpreview' class='preview'>Description Line 2</div>
+				</div>
+				<div style='float:right;font-size:9px;color:grey;margin-top:-10px;'>Ads by Tagaly</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!--
+<section>
+        <header>
+            <h2>Preview</h2>
+        </header>
+
+<div style='width:245px' class='textAds-preview'>
+		<div id='ppreview' style='margin:5px'>
+	<div id='preview' style='font-size:18px;padding:2px;margin-left:30px;width:240px'>
+		<div id='headlinepreview' style='font-size:medium'><u>Sample HeadLine To Check</u></div>
+		<div id="Urlpreview" class="preview" style='font-size:small;margin-top:2px;'>www.example.com<b style='margin-left:5px;margin-top:6px' class="caret"></b></div>
+		<div id='description' style='font-size:small'>
+			<div id='namepreview' class='preview'>Description Line 1</div>
+			<div id='descriptionpreview' class='preview'>Description Line 2</div>
+		</div>
+		<div style='float:right;font-size:9px;color:grey;margin-top:-10px;'>Ads by Tagaly</div>
+	</div>
+		</div>
+</div>
+</section>
+-->
+</div>
+									</div>

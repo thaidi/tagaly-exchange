@@ -1,0 +1,34 @@
+<table class="table table-striped table-bordered sortable" id="conversions-table">
+      <thead class="widget-header">
+      	<tr>
+      		<th>Conversion Goal Name</th>
+      		<th>Created</th>
+      		<th>Type</th>
+      		<th>Target Text</th>
+      		<th>Last Fired <i rel="tooltip" class="icon-info-sign" data-original-title="Last time this conversion goal was triggered in or outside a campaign."></i></th>
+      	</tr>
+      </thead>
+      <tbody>
+        <% 
+        if @conversionsList.present?
+        @conversionsList.each do |key,conversion| %>
+      	<tr class="active">
+      		<td>
+         <a href=""><%= conversion['conversionName'] %></a>
+         
+      		</td>
+      		<td></td>
+      		<td><%= conversion['conversionType'] %></td>
+      		<td><%= conversion['conversionTypeValue'] %></td>
+      		<td>about 3 hours ago</td>
+      		
+      	</tr>
+      	<% end 
+      	else
+      	%>
+      	  <tr><td colspan='6'><p> Sorry, no conversions found yet! </p></td></tr>
+      	<%
+      	end
+      	%>
+      </tbody>
+   		</table>

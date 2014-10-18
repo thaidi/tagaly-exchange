@@ -1,0 +1,286 @@
+
+		<script src="/assets/jquery.reveal.js"  type="text/javascript"></script>
+		<link rel="stylesheet" href="/assets/reveal.css"/>
+		<link href="/assets/smaple.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+		<link rel="stylesheet" href="/assets/bsa.min.css" type="text/css" />
+		<link rel="stylesheet" href="/assets/adblock.css" type="text/css" />
+		<link rel="stylesheet" href="/assets/skinny.css" type="text/css" media="screen and (max-width: 1100px)" />
+		<script type="text/javascript" src="/assets/bootstrap-dropdown.js"></script>
+    
+		<script type="text/javascript">
+			window.myfunction = function (adunit,url) {
+				var myModalId = "#myModal" + adunit;
+				var myModelDiv = $(myModalId);
+				var aMyModalId = "#aMyModal" + adunit;
+				var cfId = "#cf" + adunit;
+				var revealModalBg = $(".reveal-modal-bg");
+				aMyModal = $(aMyModalId);
+				myModelDiv.css("visibility" , "hidden");
+				myModelDiv.children("iframe").attr("src" , "/campaigns/upload?id=" + adunit);
+				aMyModal.children("span").children("em").html("Edit Creative");
+				aMyModal.removeClass("green");
+				revealModalBg.css("display" , "none");
+				adsValue = $("#ads").val();
+				$(cfId).children(".cartbanner").children("img").attr("src","/uploads/"+url);
+				if(adsValue.indexOf(adunit) < 0) {
+					adsValue = adunit + "," + adsValue ;
+					$("#ads").val(adsValue);
+				}
+			}
+			$(document).ready(function () {
+            $('.dropdown-toggle').dropdown();
+            $(".removeicon").on("click",function(){
+								var id = this.id;
+								cfid = "cf" + id;
+								cfidDiv = $("#" + cfid);
+            		$.ajax({
+									type: "GET",
+									url: "/campaigns/deleteplacements",
+									data: "adunitdeleted=" + id ,
+									success: function(data) {
+										var distotalCost = document.getElementById("distotalCost").innerHTML.trim();
+										var adunitid = id;
+										var price = parseFloat(document.getElementById("price_"+id).innerHTML);
+										var qty = document.getElementById("qty_"+id).value;
+										var cost = price * qty;
+										var totalCost = parseFloat(distotalCost) - parseFloat(cost);
+										document.getElementById("distotalCost").innerHTML = totalCost.toFixed(2);
+										if (totalCost == 0) {
+											$("#emptycart").show();
+											$("#allcart").hide(); 
+										}
+										cfidDiv.parent().parent().remove();
+									}
+								});
+            });
+						$(".qty").on("change",function() {
+							var adunitid=this.id.slice(4,this.id.length);
+							var price=parseFloat(document.getElementById("price_"+adunitid).innerHTML);
+							var newCost=(parseFloat(this.value)*price);
+							var p=this.value
+							document.getElementById("cost_"+adunitid).innerHTML=(parseFloat(newCost)).toFixed(2);
+							var costs=document.getElementsByClassName("costs");
+							var totalcost=0;
+							for(var i=0 ;i<costs.length ; i++)
+							{
+								totalcost=parseFloat(totalcost) + parseFloat(costs[i].innerHTML);
+							}
+							document.getElementById("distotalCost").innerHTML=totalcost.toFixed(2);
+							document.getElementById("totalCost").value=totalcost.toFixed(2);
+/*
+							var hostname = "http://"+window.location.hostname+":3000/campaigns/uploadcreatives";
+						  $.ajax({
+								type: "GET",
+								url: hostname,
+								data: "setimpression=yes&adunitid=" + adunitid + "&impression="+p ,
+								success: function(data){
+								}
+							});
+*/
+						});
+			});
+		</script>    
+		<script>
+			function validateads()
+			{
+/*
+				if(document.getElementById("ads").value.trim()=="")
+				{
+					document.getElementById("campaignAlert").style.display = "inline";
+					return false ;
+				}
+				else
+				{
+*/
+					adunitids = document.getElementById("adunitids").value ;
+					adids = document.getElementById("ads").value ;
+					adUnitsArray = adunitids.split(",");
+					adidsArray = adids.split(",");
+					returnV = true;
+					$.each( adUnitsArray, function( index, value ){
+						if(value.trim() != "") {
+							errId = "error" + value
+							if( adidsArray.indexOf(value.trim()) < 0 ) {
+								document.getElementById(errId).style.display = "block";
+								returnV = false;
+							} else {
+								document.getElementById(errId).style.display = "none";
+							}
+						}
+					});
+					if(!returnV) {
+						// document.getElementById("campaignAlert").style.display = "inline";
+						return false;
+					}
+//				}
+			}
+		</script>
+		<script>
+			
+		</script>
+
+		<div id="realpage">
+			<div class="contentwrap cf full">
+				<div class="breathablewrap">
+					<div class="heading cf">
+						<div class="breadcrumbs"> 
+							<a href="/cart">Cart<strong></strong></a> <a class="off">View Cart</a>	
+						</div>
+						<div rel="View Cart | BuySellAds" id="realpagetitle"></div>
+							<span class="title bannersincart">You have <em><span id="nbanners"><!--<% @adunitsArr=$adunits.split(/,/) %>-->
+							<!--<%= @adunitsArr.count %>-->
+							</span> ads</em> in your cart</span>
+					</div>
+					
+					<div class="content nobg cf" >
+
+						<div class="pad cf">
+								<div style='color:red;display:none;' id='campaignAlert'><center> Please upload the creatives </center></div>
+							<ul class="progress cf" style="height: 61px;">
+								<li class="on"><a href="/campaigns/uploadcreatives"><span><strong><b>Step 1</b></strong>Add your ads<div class="arrow"></div></span></a></li>
+								<li class="off"><span><strong><b>Step 2</b></strong>Set the campaign details<div class="arrow"></div></span></li>
+								<li class="off"><span><strong><b>Step 3</b></strong>Select payment method &amp; confirm order<div class="arrow"></div></span></li>
+							</ul>
+
+							<!-- Empty cart -->
+								<div class="emptystate" id="emptycart" <% if $adunits=="" %> style="display: block;" <% else %> style="display:none;"<% end%>>
+									<div class="pad">
+										<h3>Your cart is empty!</h3>
+										<p>To put ads into your shopping cart, start by browsing through the <a href="/campaigns/adunits">Select Placements</a> section. If you need help selecting the best ad placements for your campaign, please let us know.</p>
+									</div><!-- END div.pad -->
+								</div>
+								<!-- Empty cart -->
+							<form action="campaignsettings" method="POST">
+						<% if $adunits.present? %>
+							<div id="allcart" <% if $adunits=="" %> style="display: none;" <% else %> style="display:block;"<% end%>>
+								
+								<table class="data">
+									<tr>
+										<th scope="col"><div>Placement</div></th>
+										<th class="restrict" scope="col"><div>Details</div></th>
+										<th class="restrict" scope="col"><div>Est. Impressions</div></th>
+										<th class="restrict" scope="col"><div>Qty</div></th>
+										<th class="restrict" scope="col"><div>Cost</div></th>
+										<th scope="col"><div>&nbsp;</div></th>
+									</tr>
+										<% $adunits.each do |eachAdunit| %>
+											<tr>
+													<td>
+														<div class="cf" id='cf<%= eachAdunit %>' >
+															<span class="cartbanner">
+															<% if $banneradDetails[eachAdunit].present? %>
+																<img src="/uploads/<%= $banneradDetails[eachAdunit]['imgUrl'] %>">
+															<% else %>
+																<img src="/assets/nocreative.png">
+															<% end %>
+															</span>
+															<a class="title" title="<%= @adunitsData[eachAdunit]['adUnitName'] %>" href=""><%= @adunitsData[eachAdunit]['adUnitName'] %></a>
+																	<%= @adunitsData[eachAdunit]['description'] %>							
+														</div>
+													</td>
+													<td>
+														<div>
+															<span class="location"><%= @adunitsData[eachAdunit]['format'] %></span><br> <span id="price_<%= eachAdunit %>"><%= @adunitsData[eachAdunit]['price'] %></span> per 1K Imps
+															<input type='hidden' name="price[<%= eachAdunit %>]" value="<%= @adunitsData[eachAdunit]['price'] %>" />
+														</div>
+													</td>
+													<td>
+														<div> - </div>
+													</td>
+													<td>
+														<%
+															if session[:imps].present?
+																@imps=session[:imps]
+															else
+																@imps=""
+															end
+														%>
+															<select name="qty[<%= eachAdunit %>]" class="qty" id="qty_<%= eachAdunit %>" name="qty">
+																<option value="50" <% if session[:imps].present? %><% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]=="50" %> Selected <% end %><% end %>>50,000</option>
+																<option value="60" <% if session[:imps].present? %><% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]=="60" %> Selected <% end %><% end %>>60,000</option>
+																<option value="70" <% if session[:imps].present? %><% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]=="70" %> Selected <% end %><% end %>>70,000</option>
+																<option value="80" <% if session[:imps].present? %><% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]=="80" %> Selected <% end %><% end %>>80,000</option>
+																<option value="90" <% if session[:imps].present? %><% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]=="90" %> Selected <% end %><% end %>>90,000</option>
+																<option value="100" <% if session[:imps].present? %><% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]=="100" %> Selected <% end %><% end %>>100,000</option>
+														
+															</select> impressions
+													</td>
+													<td>
+										<% if session[:imps].present? %>
+											<% if @imps.has_key?(eachAdunit) && @imps[eachAdunit]!="" 
+													cost=(@adunitsData[eachAdunit]['price'].to_f * @imps[eachAdunit].to_f)
+											else
+												cost=@adunitsData[eachAdunit]['price'].to_f * 50 
+											end
+											%>
+										<% 
+										else
+											cost = @adunitsData[eachAdunit]['price'].to_f * 50 
+										end
+										%>
+										<% 
+											@totalCost=@totalCost.to_f + cost.to_f
+										%>
+										 $<span id="cost_<%= eachAdunit %>" class="costs"><%= number_with_precision(cost, precision: 2) %> </span> </td>
+													</td>
+													<td>
+														<div class="cf">
+															<% if $banneradDetails[eachAdunit].present? %>
+																<a class="button small" id="aMyModal<%= eachAdunit %>" style="background-color:#53951D;" title="Upload banner for: Premium Rectangle" data-animation="fade" data-reveal-id="myModal<%= eachAdunit %>" href="#" ><span><em>Edit Creative</em></span></a>
+															<% else %>
+																<a class="button green small" id="aMyModal<%= eachAdunit %>" style="background-color:#53951D;" title="Upload banner for: Premium Rectangle" data-animation="fade" data-reveal-id="myModal<%= eachAdunit %>" href="#" ><span><em>Upload Creative</em></span></a>
+															<% end %>
+															<a id="<%= eachAdunit %>" class="removeicon" href="javascript:void(0)"><span>X</span></a>
+															<div class="error" id="error<%= eachAdunit %>" style="display: none; margin-top: 36px; width: 145px; padding: 5px;">Please Upload Creative</div>
+														</div>
+													</td>
+											</tr>
+										<% end %>
+								</table>
+								<span class="carttotal">Total: <span class="cart-total">$<span id="distotalCost"><%= number_with_precision(@totalCost, precision: 2) %></span></span></span>
+
+								<div class="fright sright alt cf">
+<%
+	allAunits = ""
+	uploadedAunits = ""
+#=begin
+	$adunits.each do |adunitId|
+		allAunits = adunitId.to_s + "," + allAunits.to_s
+		if $banneradDetails[adunitId].present?
+			uploadedAunits = adunitId.to_s + "," + uploadedAunits.to_s
+		end
+	end
+#=end
+%>
+									<input type="hidden" name="totalCost" id="totalCost" value="<%= number_with_precision(@totalCost, precision: 2) %>"/>
+									<input type="hidden" id="ads" name="ads" value="<%= uploadedAunits %>"/>
+									<input type="hidden" name="adunits" id="adunitids" value="<%= allAunits %>"/>
+									<input type="hidden" name="adids" id="adids" value="<%= session[:ads] %>"/>
+									<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token() %>" />
+									<button type="submit" onclick="return validateads();" style="background-color:#53951D;" class="button green logmein center tip"><span><em>Step 2: Setting Campaign Details »</em></span></button>
+								</div>	
+									<% else %>
+							<div id="emptycart" class="emptystate">
+								<div class="pad">
+									<h3>Your cart is empty!</h3>
+									<p>To put ads into your shopping cart, start by browsing through the <a href="/campaigns/adunits">Buy Ads</a> section. If you need help selecting the best ad placements for your campaign, please let us know.</p>
+								</div><!-- END div.pad -->
+							</div><!-- END div.emptystate -->
+									<% end %>
+								</form>
+							</div>				
+						</div><!-- END div.pad -->
+					</div>
+				</div>
+			</div> <!-- END div#realpage -->
+		</div>
+
+
+
+<% $adunits.each do |adunitId|%>
+		<div id="myModal<%= adunitId %>" class="reveal-modal" style="width:1150px;height:635px">
+			<a class="close-reveal-modal" id="closeadFrame">&#215;</a>
+			<iframe src="/campaigns/upload?id=<%= adunitId %>" id="adnewads" width="1150px" frameBorder="0" height="100%" ></iframe>
+		</div>
+<% end %>

@@ -1,0 +1,374 @@
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#selectedAdunits").val("");
+		$( "#cancel" ).live( "click", function() {
+			i = 0;
+			$(".adunitscheckbox").each(function(){
+				if (this.checked == true) {
+					adunitId = $(this).attr("id");
+					adunitId = adunitId.substr(6)
+					i++;
+					removePlacement(adunitId)
+				}
+			});
+			$("#placementsBrowse").hide();
+			$("#sitesBrowse").show();
+		});
+		$( "#next" ).live( "click", function() {
+			$("#placementsBrowse").hide();
+			$("#sitesBrowse").show();
+		});
+		$( "#placements" ).live( "click", function() {
+			$("#placementsBrowse").hide();
+			$("#sitesBrowse").show();
+		});
+		$(".channels").click(function(){
+			$("#placementsBrowse").hide();
+			$("#sitesBrowse").show();
+			channelDivs = $(".channels");
+			channelDivs.each(function(){
+				$(this).parent().removeClass("on");
+			});
+			$(this).parent().addClass("on");
+			channelIdValue = $(this).attr("id");
+			hyphenIndex = channelIdValue.indexOf("-");
+			hyphenedIndex = hyphenIndex + 1;
+			channelId = channelIdValue.substr(hyphenedIndex)
+			placementType = channelIdValue.substr(0 , hyphenIndex)
+/*
+			$('#myModaladunit').hide('slide', { direction: 'left' } , 700);
+			$('#proceed').show('slide', { direction: 'left' } , 700);
+			$('#browse').show('slide', { direction: 'left' } , 700);
+*/
+			var hostname = "/preview/getsitesbychannels";
+			$.ajax({
+				type: "GET",
+				url: hostname,
+				data: "channelId=" + channelId + "&placementType=" + placementType, 
+				success: function(data){
+					data = data.replace(/&quot;/ig, '"');
+					var array = JSON.parse(data);
+					numOfTds = 1;
+					appendData = "";
+					arraylength = array.length;
+					i=0;
+					$.each( array, function( key, value ) {
+						i++;
+						if(numOfTds == 1) {
+							appendData = appendData + "<tr>";
+						}
+						website_title = value["website_title"];
+						website_url = value["website_url"];
+						avg_mon_imps = value["avg_mon_imps"];
+						description = value["description"];
+						channel = value["channel"];
+						appendData = appendData + "<td class='sitetd'> <div class='sitetdDiv'> <div style='float:left;width:30px;margin:6px;' class='sitetdImage'> <img width='31px' height='28px' onerror=&quot;this.src='/assets/imagenotfound.jpeg'&quot; src='" + website_url + "/favicon.ico'> </div> <div align='center'> <a class='sitename'> " + website_title + " </a></div> <div align='center'>" + avg_mon_imps + " Impressions </div> </div> </td>";
+						numOfTds++;
+						if(numOfTds == 3 || i == arraylength) {
+							numOfTds = 1;
+							appendData = appendData + "</tr>";
+						}
+					});
+					if(arraylength == 0) { appendData = "<tr><td><center>There are no sites related to this channel. </center></td></tr>"; }
+					$("#placementSites").empty();
+					$("#placementSites").append(appendData);
+					tr = 0; td = 0;
+					$.each( array, function( key, value ) {
+						if(td >= 3) { tr++; td = 0; }
+						id = htmlspecialchars(value["id"]);
+						website_title = htmlspecialchars(value["website_title"]);
+						website_url = htmlspecialchars(value["website_url"]);
+						avg_mon_imps = htmlspecialchars(value["avg_mon_imps"]);
+						description = htmlspecialchars(value["description"]);
+						channel = value["channel"];
+						bing = 'getAdUnits("' + id + '","' + website_title + '","' + website_url + '","' + avg_mon_imps + '","' + description + '","' + placementType + '","' + channel + '","' + <% params[:id] %> +'");';
+
+$("#placementSites").children("tbody").children("tr:eq("+tr+")").children("td:eq("+td+")").children(".sitetdDiv").children("div:eq(1)").children("a").attr('onclick',bing);
+$("#placementSites").children("tbody").children("tr:eq("+tr+")").children("td:eq("+td+")").children(".sitetdDiv").children("div:eq(1)").children("a").attr('href',"javascript:void(0)");
+						td++;
+					});
+				}
+			});
+/**/
+		});
+	});
+
+	function getAdUnits(id, title , url , impressions , Description , placementType ,channel , campId) {
+		var hostname = "/preview/getAllPlacementsBySiteId";
+		$("#siteName").children("h3").html(title);
+		$("#siteUrl").html(url);
+		$("#siteImpressions").children("span").html(impressions);
+		$("#placementsBrowse").show();
+		$("#sitesBrowse").hide();
+		$.ajax({
+			type: "GET",
+			url: "/preview/getAllPlacementsBySiteId",
+			data: "siteId=" + id + "&placementType=" + placementType , "&campId=",
+			success: function(data){
+				// getselectPlacements = $("#getselectPlacements").val(); #98FB98
+				data = data.replace(/'/g, '"');
+				var placementsArray = JSON.parse(data);
+				$("#placementsDiv").children("table").children("tbody").empty();
+				selectedAdunits = $("#selectedAdunits").val();
+				$.each( placementsArray, function( key, value ) {
+					adunitname =  value["name"];
+					indexValue = selectedAdunits.indexOf(key);
+					cell = "<tr>";
+					cell = cell + "<td>" + value["name"] + "</td><td>" + value["format"] + "</td><td>" + impressions + "</td><td>" + value["price"] + "</td>";
+					if(indexValue > -1){
+						cell = cell + "<td><button id='adunit"+ key +"' class='btn btn-primary adunitscheckbox checked' onclick='checkAdPlacement(";
+						cell = cell + "\"" + channel + "\" , \"" + title + "\" , \"" + adunitname + "\" , \"" + key +"\");'> Remove From Cart </button></td>";
+					} else {
+						cell = cell + "<td><button id='adunit"+ key +"' class='btn btn-success adunitscheckbox' onclick='checkAdPlacement(";
+						cell = cell + "\"" + channel + "\" , \"" + title + "\" , \"" + adunitname + "\" , \"" + key +"\");'> Buy Now </button></td>";
+					}
+					cell = cell + "</tr>";
+					$("#placementsDiv").children("table").children("tbody").append(cell)
+				});
+			}
+		});
+		return false;
+	}
+	function checkAdPlacement(channel,title,adunitname, adunitId){
+		adunitDivId = "adunit" + adunitId;
+		$("#plaErr").hide();
+		$("#plaError").hide();
+		$("#" + adunitDivId).toggleClass("checked");
+		if ( channel == "22" )  { channelString = "All Things Apple"; } 
+		if ( channel == "121" )  { channelString = "Automotive"; } 
+		if ( channel == "20" )  { channelString = "Business & Finance"; } 
+		if ( channel == "137" )  { channelString = "Education"; } 
+		if ( channel == "47" )  { channelString = "Entertainment"; } 
+		if ( channel == "128" )  { channelString = "Family & Parenting"; } 
+		if ( channel == "120" )  { channelString = "Gaming"; }  
+		if ( channel == "129" )  { channelString = "Food & Drink"; } 
+		if ( channel == "131" )  { channelString = "Government & Politics "; } 
+		if ( channel == "138" )  { channelString = "Home & Architecture"; } 
+		if ( channel == "130" )  { channelString = "Pets"; } 
+		if ( channel == "124" )  { channelString = "Sports"; } 
+		if ( channel == "123" )  { channelString = "Style & Beauty"; } 
+		if ( channel == "5" )  { channelString = "Technology"; }  
+		if ( channel == "105" )  { channelString = "Travel"; } 
+		if ( channel == "1" )  { channelString = "Web Design & Development"; } 
+		if ( channel == "102" )  { channelString = "Weddings"; } 
+		if ( channel == "139" )  { channelString = "Visual Arts & Design"; }
+		if($( "#" + adunitDivId ).hasClass( "checked" )) {
+			addPlacement(adunitId,title,channelString,adunitname);
+			$("#" + adunitDivId).parent("td").parent("tr").css("background-color","#98FB98");
+			$("#" + adunitDivId).html("Remove From Cart");
+			$("#" + adunitDivId).removeClass("btn-success");
+			$("#" + adunitDivId).addClass("btn-primary");
+		} else {
+			removePlacement(adunitId);
+			$("#" + adunitDivId).parent("td").parent("tr").css("background-color","#F5F5F5");
+			$("#" + adunitDivId).html("Buy Now");
+			$("#" + adunitDivId).addClass("btn-success");
+			$("#" + adunitDivId).removeClass("btn-primary");
+		}
+	}
+	function removePlacement(adunitId) {
+		selectedAdunits = $("#selectedAdunits").val();
+		selectedAdunits = selectedAdunits.replace(adunitId , "");
+		$("#selectedAdunits").val(selectedAdunits);
+		count = $("#count").html();
+		count = parseInt(count) - 1;
+		$("#count").html(count);
+		trid = "tr" + adunitId;
+		$("#"+trid).remove();
+	}
+	function addPlacement(adunitId,title,channelString,adunitname) {
+		count = $("#count").html();
+		count = parseInt(count) + 1;
+		$("#count").html(count);
+		selectedAdunits = $("#selectedAdunits").val();
+		selectedAdunits = selectedAdunits + "," + adunitId;
+		$("#selectedAdunits").val(selectedAdunits);
+		tr = "<tr id='tr"+ adunitId +"'>";
+		tr = tr + "<td>" + adunitname + "</td>";
+		tr = tr + "<td>" + title + "</td>";
+		tr = tr + "<td>" + channelString + "</td>";
+		tr = tr + "<td><button class='btn btn-primary' onclick='removePlacement("+ adunitId +")'> Remove From Cart </button></td>";
+		tr = tr + "</tr>";
+		$("#adplacementslist").children("table").children("tbody").append(tr);
+	}
+function send() {
+	<%
+		host = ""
+		if Tagaly3::HOST_NAME == 'localhost.localdomain'
+			host = 'http://localhost:3000'
+		elsif Tagaly3::HOST_NAME == 'my.ppcminds.com'
+			host = Tagaly3::MYAPPONE_ROR
+  	else
+			host = Tagaly3::AWS_ROR
+  	end
+	%>
+	host = "<%= host %>";
+	var selectedAdunits = $("#selectedAdunits").val();
+	var res = selectedAdunits.split(",");
+	var adunits = "";
+	for (i = 0; i < res.length; i++) {
+    if(res[i] != "") {
+			if (adunits == "") {
+				adunits = res[i];
+			} else {
+				adunits = adunits + "," + res[i];
+			}
+		}
+	}
+	if(adunits != "") {
+	  window.parent.window.postMessage(
+	      {'func':'alertMyMessage','params':[adunits]}, host + '/campaigns/addDisplayAds'
+	  );
+	} else {
+	}
+}
+	function htmlspecialchars(str) {
+	 if (typeof(str) == "string") {
+			str = str.replace(/&/g, "&amp;"); /* must do &amp; first */
+			str = str.replace(/</g, "&lt;");
+			str = str.replace(/'/g, "&#039;");
+			str = str.replace(/>/g, "&gt;");
+			str = str.replace(/"/g, "&quot;");
+		}
+		return str;
+	}
+	
+</script>
+		<script src="/assets/jquery.reveal.js"  type="text/javascript"></script>
+<link rel="stylesheet" href="/assets/bsa.min.css" type="text/css" />
+<link rel="stylesheet" href="/assets/app.css" type="text/css" />
+<link rel="stylesheet" href="/assets/adblock.css" type="text/css" />
+<link rel="stylesheet" href="/assets/skinny.css" type="text/css" media="screen and (max-width: 1100px)" />
+<link rel="stylesheet" href="/assets/reveal.css"/>
+<style>
+	.btn.adunitscheckbox.btn-success { width:150px; }
+	.sitetd{ background: none repeat scroll 0 0 #F1F1F1; border: 1px solid #E5E5E5; border-radius: 3px; box-shadow: 0 0 1px #FFFFFF inset; display: block; float: left; width:  30%; height: 40px; margin-top: 10px; margin-left: 10px; padding-top: 10px; font-size: 13px; }
+	.adunittd{ background: none repeat scroll 0 0 #F1F1F1; border: 1px solid #E5E5E5; border-radius: 3px; box-shadow: 0 0 1px #FFFFFF inset; display: block; float: left; }
+	.title { color: #494949; display: block; font-size: 22px; line-height: 22px; margin: 14px 0 10px 131px; padding: 0; text-shadow: 1px 1px 0 #FFFFFF;}
+	a.close { color: #FFF; text-shadow: 1px 1px 0px #06C; border-radius: 4px 0px 0px 4px; text-decoration: none; text-transform: uppercase; font-size: 10px; background: url('/assets/close.gif') no-repeat scroll 50% 50% #0080FF; }
+	#placementSites { margin: 20px; width:80%; }
+	body { height:99%; }
+</style>
+		<div id="realpage">
+			<div class="contentwrap contentwrape cf">
+				<div class="breathablewrap">
+					<div class="content cf" style="padding-right: 0px;">
+						<div class="sidebar">
+							<ul class="sidenav">
+								<% if @channels.include?("22") %><li class="<% if @adunitChannelId == "22" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-22" class="channels"><em>All Things Apple</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("121") %><li class="<% if @adunitChannelId == "121" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-121" class="channels"><em>Automotive</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("20") %><li class="<% if @adunitChannelId == "20" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-20" class="channels"><em>Business &amp; Finance</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("137") %><li class="<% if @adunitChannelId == "137" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-137" class="channels"><em>Education</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("47") %><li class="<% if @adunitChannelId == "47" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-47" class="channels"><em>Entertainment</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("128") %><li class="<% if @adunitChannelId == "128" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-128" class="channels"><em>Family &amp; Parenting</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("120") %><li class="<% if @adunitChannelId == "120" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-120" class="channels"><em>Gaming</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("129") %><li class="<% if @adunitChannelId == "129" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-129" class="channels"><em>Food &amp; Drink</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("131") %><li class="<% if @adunitChannelId == "131" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-131" class="channels"><em>Government &amp; Politics </em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("138") %><li class="<% if @adunitChannelId == "138" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-138" class="channels"><em>Home &amp; Architecture</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("130") %><li class="<% if @adunitChannelId == "130" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-130" class="channels"><em>Pets</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("124") %><li class="<% if @adunitChannelId == "124" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-124" class="channels"><em>Sports</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("123") %><li class="<% if @adunitChannelId == "123" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-123" class="channels"><em>Style &amp; Beauty</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("5") %><li class="<% if @adunitChannelId == "5" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-5" class="channels"><em>Technology</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("105") %><li class="<% if @adunitChannelId == "105" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-105" class="channels"><em>Travel</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("1") %><li class="<% if @adunitChannelId == "1" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-1" class="channels"><em>Web Design &amp; Development</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("102") %><li class="<% if @adunitChannelId == "102" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-102" class="channels"><em>Weddings</em></a> </li>
+								<li class="separator"></li><% end %>
+								<% if @channels.include?("139") %><li class="<% if @adunitChannelId == "139" %>on<% end %>"> <a href="javascript:void(0)" id="<%= @adunitType %>-139" class="channels"><em>Visual Arts &amp; Design</em></a> </li><% end %>
+							</ul>
+						</div>
+						<div id="sitesBrowse">
+							<h2><center>Sites</center></h2>
+							<div id='plaErr' style="display:none; line-height: 20px; text-align: center; width: 81%; margin-left: 10px;" class="error">Please select alteast one placement to proceed</div>
+								<!-- Sites details table Starts here -->
+								<table id="placementSites">
+									<% i = 0 %>
+									<% j = 0 %>
+									<% @allSiteDetailsForChannels.each do |site| %>
+										<% j = j + 1 %>
+										<% if i == 0 %>
+											<tr>
+										<% end %>
+												<td class="sitetd">
+													<% description = site.description %>
+													<% description = description.gsub("/n", ' ')  %>
+													<% description = description.gsub("/r", ' ')  %>
+													<div style="float:left;"><img width="31px" height="28px" onerror="this.src='/assets/imagenotfound.jpeg'" src="<%= site.website_url %>/favicon.ico"></div><div align="center"><a href="javascript:void(0)" class="sitename" onclick='getAdUnits(<%= site.id %>, "<%= site.website_title.to_s %>","<%= site.website_url.to_s %>",<%= site.avg_mon_imps %>,"<%= site.description %>","<%= @adunitType %>","<%= site.channel %>" , "<% params[:id] %>")' > <%= site.website_title %> </a></div><div align="center"><%= site.avg_mon_imps %> Impressions</div>
+												</td>
+										<% if i == 2 || j == @allSiteDetailsForChannels.count %>
+											</tr>
+										<% end %>
+										<% i = i + 1 %>
+										<% if i > 2 %>
+											<% i = 0 %>
+										<% end %>
+									<% end %>
+								</table>
+								<!-- Sites details table Ends here -->
+								<div class="proceed" align="center"><input type="button" value="Proceed to campaign creation" onclick="return send();" class="btn btn-primary"/></div><br>
+						</div>
+<input type='hidden' id="selectedAdunits"/>
+						<div id="placementsBrowse" style="width:80%;border:1px solid black;background-color:#EEEEEE;float:right;display:none;margin:15px;">
+							<div style="position: absolute; right: 0px; margin-right: 25px; margin-top: 5px;font-size:20px;font-weight:bold;"> 
+								<a href="javascript:void(0)" style='color:#AAAAAA' id="next"> x </a> 
+							</div>
+							<h2><center>Placements</center></h2>
+							<div style="margin:1%">
+								<div id="siteName"><h3></h3></div>
+								<div id="siteUrl"></div>
+								<div id="siteImpressions"><span></span> Impressions</div>
+							</div>
+							<div id="placementsDiv">
+<table class="table">
+	<thead>
+		<th>Name</th>
+		<th>Size</th>
+		<th>Impressions</th>
+		<th>Cost</th>
+		<th width='150px'></th>
+	</thead>
+	<tbody></tbody>
+</table>								
+							</div>
+<!--
+<div><center> <input type="submit" class="btn btn-inverse" onclick="" value="Cancel" id="cancel"><input type="submit" style="margin-left:30px;" class="btn btn-primary" onclick="" value="Select & Browse other sites >>" id="next123"> </center> </div><br>
+-->
+						</div>
+				</div>
+			</div>
+		</div>	
+		
+	<!-- List of adunits table Starts here -->
+	<!--
+	<div id="adplacementslist" class="reveal-modal">
+			<table style="border-radius:0;" id="adunits_table" class="table table-striped fbpicker table-bordered">
+		    <thead>
+		      <tr>
+		        <th>Name</th>
+		        <th>Site</th>
+		        <th>Channel</th>
+		        <th style="width: 200px;"></th>
+		       </tr>
+		    </thead>
+		    <tbody> </tbody>
+		  </table>
+	</div>
+	-->
+	<!-- List of adunits table Ends here -->

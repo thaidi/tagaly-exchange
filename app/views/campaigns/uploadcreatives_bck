@@ -1,0 +1,249 @@
+
+		
+		<link href="/assets/smaple.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+		<link rel="stylesheet" href="/assets/bsa.min.css" type="text/css" />
+		<link rel="stylesheet" href="/assets/adblock.css" type="text/css" />
+		<link rel="stylesheet" href="/assets/skinny.css" type="text/css" media="screen and (max-width: 1100px)" />
+		<script type="text/javascript" src="/assets/bootstrap-dropdown.js"></script>
+		<script type="text/javascript" src="/assets/validateadunits.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function () {
+            $('.dropdown-toggle').dropdown();
+			});
+		</script>   
+<script>
+function setStatus(status,adid,adname)
+		      {
+		      var hostname=window.location.hostname;
+		      //alert("http://myappone.com:3000/campaigns/updatestatus?campaignid="+campaignid+"&status="+status);
+		      if (window.XMLHttpRequest)
+		      {// code for IE7+, Firefox, Chrome, Opera, Safari
+			  		xmlhttp=new XMLHttpRequest();
+		      }
+		      else
+		      {// code for IE6, IE5
+						xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		      }
+		      	xmlhttp.onreadystatechange=function()
+		      {
+		      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		      {
+		      //alert(xmlhttp.responseText);
+			if(xmlhttp.responseText=="success")
+			{
+			
+			 //alert("#statusmsg"+campaignid.text());
+			  $("#statusmsg"+adid).fadeIn()
+			  $("#statusmsg"+adid).fadeOut(500)
+			  document.getElementById("adname").innerHTML=adname;
+			  document.getElementById("statustext").innerHTML=status ;
+			  document.getElementById("statusmsg").style.display="block";
+			  if(status=="Deleted")
+			  {
+			  	document.getElementById("tr"+adid).style.display="none";
+			  }
+			}
+			}
+			}
+	
+			xmlhttp.open("GET","http://"+hostname+":3000/ads/updatestatus?adid="+adid+"&status="+status,true);
+			xmlhttp.send();
+			}
+			
+		</script>	
+<script>
+	
+		$(document).on('click','.adZoom', function(e){
+  			var idOfZoomClass = $(this).attr("id");
+				var adId = String(idOfZoomClass).substring(4);
+				var adDivId = "div" + adId;
+				var toset=$("#"+adDivId).html() ;
+				var width=$("#"+adDivId).width();
+				var height=$("#"+adDivId).height();
+				//alert(toset);
+				$("#adPreview").html("<a class='close-reveal-modal' id='closeadPreview'>&#215;</a>"+toset);
+				
+				if($("#img"+adId).attr('src'))
+				{
+					imgSize();
+					$("#adPreview").css("width", '');
+					$("#adPreview").css("height", '');
+				}
+				else
+				{
+					$("#adPreview").css("width", width);
+					$("#adPreview").css("height", height);
+				}
+				/*var src=$("#img"+adId).attr('src') ;
+				$("#img"+adId).attr('src',src);
+				$div = $("#" + adDivId);
+				$("#" + adDivId).show();
+				$("#" + adDivId).offset({
+				    top: e.pageY - ($div.outerHeight()/2),
+				    left: e.pageX + 20
+				});*/
+		});
+		function imgSize(){
+    $("img").load(function(){
+        var width = $(this).width();
+        var height = $(this).height();
+        $(this).attr("width",width).attr("height",height);
+    });
+}
+	/*$(document).on('mouseout','.adZoom', function(e){
+  			var idOfZoomClass = $(this).attr("id");
+				var adId = String(idOfZoomClass).substring(4);
+				var adDivId = "div" + adId;
+				$("#" + adDivId).hide();
+		});*/
+	</script>
+<script type="text/javascript" src="/assets/bootstrap-dropdown.js"></script>
+	<script src="/assets/jquery.reveal.js"  type="text/javascript"></script>
+	<script src="/assets/campaign.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+<link rel="stylesheet" href="/assets/reveal.css"/>
+		
+		<div id="myModal" class="reveal-modal" style="width:1150px;height:635px">
+			<a class="close-reveal-modal" id="closeadFrame">&#215;</a>
+			<iframe src="/ads/new/frame" id="adnewads" width="1150px" frameBorder="0" height="100%" ></iframe>
+		</div>
+		<div id="adPreview" class="reveal-modal" style="position:absolute; background-color: white; border-radius: 10px; ">
+			<a class="close-reveal-modal" id="closeadPreview">&#215;</a>
+			Ad Preview
+		</div>
+		<div id="realpage">
+			<div class="contentwrap cf full">
+				<div class="breathablewrap">
+					<div class="heading cf">
+						<div class="breadcrumbs"> 
+							<a href="/cart">Cart<strong></strong></a> <a class="off">View Cart</a>	
+						</div>
+					
+					<div class="content nobg cf" >
+
+						<div class="pad cf">
+
+							<ul class="progress cf" style="height: 61px;">
+								<li class="on"><span><strong><b>Step 1</b></strong>Add your ads<div class="arrow"></div></span></li>
+								<li class="off"><span><strong><b>Step 2</b></strong>Set the campaign details<div class="arrow"></div></span></li>
+								<li class="off"><span><strong><b>Step 3</b></strong>Select payment method &amp; confirm order<div class="arrow"></div></span></li>
+							</ul>
+
+							<div style="display: none;" id="emptycart" class="emptystate">
+								<div class="pad">
+									<h3>Your cart is empty!</h3>
+									<p>To put ads into your shopping cart, start by browsing through the <a href="/buy">Buy Ads</a> section. If you need help selecting the best ad placements for your campaign, please <a href="/support/handpicked">let us know</a>.</p>
+								</div><!-- END div.pad -->
+							</div><!-- END div.emptystate -->
+							<a data-animation="fade" data-reveal-id="myModal" id="creatNewAd" href="#" class="pull-right btn btn-success big-link" style="margin: -15px 0px 0px 20px;" ><i style="margin-top: 3px;" class="icon-plus icon-white"></i> Create new ads</a>
+							<form action="/campaigns/campaignsettings" method="post">
+							<div id="allcart" style="margin-top:50px;">
+								<div id="aderrorText" class="error" style="margin-left:0px;"></div>
+								<table style="border-radius:0;" id="ads_table" class="table table-striped fbpicker table-bordered">
+                        <thead>
+                          <tr>
+                            <th width="1%"></th>
+                            <!--<th width="1%"><a href="">ID</a></th>-->
+                            <th width="45%">Name</th>
+                            <th width="3%">Impr.</th>
+                            <th>Clicks</th>
+                            <th>Coversions</th>
+                            <th>CTR</th>
+                            <th>Status</th>
+                            <th width="3%">URL</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                        <% if @ads.present?
+                             @ads.each do |key,ads| %>
+                          <tr class="selected" id="tr<%= key %>">
+                            <td style="text-align: center;">
+                            	<%
+                            		if $ads.present? && $ads.include?(key)
+                            			checked="checked"
+                            		else
+                            			checked="false"
+                            		end
+                            	%>
+                            		
+                              <%= check_box("campaign", "ads" ,{:style=>"display:none;",:checked=>checked,:multiple=>"true",:class=>"ads"}, key,nil ) %>
+                              <% if checked == "checked" %>
+                             		<a href="javascript:void(0);" class="btn btn-mini" onclick="toggleAdSelection(this,this.innerHTML);">Remove</a>
+                             	<% else %>
+                              	<a onclick="toggleAdSelection(this,this.innerHTML);" class="btn btn-mini btn-primary" href="javascript:void(0);">Add</a>
+                             	<% end %>
+                            </td>
+                            <!--<td><%= key %></td>-->
+                            <td><%= ads['adName'].to_s %><div style="float:right;">&nbsp;<button class="btn btn-mini btn-inverse" disabled style="cursor:default">&nbsp;<%= ads["version"] %>&nbsp;</button> 
+                            <a data-animation="fade" id="zoom<%= key %>" class="adZoom" data-reveal-id="adPreview" href="#"><i style="margin-top: 3px;" class="icon-zoom-in adZoom"></i></a></div>
+															<div id="div<%= key %>" style="display:none;position:absolute; background-color: white; border-radius: 10px; border: 4px solid rgb(239, 239, 239);">
+															<div><b><h6><%= ads['adName'] %></h6></b></div>
+															<div style="height:7px"></div>
+															<% if ads['adType'] == 'TextAd' %>
+																<ul style="width: 234px; height: 60px; margin-left: 5px;">
+																	<li style="float: none; color: rgb(34, 34, 34); "><a href="<%= ads['adDestinationUrl'] %>" target="_blank"><%= ads['adHeadline'] %></a></li>
+																	<li class="adunits-innerli" style="float: none; color: rgb(0, 128, 0); "> <%= ads['adDisplayUrl'] %> </li>
+																	<li class="adunits-innerli" style="float: none; color: rgb(51, 51, 51); "> <%= ads['adText'] %> </li>
+																</ul>
+															<% else %>
+																<%
+																	my_string = ads['adImageUrl']
+																	if my_string.include? ".swf"
+																	adSizes = ads['adSize'].split('x') 
+																	%>
+																	<a href="<%= ads['adDestinationUrl'] %>" target="_blank">
+																	<embed width="<%= adSizes[0] %>" height="<%= adSizes[1] %>" src="/uploads/<%= ads['adImageUrl'] %>">
+																	</a>
+																	<%		
+																	elsif my_string.include? ".fla"
+
+																	else
+																	%>
+																	<a href="<%= ads['adDestinationUrl'] %>" target="_blank">
+																	<img src="/uploads/<%= ads['adImageUrl'] %>"/>
+																	</a>
+																	<%
+																	end
+																	%>
+															<% end %>
+															</div>
+                             
+                            </td>
+                            <td width="1%">-</td>
+                            <td width="1%">-</td>
+                            <td width="1%">-</td>
+                            <td width="1%"><!-- <%= number_with_precision(ads['CTR'], :precision => 2) %> -->-</td>
+                            <td width="1%" style="text-align:center;">
+                            <div id="statusmsg<%= key %>" style="color:green;display:none;" align="center">Status Set!</div>
+                              <%= select_tag(:status, options_for_select([['Active', 'Active'],['Pause', 'Paused'],['Delete','Deleted']],ads["adStatus"]),:onchange=>"setStatus(this.value,'#{key}','#{ads['adName']}' )", :style=>"width:83px;") %>
+                              <!--<span rel="tooltip" class="label label-success" data-original-title="approved"><i class="icon-thumbs-up"></i></span>-->
+                            </td>
+                            <td width="1%" class="ad-url">
+                              <a title="<%= ads['adDestinationUrl'] %>" target="new" href="<%= ads['adDestinationUrl'] %>"><%= ads["adDisplayUrl"] %></a>
+                            </td>
+                          </tr>
+                          <tr>
+                          <% end 
+                          else
+                          %>
+                          <!-- #collapseSeven --> 
+                            <!--<td style="text-align: center;" colspan="8">You don't appear to have any ads available for selection. <a href="/ads/new" data-parent="#accordion7" data-toggle="collapse" class="accordion-toggle nover">Create one.</a></td>-->
+                          <% end %>
+                          </tr>
+                        </tbody>
+								
+								</table>
+									<div class="fright sright alt cf">
+									<input type="hidden" name="adunits" value="<%= $adunits %>" />
+									<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token() %>" />
+									<button type="submit" onclick="return validateads();" style="background-color:#53951D;" class="button green logmein center tip"><span><em>Step 2: Setting Campaign Details »</em></span></button>
+								</div>		
+									</form>
+						</div><!-- END div.pad -->
+					</div>
+					
+				</div>
+			</div> <!-- END div#realpage -->
+		</div>
+

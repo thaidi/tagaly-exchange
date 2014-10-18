@@ -1,0 +1,110 @@
+<!-- layout starts here -->
+  <html>
+    <head>
+      <title>Tagaly</title>
+        <% #### Include all stylesheets and javascripts %>
+    <link href="/assets/app.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/assets/style1.css" />
+    <link rel="stylesheet" href="/assets/dropdown.css" type="text/css" />
+    <script src="https://js.stripe.com/v1/" type="text/javascript"></script>
+    <script src="jsfile.js" type="text/javascript"></script>
+    <script type="jsfile2.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('.dropdown-toggle').dropdown();
+      });
+    </script>  
+    <style>
+      [class^="icon-"], [class*=" icon-"] {
+        background-image: url(/assets/glyphicons-halflings.png)
+      } 
+      .logodisplay{
+        float: left;
+        margin-left: 30px;
+        margin-top: 10px;
+     } 
+    </style>
+    </head>
+    <body>
+     <div style="position:static;margin-bottom:15px;" class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+    <div class="logodisplay">
+            <img src="http://www.tagaly.com/images/logo4.png?1384128788" />
+    </div>
+    <div class="container">
+      <a style="font-weight:bold;color:#fff;margin-left:15px;text-shadow:0px 0px 2px rgba(0,0,0,0.5);" href="" class="brand">  </a>  
+        <div class="menudropdown">
+          <ul class="rightnav loggedin">              
+            <li class="account drop">
+              <a href=""><em class="t"> <%= session[:email] %> </em><div class="arrow"></div></a>
+              <div class="accountmenu">                  
+                <ul class="first">
+                  <li class="title avatar"> <img width="16" height="16" alt="" src="/assets/avatar.gif"> My Account </li>
+                  <li><a href="/users"><em>Overview</em></a></li>
+                  <li><a href=""><em>Account Settings</em></a></li>
+                  <li><a href=""><em>Billing &amp; Deposit</em></a></li>
+                  <li><a href=""><em>Transaction History</em></a></li>
+                </ul>
+                <div class="separator cf"></div>
+                <ul>
+                  <li class="title">Advertisers</li>
+                  <% if session[:usertype]=="advertiser" || session[:usertype]=="both" %>
+                  <li><a href="/dashboard/<%= session[:site_id] %>"><em>Dashboard</em></a></li>
+                  <li><a href="/mycampaigns"><em>My Campaigns</em></a></li>
+                  <li><a href="/ads/"><em>My Ads</em></a></li>
+                  <li><a href="/conversions/"><em>My Conversions</em></a></li>
+                  <li><a href="/sites"><em>My Sites</em></a></li>
+                  <li><a href="/retargets"><em>Retargeting Lists</em></a></li>
+                  <li><a href="/sites/tag"><em>Site Tracking Tag</em></a></li>
+                 <li><a href="#"><em>Reports</em></a></li>
+			 <% else %>
+                    <li>
+                      <a href="/users/introduction?page=1" ><button type="button" class="btn btn-info">Get Started</button></a>
+                    </li>
+                    
+                    <% end %>
+                </ul>
+                <ul class="last">
+                  <li class="title">Publishers</li>
+                  <% if session[:usertype]=="publisher" || session[:usertype]=="both" %>
+            <li><a href="/publishers/dashboard/<%= session[:publishersite_id] %>"><em>Dashboard</em></a></li>
+                  <li><a href="/publisher"><em>My Sites</em></a></li>
+            <li><a href="/adunits"><em>Ad Units</em></a></li>
+            <li><a href="/reports/publisher/adUnit"><em>Reports</em></a></li>
+		 <% else %>
+                    <li>
+                      <a href="/publishers/introduction?page=1" ><button type="button" class="btn btn-info">Get Started</button></a>
+                    </li>
+                    <% end %>
+                </ul>
+                <div class="separator cf"></div>
+                <div class="balancemenu cf">
+                  <span class="logout">
+                     <%= link_to "Log out", log_out_path %>
+                  </span>
+                <div class="fleft">
+                  <span class="title">Account Balance</span>
+                  <span class="amount totalbalance"><sup>$</sup>0.00</span>
+                </div>
+                <a href="" class="button small"><span><em>Cashout</em></span></a>
+              </div>
+            </div>
+          </li>
+        </ul>                
+      </div>
+
+       </div>
+     </div>
+         </div>
+<div style="margin:20px;" class="well pull-center">
+	<h3>
+		<p>
+			<h2 style="font-size:24px;text-align:center;">Welcome to Tagaly's Advertiser Dashboard. </h2>
+		</p>
+		<p style="font-size:18px;padding:0 25 25 25 ;">
+			We help advertisers buy quality, guaranteed inventory directly from publishers. No middle man. Fully Transparent. Self-serve.Proceed by creating a new site <a href="<% if params[:page]=='1' %>/sites/new?type=advertiser<% else %>/sites/new<% end %>">here</a>.
+		</p>
+	</h3>
+</div>
+</body>
+</html>

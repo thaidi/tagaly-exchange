@@ -1,0 +1,1256 @@
+<%
+	if @host == "localhost.localdomain"
+	   host = "localhost"
+	else
+	   host = @host
+	end
+%>
+<% ### NEW AD FORM PAGE %>
+<!DOCTYPE html>
+<html>
+  <head> 
+    <title> sample page </title> 
+<style>
+	.error {
+		height:16px;
+		width:300px;
+		margin-left:0px;
+		margin-top:3px;
+		position:absolute;
+	}
+.side{
+float:left;
+}
+</style> 
+
+  <script type="text/javascript" src="/assets/ads.js"></script>  
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script>
+
+<% if @parsed["adType"] == "TextAd"  %>
+
+	$(document).ready(function(){
+		displayAd("text_destination_url");
+		displayAd("text_display_url");
+		displayAd("text_ad_text_title");
+		displayAd("text_ad_text_body");
+	});
+
+	function displayAd(id){
+		var value = $("#"+id).val();
+
+//console.log("werty")
+//value = value.trim()
+		if ((value.substr(value.length - 1)).charCodeAt(0) == 8206) {
+			codelen = value.length - 1;
+			finalvalue = value.substr(0 , codelen);
+
+				value = finalvalue.trim();
+
+		} else {
+			finalvalue = value;
+		}
+		//value = finalvalue.trim();
+		document.getElementById(id).value = value;
+		if(id == "text_ad_text_title") {
+			txtlength = value.length;
+			var textcount = 25 - txtlength;
+			document.getElementById("title_counter").innerHTML = textcount;
+			if(textcount < 0){
+				$("#title_counter").addClass("counter-over-limit");
+			} else {
+				$("#title_counter").removeClass("counter-over-limit");
+			}
+			if(value != "" ){
+				$("#preview_title").children("a").html(value);
+			} else {
+				$("#preview_title").children("a").html("Your Title Here");
+			}
+		} else if(id == "text_destination_url") {
+			if(value != "" ){
+			$("#preview_title").children("a").attr("href",value);
+			} else {
+			$("#preview_title").children("a").attr("href","#");
+			}
+		} else if(id == "text_display_url") {
+			if(value != "" ){
+				$("#preview_url").html(value);
+			} else {
+				$("#preview_url").html("http://www.example.com");
+			}
+		} else if(id == "text_ad_text_body") {
+			txtlength = value.length;
+			if(value.length > 35)
+			{
+				value=value.substring(0,35) + "<br>" + value.substring(35,value.length)
+			}
+			var body_counter = 70 - txtlength;
+			document.getElementById("body_counter").innerHTML = body_counter;
+			if(body_counter < 0){
+				$("#body_counter").addClass("counter-over-limit");
+			} else {
+				$("#body_counter").removeClass("counter-over-limit");
+			}
+			if(value != "" ){
+				$("#preview_body").html(value);
+			} else {
+				$("#preview_body").html("About your company");
+			}
+		}
+	}
+<% end %>
+    function setBitSuggestion(campaignid,adids)
+		{
+			var textadform=document.getElementById("new_fb_ad_btn");
+			var nativeadform=document.getElementById("new_pagepost_ad_btn");
+			var banneradform=document.getElementById("new_web_ad_btn");
+			if(textadform && textadform.className=="active")
+			{
+				var adType="TextAd";
+				document.getElementById("textadcampaignid").value=campaignid ;
+				document.getElementById("textadids").value=adids ;
+				if(document.getElementById("CPC-btn").className.search("btn-primary") != -1)
+				{
+					var bidtype="CPC" ;
+					var bidpriceid=document.getElementById("CPC") ;
+				}
+				else if(document.getElementById("CPA-btn").className.search("btn-primary") != -1)
+				{
+					var bidtype="CPA" ;
+					var bidpriceid=document.getElementById("CPA") ;
+				}
+				else if(document.getElementById("CPM-btn").className.search("btn-primary") != -1)
+				{
+					var bidtype="CPM" ;
+					var bidpriceid=document.getElementById("CPM") ;
+				}
+				var adSize="240x70";
+			}
+			else if(nativeadform && nativeadform.className=="active")
+			{
+				var adType="NativeAd";
+				document.getElementById("nativeadcampaignid").value=campaignid ;
+				document.getElementById("nativeadids").value=adids ;
+				if(document.getElementById("native_CPC-btn").className.search("btn-primary") != -1)
+				{
+					var bidtype="CPC" ;
+					var bidpriceid=document.getElementById("native_CPC") ;
+				}
+				else if(document.getElementById("native_CPA-btn").className.search("btn-primary") != -1)
+				{
+					var bidtype="CPA" ;
+					var bidpriceid=document.getElementById("native_CPA") ;
+				}
+				else if(document.getElementById("native_CPM-btn").className.search("btn-primary") != -1)
+				{
+					var bidtype="CPM" ;
+					var bidpriceid=document.getElementById("native_CPM") ;
+				}
+				var adSize="240x70";
+			}
+			else if(banneradform && banneradform.className=="active")
+			{
+				var adType="BannerAd";
+				document.getElementById("banneradcampaignid").value=campaignid ;
+				document.getElementById("banneradids").value=adids ;
+				if(document.getElementById("banner_CPC-btn").className.search("btn-primary") != -1)
+				{
+					var bidtype="CPC" ;
+					var bidpriceid=document.getElementById("banner_CPC") ;
+				}
+				else if(document.getElementById("banner_CPA-btn").className.search("btn-primary") != -1)
+				{
+					var bidtype="CPA" ;
+					var bidpriceid=document.getElementById("banner_CPA") ;
+				}
+				else if(document.getElementById("banner_CPM-btn").className.search("btn-primary") != -1)
+				{
+					var bidtype="CPM" ;
+					var bidpriceid=document.getElementById("banner_CPM") ;
+				}
+				if(document.getElementById("bannerImageSize").value.trim()=="")
+				{
+					document.getElementById("banner_ImageError").innerHTML="Please upload a valid sized image to get the bid price!";
+					document.getElementById("banner_ImageError").style.display="block";
+					var camp = document.getElementsByClassName("campaigns");
+					for (var i = 0; i < camp.length; i++) {
+							camp[i].checked=false ;       
+					}
+					document.getElementById("closemodal").click();
+					return false ;
+				}
+				else
+				{
+					document.getElementById("banner_ImageError").style.display="none";
+				}
+				var adSize=document.getElementById("bannerImageSize").value;
+			}
+					var hostname = "http://"+window.location.hostname+":3000/ads/getminimumbidprice";
+				
+					$.ajax({
+						type: "GET",
+						url: hostname,
+						data: "campaignId=" + campaignid + "&bidType=" + bidtype + "&adType="+ adType +"&adSize="+adSize,
+						success: function(data){
+							bidpriceid.value=parseFloat(data).toFixed(2);
+							var camp = document.getElementsByClassName("campaigns");
+							for (var i = 0; i < camp.length; i++) {
+									camp[i].checked=false ;       
+							}
+							document.getElementById("closemodal").click();
+						}
+					});
+	
+		}
+    </script>
+    <script type="text/javascript">
+      $("[data-action=autoopen]").click(function() {
+        setTimeout(function() {
+          if (handleAutoopen) {
+          handleAutoopen();
+          }
+        }, 500);
+      });
+	var preadname = "<%= @parsed['adName'] %>";
+	var preadDestinationUrl = "<%= @parsed['adDestinationUrl'] %>";
+	var preadDisplayUrl = "<%= @parsed['adDisplayUrl'] %>";
+	var preadHeadline = "<%= @parsed['adHeadline'] %>";
+	<% if @parsed['adText'].present? %>
+		<% preadText = @parsed['adText'].gsub! '\r', ' ' %>
+		<% preadText = @parsed['adText'].gsub! '\n', ' ' %>
+	<% else %>
+		<% preadText = '' %>
+	<% end %>
+	var preadText = "<%= preadText %>";
+
+	function validate(id,divId) {
+		allAdsNames = Array();
+		actualAdname = $("#actualAdname").val();
+		<% @allAds.each do |key,adDetails| %>
+			text = "<%= adDetails['adName'] %>";
+			decoded = $('<div/>').html(text).text();
+			if(actualAdname != decoded ) {
+				allAdsNames.push(decoded)
+			}
+		<% end %>
+		value = $( "#" + id ).val();
+		if(divId == "AdNameError") {
+			msg = "Please provide Ad name";
+		} else if(divId == "HeadeLineError") {
+			len = 25
+			msg = "Please provide a Headline title";
+			lenmsg = "Headline cannot be more than more than 25 character length";
+		} else if(divId == "DestUrlError" || divId == "banner_DestUrlError") {
+			len = 1024
+			lenmsg = "Url cannot be longer than 1024 char length";
+			msg = "Please give a valid URL";
+		} else if(divId == "DisplayUrlError") {
+			len = 35
+			lenmsg = "Display Url cannot be longer than 35 char length";
+			msg = "Please give a valid URL";
+		} else if(divId == "TextError") {
+			len = 70
+			lenmsg = "Text cannot be more than more than 70 character length";
+			msg = "Please provide some text";
+		} else if(divId == "banner_AdNameError") {
+			msg = "Please provide Ad name";
+		} 
+		if($( "#" + id ).hasClass( "req" )) {
+			if(value.trim().length == 0) {
+				document.getElementById(divId).innerHTML = msg;
+				document.getElementById(divId).style.display = "inline";
+			} else {
+				if(divId == "AdNameError" || divId == "banner_AdNameError") {
+					if(allAdsNames.indexOf(value) != -1) {
+						document.getElementById("adNameExistance").value = "exist";
+						document.getElementById(divId).innerHTML = "Ad with '" + value + "' already exists";
+						document.getElementById(divId).style.display = "inline";
+						document.getElementById(divId).style.width = "350px";
+					} else {
+						document.getElementById("adNameExistance").value = "no";
+						document.getElementById(divId).innerHTML = "";
+						document.getElementById(divId).style.display = "none";
+					}
+				} else {
+					document.getElementById(divId).innerHTML = "";
+					document.getElementById(divId).style.display = "none";
+				}
+			}
+		}
+		if($( "#" + id ).hasClass( "url" )) {
+			if(!value.match(/((?:https?\:\/\/|www\.)(?:[-a-z0-9]+\.)*[-a-z0-9]+.*)/i)) {
+				document.getElementById(divId).innerHTML = "Please give a valid URL";
+				document.getElementById(divId).style.display = "inline";
+				return false;
+			} else {
+				document.getElementById(divId).innerHTML = "";
+				document.getElementById(divId).style.display = "none";
+			}
+		}
+		if($( "#" + id ).hasClass( "length" )) {
+			if(value.length > len) {
+				document.getElementById(divId).innerHTML = lenmsg;
+				document.getElementById(divId).style.display = "inline";
+				return false;
+			} else {
+				document.getElementById(divId).innerHTML = "";
+				document.getElementById(divId).style.display = "none";
+			}
+		}
+	}
+	function edittext_submitform(){
+		var size = $(".error").size()
+		nodes = document.getElementsByClassName("error");
+		for(var i=0;i<size;i++){
+			nodes[i].style.display = "none"
+		}
+		var AdName = document.getElementById("text_ad_name").value;
+		var destination_url = document.getElementById("text_destination_url").value;
+		var text_display_url = document.getElementById("text_display_url").value;
+		var ad_facebook_title = document.getElementById("text_ad_text_title").value;
+		var ad_facebook_body = document.getElementById("text_ad_text_body").value;
+
+		var Exp = /^[0-9a-zA-Z @!#\$\^%&*()+=\-\[\]\\\';,\.\/\{\}\|\":<>\?]+$/;
+		if(AdName == ''){
+			document.getElementById("AdNameError").innerHTML = "Please provide Ad name";
+			document.getElementById("AdNameError").style.display = "inline";
+			return false;
+		} else {
+			var adNameExistance = document.getElementById("adNameExistance").value;
+			if(adNameExistance == "exist") {
+				document.getElementById("AdNameError").innerHTML = "Ad with '" + AdName + "' already exists";
+				document.getElementById("AdNameError").style.display = "inline";
+				document.getElementById("AdNameError").style.width = "350px";
+				return false;
+			}
+		}
+		if(ad_facebook_title == ''){
+			document.getElementById("HeadeLineError").innerHTML = "Please provide a Headline title";
+			document.getElementById("HeadeLineError").style.display = "inline";
+			return false;
+		} else {
+			if(ad_facebook_title.length > 25){
+				document.getElementById("HeadeLineError").innerHTML = "Headline cannot be more than more than 25 character length";
+				document.getElementById("HeadeLineError").style.display = "inline";
+				return false;
+			}
+			
+		}
+		if(destination_url == ''){
+			document.getElementById("DestUrlError").innerHTML = "Please give a valid URL";
+			document.getElementById("DestUrlError").style.display = "inline";
+			return false;
+		} else {
+			if(!destination_url.match(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/)) {
+				document.getElementById("DestUrlError").innerHTML = "Please give a valid URL";
+				document.getElementById("DestUrlError").style.display = "inline";
+				return false;
+			}
+			else {
+				if(destination_url.length > 1024 ) {
+					document.getElementById("DestUrlError").innerHTML = "Url cannot be longer than 1024 char length";
+					document.getElementById("DestUrlError").style.display = "inline";
+					return false;
+				}
+			}
+		}
+		if(text_display_url == ''){
+			document.getElementById("DisplayUrlError").innerHTML = "Please give a valid URL";
+			document.getElementById("DisplayUrlError").style.display = "inline";
+			return false;
+		} else {
+			if(!text_display_url.match(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/)) {
+				document.getElementById("DisplayUrlError").innerHTML = "Please give a valid URL";
+				document.getElementById("DisplayUrlError").style.display = "inline";
+				return false;
+			}
+			else {
+				if(text_display_url.length > 35 ) {
+					document.getElementById("DisplayUrlError").innerHTML = "Url cannot be longer than 35 char length";
+					document.getElementById("DisplayUrlError").style.display = "inline";
+					return false;
+				}
+			}
+		}
+		if(ad_facebook_body == ''){
+			document.getElementById("TextError").innerHTML = "Please provide some text";
+			document.getElementById("TextError").style.display = "inline";
+			return false;
+		} else {
+			if(ad_facebook_body.length > 70){
+				document.getElementById("TextError").innerHTML = "Text cannot be more than more than 70 character length";
+				document.getElementById("TextError").style.display = "inline";
+				return false;
+			}
+			
+		}
+		if(preadname == AdName && preadDestinationUrl == destination_url && preadDisplayUrl == text_display_url && preadHeadline == ad_facebook_title && preadText == ad_facebook_body ) {
+			document.getElementById("Notice").innerHTML = "No changes are done,please edit anyone of the field to submit the form";
+			document.getElementById("Notice").style.display = "inline";
+			return false;
+		} 
+	}
+
+	function edit_banner_submitform(){
+		var size = $(".error").size()
+		nodes = document.getElementsByClassName("error");
+		for(var i=0;i<size;i++){
+			nodes[i].style.display = "none"
+		}
+		var AdName = document.getElementById("banner_ad_name").value;
+		var destination_url = document.getElementById("banner_destination_url").value;
+
+		var Exp = /^[0-9a-zA-Z @!#\$\^%&*()+=\-\[\]\\\';,\.\/\{\}\|\":<>\?]+$/;
+		var imageCode = document.getElementById("imageCode_banner").value;
+		var ImageChange_banner = document.getElementById("ImageChange_banner").value;
+		if(AdName == ''){
+			document.getElementById("banner_AdNameError").innerHTML = "Please provide Ad name";
+			document.getElementById("banner_AdNameError").style.display = "inline";
+			return false;
+		} else {
+			var adNameExistance = document.getElementById("adNameExistance").value;
+			if(adNameExistance == "exist") {
+				document.getElementById("AdNameError").innerHTML = "Ad with '" + AdName + "' already exists";
+				document.getElementById("AdNameError").style.display = "inline";
+				document.getElementById("AdNameError").style.width = "350px";
+				return false;
+			}
+		}
+		if(destination_url == ''){
+			document.getElementById("banner_DestUrlError").innerHTML = "Please give a valid URL";
+			document.getElementById("banner_DestUrlError").style.display = "inline";
+			return false;
+		} else {
+			if(!destination_url.match(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/)) {
+				document.getElementById("banner_DestUrlError").innerHTML = "Please give a valid URL";
+				document.getElementById("banner_DestUrlError").style.display = "inline";
+				return false;
+			}
+			else {
+				if( destination_url.length > 1024 ) {
+					document.getElementById("banner_DestUrlError").innerHTML = "Url cannot be longer than 1024 char length";
+					document.getElementById("banner_DestUrlError").style.display = "inline";
+					return false;
+				}
+				}
+		}
+		if(imageCode != "Ok"){
+			document.getElementById("banner_ImageError").innerHTML = "Please give a valid Image";
+			document.getElementById("banner_ImageError").style.display = "inline";
+			return false;
+		}
+		if(preadname == AdName && preadDestinationUrl == destination_url && ImageChange_banner == '') {
+			document.getElementById("Notice").innerHTML = "No changes are done,please edit anyone of the field to submit the form";
+			document.getElementById("Notice").style.display = "inline";
+			return false;
+		}
+	}
+$(document).ready(function(){
+	
+		var bannerSizes = "<%= Tagaly3::BannerSizes %>".split(",");
+		var bannerWeights = "<%= Tagaly3::BannerWeights %>".split(",");
+
+		$("#upload_datafile_banner").change(function(e) {
+			document.getElementById("changeImage").value="new";
+			document.getElementById("banner_ImageError").innerHTML = ''
+			document.getElementById("banner_ImageError").style.display = 'none';
+			$("#imageCode_banner").val("");
+			$("#bannerImageSize").val("");
+			//$("#Banner_ad_image").attr("src","");
+			var _URL = window.URL || window.webkitURL;
+			var _validFileExtensions = [".jpg",".gif", ".png",".jpeg",".swf",".fla"];
+			var ext = $('#upload_datafile_banner').val().split('.').pop().toLowerCase();
+			if($.inArray(ext, ['gif','png','jpg','jpeg','swf','fla']) == -1) {
+				  alert("Invalid File, Please upload images with extension 'gif' , 'png' , 'jpg' , 'jpeg' , 'swf' only.");
+				  document.getElementById("upload_datafile_banner").value="";
+			} else {
+				if($.inArray(ext, ['swf','fla']) >= 0){
+					var switchVal = 0;
+					var reqFileSize = 1048576;
+					var iSize = $(this)[0].files[0].size ;
+					var somenum = bannerSizes.indexOf(iSize);
+					if (iSize > reqFileSize ) {
+						switchVal = 1;
+					} else {
+						switchVal = 0;
+					}
+					if(switchVal == 1){
+						document.getElementById("imageCode_banner").value ='';
+						document.getElementById("banner_ImageError").innerHTML = " Image size should be less than " + reqFileSize + "kb. Please refer <a class='bannerPrefImg' href='#'>image sizes</a> for valid image sizes.";
+						document.getElementById("banner_ImageError").style.display='inline';
+						document.getElementById("banner_ImageError").style.height='40px';
+						return false;
+					}
+					if(switchVal == 0){
+						$("#imageCode_banner").val("Ok");
+						$("#banner_swffla_div").show();
+						var inputs = this;
+						$("#imageCodeFormat").val(ext);
+						$("#ImageChange_banner").val("changed");
+						$("#swfFormat").hide();
+						
+					}
+				} else {
+						var file, img;
+						if ((file = this.files[0])) {
+							img = new Image();
+							img.onload = function(e) {
+								var width = this.width;
+								var height = this.height;
+								var size = file.size;
+								var widhe = width+"x"+height
+								var switchVal = 0;
+								var somenum = bannerSizes.indexOf(widhe);
+								if(somenum >= 0) { 
+									if (size > bannerWeights[somenum]){
+										switchVal = '1';
+										reqFileSize = (bannerWeights[somenum] /1024);
+									}
+								} else {
+									switchVal = '2';
+								}
+								if(switchVal == 1){
+									document.getElementById("imageCode_banner").value ='';
+									document.getElementById("banner_ImageError").innerHTML = " Image size should be less than " + reqFileSize + "kb. Please refer <a class='bannerPrefImg' href='#'>image sizes</a> for valid image sizes.";
+									document.getElementById("banner_ImageError").style.display='inline';
+									document.getElementById("banner_ImageError").style.height='40px';
+									return false;
+								} 
+								if(switchVal == 2){
+									document.getElementById("imageCode_banner").value ='';
+									document.getElementById("banner_ImageError").innerHTML = "The image you uploaded is not supported. Please refer <a class='bannerPrefImg' href='#'> image Dimensions</a> for valid image sizes.";
+									document.getElementById("banner_ImageError").style.display='inline';
+									document.getElementById("banner_ImageError").style.height='40px';
+									return false;
+								}
+								if(switchVal == 0){
+									document.getElementById("imageCode_banner").value ='Ok';
+									document.getElementById("bannerImageSize").value = widhe;
+									$("#ImageChange_banner").val("changed");
+									$('#Banner_ad_image').attr('src', img.src);
+								}
+			
+							};
+							img.src = _URL.createObjectURL(file);        
+				  	}
+					}
+				}
+		});
+});
+
+$(document).ready(function(){
+	$( "#bannerPrefImg" ).click(
+	
+		function () {
+			window.open("<%= Tagaly3::RORHOST %>/ads/imagepreference","","width=500,height=1000,scrollbars=yes,");
+			//$("#bannerPrefDiv").css({"display":"inline"});
+		}
+		/*function () {
+			$("#bannerPrefDiv").css({"display":"none"});
+		}*/
+	);
+});
+$(document).ready(function(){
+	$( "#prefImg" ).hover(
+		 function () {
+		   $("#prefDiv").css({"display":"inline"});
+		 }, 
+		 function () {
+		   $("#prefDiv").css({"display":"none"});
+		 }
+	);
+	$("#upload_datafile1").change(function(e) {
+		var _width; var _height;
+		document.getElementById("native_ImageError").innerHTML = '';
+		document.getElementById("native_ImageError").style.display = 'none';
+		var _URL = window.URL || window.webkitURL;
+		var _validFileExtensions = [".jpg",".gif", ".png",".jpeg",".swf"];
+		var ext = $('#upload_datafile1').val().split('.').pop().toLowerCase();
+		if($.inArray(ext, ['gif','png','jpg','jpeg','swf']) == -1) {
+		    alert('invalid extension!');
+		} else {
+		    var file, img;
+		    if ((file = this.files[0])) {
+			img = new Image();
+			img.src = _URL.createObjectURL(file);
+			img.onload = function() {
+				width = this.width;
+				height = this.height;
+				var size = file.size
+				var switchVal = 0;
+				if(ext == 'gif') {
+					if ( width == 468 && height == 60){ if(size < 20480){ 	switchVal = '1' ; } }
+					if ( width == 728 && height == 90){ if(size < 25600){ 	switchVal = '1' ; } }
+					if ( width == 250 && height == 250){ if(size < 25600){ 	switchVal = '1' ; } }
+					if ( width == 160 && height == 600){ if(size < 20480){ 	switchVal = '1' ; } }
+					if ( width == 240 && height == 400){ if(size < 25600){ 	switchVal = '1' ; } }
+					if ( width == 234 && height == 60){ if(size < 15360){ 	switchVal = '1' ; } }
+					if ( width == 120 && height == 60){ if(size < 10240){ 	switchVal = '1' ; } }
+					if ( width == 81 && height == 31){ if(size < 10240){ 	switchVal = '1' ; } }
+				}
+				if(ext == 'png' || ext == 'jpg' || ext == 'jpeg') {
+					if ( width == 468 && height == 60){ if(size < 30720){	switchVal = '1' ; } }
+					if ( width == 728 && height == 90){ if(size < 35840){ 	switchVal = '1' ; } }
+					if ( width == 250 && height == 250){ if(size < 35840){ 	switchVal = '1' ; } }
+					if ( width == 160 && height == 600){ if(size < 30720){ 	switchVal = '1' ; } }
+					if ( width == 240 && height == 400){ if(size < 35840){ 	switchVal = '1' ; } }
+					if ( width == 234 && height == 60){ if(size < 20480){ 	switchVal = '1' ; } }
+					if ( width == 120 && height == 60){ if(size < 20480){ 	switchVal = '1' ; } }
+					if ( width == 81 && height == 31){ if(size < 10240){ 	switchVal = '1' ; } }
+				}
+				if(switchVal == 0){
+					document.getElementById("imageCode").value =''
+					document.getElementById("native_ImageError").innerHTML = "Please give a valid Image, Please check prefered size."
+					document.getElementById("native_ImageError").style.display='inline'
+					return false;
+				} else if(switchVal == '1'){
+					document.getElementById("imageCode").value ='Ok';
+				}
+			};
+		    }
+		}
+	});
+});
+<% if @parsed["adType"] == "TextAd" %>
+$(document).ready(function(){
+	var url = document.getElementById("text_display_url").value;
+	if(url == ''){
+		document.getElementById("preview_url").innerHTML = "www.sampleweb.com";
+	} else {
+		document.getElementById("preview_url").innerHTML = url;
+	}
+  $("#text_display_url").on('keyup change',function(){
+		var url = document.getElementById("text_display_url").value;
+		if(url == ''){
+			document.getElementById("preview_url").innerHTML = "www.sampleweb.com";
+		} else {
+			document.getElementById("preview_url").innerHTML = url;
+		}
+  });
+	var txt = document.getElementById("text_ad_text_title").value;
+	var txtlength = document.getElementById("text_ad_text_title").value.length;
+	var textcount = 25 - txtlength;
+	document.getElementById("title_counter").innerHTML = textcount;
+	if(txt == ''){
+		document.getElementById("preview_title").innerHTML = "My Title";
+	} else {
+		document.getElementById("preview_title").innerHTML = txt;
+	}
+	if(textcount < 0){
+		$("#title_counter").addClass("counter-over-limit");
+	} else {
+		$("#title_counter").removeClass("counter-over-limit");
+	}
+  $("#text_ad_text_title").on('keyup change',function(){
+	var txt = document.getElementById("text_ad_text_title").value;
+	var txtlength = document.getElementById("text_ad_text_title").value.length;
+	var textcount = 25 - txtlength;
+	document.getElementById("title_counter").innerHTML = textcount;
+	if(txt == ''){
+		document.getElementById("preview_title").innerHTML = "My Title";
+	} else {
+		document.getElementById("preview_title").innerHTML = txt;
+	}
+	if(textcount < 0){
+		$("#title_counter").addClass("counter-over-limit");
+	} else {
+		$("#title_counter").removeClass("counter-over-limit");
+	}
+  });
+});
+$(document).ready(function(){
+	var txt = document.getElementById("text_ad_text_body").value;
+	var txtlength = document.getElementById("text_ad_text_body").value.length;
+	var textcount = 70 - txtlength;
+	document.getElementById("body_counter").innerHTML = textcount;
+	if(txt == ''){
+		document.getElementById("preview_body").innerHTML = "About my Company";
+	} else {
+		document.getElementById("preview_body").innerHTML = txt;
+	}
+	if(textcount < 0){
+		$("#body_counter").addClass("counter-over-limit");
+	} else {
+		$("#body_counter").removeClass("counter-over-limit");
+	}
+  $("#text_ad_text_body").on('keyup change',function(){
+	var txt = document.getElementById("text_ad_text_body").value;
+	var txtlength = document.getElementById("text_ad_text_body").value.length;
+	var textcount = 70 - txtlength;
+	document.getElementById("body_counter").innerHTML = textcount;
+	if(txt == ''){
+		document.getElementById("preview_body").innerHTML = "About my Company";
+	} else {
+		document.getElementById("preview_body").innerHTML = txt;
+	}
+	if(textcount < 0){
+		$("#body_counter").addClass("counter-over-limit");
+	} else {
+		$("#body_counter").removeClass("counter-over-limit");
+	}
+  });
+});
+<% end %>
+<% if @parsed["adType"] == "NativeAd" %>
+$(document).ready(function(){
+	var txt = document.getElementById("ad_native_title").value;
+	var txtlength = document.getElementById("ad_native_title").value.length;
+	var textcount = 25 - txtlength;
+	document.getElementById("native_title_counter").innerHTML = textcount;
+	if(txt == ''){
+		document.getElementById("message").innerHTML = "Why my company is amazing... ";
+	} else {
+		document.getElementById("message").innerHTML = txt;
+	}
+	if(textcount < 0){
+		$("#native_title_counter").addClass("counter-over-limit");
+	} else {
+		$("#native_title_counter").removeClass("counter-over-limit");
+	}
+  $("#ad_native_title").on('keyup change',function(){
+	var txt = document.getElementById("ad_native_title").value;
+	var txtlength = document.getElementById("ad_native_title").value.length;
+	var textcount = 25 - txtlength;
+	document.getElementById("native_title_counter").innerHTML = textcount;
+	if(txt == ''){
+		document.getElementById("message").innerHTML = "Why my company is amazing... ";
+	} else {
+		document.getElementById("message").innerHTML = txt;
+	}
+	if(textcount < 0){
+		$("#native_title_counter").addClass("counter-over-limit");
+	} else {
+		$("#native_title_counter").removeClass("counter-over-limit");
+	}
+  });
+});
+// native_description
+$(document).ready(function(){
+	var txt = document.getElementById("ad_native_body").value;
+	var txtlength = document.getElementById("ad_native_body").value.length;
+	var textcount = 70 - txtlength;
+	document.getElementById("native_body_counter").innerHTML = textcount;
+	if(txt == ''){
+		document.getElementById("native_description").innerHTML = "About my Company";
+	} else {
+		document.getElementById("native_description").innerHTML = txt;
+	}
+	if(textcount < 0){
+		$("#native_body_counter").addClass("counter-over-limit");
+	} else {
+		$("#native_body_counter").removeClass("counter-over-limit");
+	}
+  $("#ad_native_body").on('keyup change',function(){
+	var txt = document.getElementById("ad_native_body").value;
+	var txtlength = document.getElementById("ad_native_body").value.length;
+	var textcount = 70 - txtlength;
+	document.getElementById("native_body_counter").innerHTML = textcount;
+	if(txt == ''){
+		document.getElementById("native_description").innerHTML = "About my Company";
+	} else {
+		document.getElementById("native_description").innerHTML = txt;
+	}
+	if(textcount < 0){
+		$("#native_body_counter").addClass("counter-over-limit");
+	} else {
+		$("#native_body_counter").removeClass("counter-over-limit");
+	}
+  });
+});
+<% end %>
+    </script>
+   </head>
+  <body>
+    <div class="pcontent admaker" >
+		<input type="hidden" id="actualAdname" value="<%= @parsed['adName'] %>">
+		<input type="hidden" id="adNameExistance" value="" />
+    <div class="modal fade hide" style="width:1024px;margin-left:-513px;padding:0px 50px 50px 50px; " id="bid_pricing_suggestion">
+    <div align="right" style="cursor:pointer;" id="closemodal"  data-dismiss="modal">Close</div>
+		<% if @campaigns.present? %>
+		<div align='center'>Select a campaign to assign the Ad !</div>
+		<table width="90%">
+
+			<%
+			br=1
+			 @campaigns.each do |key,campaign|
+			 
+				%>
+				<% if br==1 %>
+				<tr>
+				<% end %>
+					<td><input type="radio" name="campaigns" class="campaigns" value="<%= key %>" onchange="setBitSuggestion('<%= key %>','<%= campaign['adId'].join(',') %>')">&nbsp;&nbsp;<%= campaign["campaignName"] %></td>
+				<% 
+				br=br+1
+				if br == 4
+
+				br=1
+				%>
+					</tr>
+
+				<%  
+				end
+				 end %>
+			</table>
+		<% else %>
+		<div align='center'>Please assign this ad to any campaign to view minimum bid price suggestion !</div>
+		<% end %>
+		</div>
+      <div class="row">
+        <div class="span12">
+          <a style="margin-bottom:9px;" class="btn btn-large" href="/ads">« Back to ad manager</a>
+        </div>
+      </div>
+      <div class="row">
+        <div style="width:596px;min-height:550px;margin-left: 130px;" class="well span7">
+	
+          <h2>Edit Ad</h2>
+           <ul style="margin-top:1px;" class="nav nav-tabs">
+<% if @parsed["adType"] == "TextAd" %>
+            <li id="new_fb_ad_btn" class="active">
+              <a data-toggle="tab" href="#new_facebook_ad_form">
+              <i class="icon-facebook-sign"></i> Text Ad
+              </a>
+            </li>
+<% end %>
+<% if @parsed["adType"] == "NativeAd" %>
+            <li id="new_pagepost_ad_btn" class="active">
+              <a data-toggle="tab" href="#new_pagepost_ad_form">
+              <i class="icon-th-list"></i> Native Ad
+              </a>
+            </li>
+<% end %>
+<% if @parsed["adType"] == "BannerAd" %>
+            <li id="new_web_ad_btn" class="active">
+              <a data-toggle="tab" href="#new_web_ad_form">
+              <i class="icon-globe"></i> Banner Ad
+              </a>
+            </li>        
+<% end %>
+          </ul>
+          <div class="tab-content">
+
+<% if @parsed["adType"] == "TextAd" %>
+
+            <div id="new_facebook_ad_form" class="tab-pane active">
+            <% #### Text Ad form starts here %>
+             <form action='' id = "new_ad" class = "form-horizontal" method='POST'>
+		    <input type='hidden' name='authenticity_token' value="<%= form_authenticity_token() %>" />
+		    <input type='hidden' name='ad[siteid]' value="<%= @parsed['siteId'] %>" />
+              <fieldset>
+                <div id="fboo" class="form">
+                  <br>
+                  <div class="control-group">
+                    <div class="control-label">
+                      Ad Name: <a rel="tooltip" data-original-title="Administrative purposes only: Give your ad a descriptive, memorable name.">[?]</a>
+                    </div>
+                    <div class="controls">
+                      <input type='text' name='ad[ad_name]' id="text_ad_name" autofocus = "autofocus" value= "<%= @parsed['adName'] %>" rel="tooltip" title="My Text ad" placeholder="My Text ad" maxlength="200" onkeyup ="displayAd(this.id)"  onkeydown="displayAd(this.id)" class="req" onblur="validate(this.id,'AdNameError')">
+                    </div>
+			<div class="error" id="AdNameError"></div>
+                  </div>
+                  <div class="control-group">
+                    <div class="control-label">
+                      Headline: <a rel="tooltip" data-original-title="Give your ad a clear headline so people can associate your ad with your URL.">[?]</a>
+                    </div>
+                    <div class="controls">
+                      <input type='text' name='ad[headline]' id="text_ad_text_title" value= "<%= @parsed['adHeadline'] %>" rel="tooltip"  onkeyup ="displayAd(this.id)"  onkeydown="displayAd(this.id)" class="req length" onblur="validate(this.id,'HeadeLineError')"/>
+                    </div>
+                    <small style="font-size:10px;color:#999;margin-top:3px;" class="help-inline"><span id="title_counter">25</span> characters left.</small>
+		    <div class="error" id="HeadeLineError"></div>
+                  </div>
+                  <div class="control-group">
+                    <div class="control-label">
+                      Destination URL: <a rel="tooltip" data-original-title="When people click on your ad, they will land on the destination you put here.">[?]</a>
+                    </div>
+                    <div class="controls">
+                      <input type='text' name='ad[destination_url]' id="text_destination_url" value= "<%= @parsed['adDestinationUrl'] %>" rel="tooltip" title="http://www.myapplicationone.com" placeholder="http://www.myapplicationone.com" data-target = "utm-builder" data-trigger = "fb_ad_utm_show_link"  class="req url length" onblur="validate(this.id,'DestUrlError')"/>
+                    </div>
+		<div class="error" id="DestUrlError"></div>
+                  </div>
+                  <div class="control-group">
+                    <div class="control-label">
+                      Display URL: <a rel="tooltip" data-original-title="Display URLs are meant to give users a clear idea of what page they'll arrive at when they click an ad.">[?]</a>
+                    </div>
+                    <div class="controls">
+                     <input type='text' name='ad[display_url]' id="text_display_url" value= "<%= @parsed['adDisplayUrl'] %>" rel="tooltip" title="http://www.myapplicationone.com" placeholder="http://www.myapplicationone.com" data-target = "utm-builder" data-trigger = "utm-builder"  class="req url length" onblur="validate(this.id,'DisplayUrlError')"/>
+                    </div>
+		<div class="error" id="DisplayUrlError"></div>
+                  </div>
+                  <div class="control-group">
+                    <div class="control-label">
+                      Text: <a rel="tooltip" data-original-title="Tell people a bit more about your URL. Make sure to make it clear what you're promoting.">[?]</a>
+                    </div>        
+                    <div class="controls">
+                      <textarea style = "height:100px;width:80%" id = "text_ad_text_body" name='ad[text]'  onkeyup ="displayAd(this.id)"  onkeydown="displayAd(this.id)" class="req length" onblur="validate(this.id,'TextError')"><%= @parsed['adText'] %></textarea>
+                      
+                    </div>
+                    <small style="margin-left:160px;font-size:10px;color:#999;margin-top:3px;" class="help-inline"><span id="body_counter">70</span> characters left.</small>
+		<div class="error" id="TextError"></div>
+                  </div>
+                <div class="actions form-actions">
+				<div id='Notice'  style="color:red"></div><br>
+	            <input type='hidden' value='TextAd' id='ad_type' name='ad[ad_type]'/>
+	            <%= text_field(:ad, :campaignid ,:id=>"textadcampaignid",:value=>"",:type=>"hidden") %>
+                    <%= text_field(:ad, :existingadids ,:id=>"textadids",:value=>"",:type=>"hidden") %>
+                    <input type="submit" value="Upload and submit for review" name="commit" class="btn btn-primary btn-large" onclick="return edittext_submitform()">
+					<input type="button" value="Cancel" class="btn  btn-large" style="color:#000" onclick="location.href='/ads/?adtype=all'">
+                  </div>
+                </div>
+              </fieldset>
+</form>
+              <% #### Text Ad form ends here %>
+            </div>
+<% end %>
+
+
+
+<% if @parsed["adType"] == "BannerAd" %>
+<div id="new_web_ad_form" class="tab-pane active">
+              <% #### banner Ad form starts here %>
+	<form action='' id = "new_ad" class = "form-horizontal" method='POST' enctype="multipart/form-data"> 
+<input type='hidden' name='authenticity_token' value="<%= form_authenticity_token() %>" />
+<input type='hidden' name='ad[siteid]' value="<%= @parsed['siteId'] %>" />
+              <fieldset id="fboo">
+                <div class="control-group">
+                  <br>
+                  <div class="control-label">
+                    Ad Name: <a rel="tooltip" data-original-title="Administrative purposes only: Give your ad a descriptive, memorable name.">[?]</a>
+                  </div>
+                  <div class="controls">
+<input type='text' name='ad[ad_name]' id="banner_ad_name" value= "<%= @parsed['adName'] %>" class="req" onblur="validate(this.id,'banner_AdNameError')">
+                  </div>
+			<div class="error" id="banner_AdNameError"></div>
+                </div>
+                <div class="control-group">
+                  <div class="control-label">
+                    Destination URL: <a rel="tooltip" data-original-title="When people click on your ad, they will land on the destination you put here.">[?]</a>
+                  </div>
+                  <div class="controls">
+
+<input type='text' name='ad[destination_url]' id="banner_destination_url" value= "<%= @parsed['adDestinationUrl'] %>" class="req url length" onblur="validate(this.id,'banner_DestUrlError')">
+                  </div>
+			<div class="error" id="banner_DestUrlError"></div> 
+                </div>
+		
+	        <div class="control-group" id="ImgFileUpload">
+            <label for="ad_Your ad (40kb max filesize)" class="control-label">Your ad (40kb max filesize)</label>
+			<input type="hidden" name="ad[changeImage]" id="changeImage" value="Old">
+            <div class="controls"> <input type="file" name="upload[datafile]" id="upload_datafile_banner"> </div>
+										<div id='banner_swffla_div' style='display:none;'>
+											<select id='banner_swffla' name='ad[ImageSizeFroSwfOrFla]' style='margin-top:15px;'>
+												<option> Select Size </option>
+												<option value='88x31'> 88x31 </option>
+												<option value='120x20'> 120x20 </option>
+												<option value='120x60'> 120x60 </option>
+												<option value='160x600'> 160x600 </option>
+												<option value='168x28'> 168x28 </option>
+												<option value='216x36'> 216x36 </option>
+												<option value='220x50'> 220x50 </option>
+												<option value='234x60'> 234x60 </option>
+												<option value='240x400'> 240x400 </option>
+												<option value='250x250'> 250x250 </option>
+												<option value='300x50'> 300x50 </option>
+												<option value='300x250'> 300x250 </option>
+												<option value='468x60'> 468x60 </option>
+												<option value='728x90'> 728x90 </option>
+												<option value='1024x90'> 1024x90 </option>
+											</select>
+										</div>
+						<div class="error" id="banner_ImageError" style='' ></div>
+					</div>
+		<div class="control-group">
+			<div class='control-label'></div>
+			<div class='controls'>
+			
+				<a href='#' id='bannerPrefImg'>Prefered Image Sizes</a>
+				<div id='bannerPrefDiv' style="margin-top:-200px;position:absolute;display:none;background:none repeat scroll 0 0 #FFFFFF;border: 2px solid; border-radius: 10px;">
+					<table class='table' id='prefImagesTable' >
+						<tr><th>Size</th><th>Style</th><th>Gif Weight</th><th>Flash Weight</th></tr><tr>
+						<td>468 x 60 </td><td> Full Banner</td><td> 20 KB</td><td> 30 KB</td></tr><tr>
+						<td>728 x 90 </td><td>Leaderboard </td><td> 25 KB</td><td> 35 KB</td></tr><tr>
+						<td>250 x 250 </td><td>Square </td><td> 25 KB</td><td> 35 KB</td></tr><tr>
+						<td>160 x 600 </td><td>Skyscraper </td><td>20 KB </td><td> 30 KB</td></tr><tr>
+						<td>240 x 400 </td><td>Fat Skyscraper </td><td>25 KB </td><td>35 KB </td></tr><tr>
+						<td>234 x 60 </td><td>Half Banner </td><td> 15 KB</td><td>20 KB </td></tr><tr>
+						<td>120 x 60 </td><td>Button </td><td>10 KB </td><td>20 KB </td></tr><tr>
+						<td>88 x 31 </td><td>Button </td><td>10 KB </td><td>10 KB </td></tr>
+					</table>
+				</div>
+			</div>
+		</div>
+<div class="control-group" align='center' id='ImagePreviewDiv'>
+	<h6>Image Preview</h6>
+	<div id='Banner_ad_div'>
+		<% if @parsed['adImageUrl'].include?(".swf") || @parsed['adImageUrl'].include?(".fla")%>
+			<% sizes = @parsed['adSize'].split("x") %>
+			<% if sizes.count == 2 %>
+				<embed id='swfFormat' width="<%= sizes[0]%>px" height="<%= sizes[1]%>px" src="/uploads/<%= @parsed['adImageUrl'] %>">
+			<% end %>
+		<% else %>
+			<img id='Banner_ad_image' src="/uploads/<%= @parsed['adImageUrl'] %>"/>
+		<% end %>
+	</div> 
+</div>
+                <div class="actions form-actions">
+				<div id='Notice'  style="color:red"></div><br>
+		      <input type='hidden' id='banner_pricing_val' name='ad[pricing_val]' value="<%= @parsed['bidType'] %>">
+						<input type='hidden' id='ImageChange_banner' value=''>
+						<input type='hidden' id='imageCode_banner' value='Ok'>
+	            <input type='hidden' value="<%= @parsed['adSize'] %>" id='bannerImageSize' name='ad[bannerImageSize]'/>
+			<input type='hidden' name='ad[filename]' value="<%= @parsed['adImageUrl'] %>">
+			<input type='hidden' name='ad[ad_type]' id="ad_type" value= "BannerAd">
+			<%= text_field(:ad, :campaignid ,:id=>"banneradcampaignid",:value=>"",:type=>"hidden") %>
+                  <%= text_field(:ad, :existingadids ,:id=>"banneradids",:value=>"",:type=>"hidden") %>
+                    	
+                      <input type="submit" value="Upload and submit for review" name="commit" class="btn btn-primary btn-large" onclick="return edit_banner_submitform()">
+						<input type="button" value="Cancel" class="btn  btn-large" style="color:#000" onclick="location.href='/ads/?adtype=all'">
+                </div>
+              </fieldset>
+              </form>
+              <% #### Banner Ad form ends here %>
+            </div>
+<% end %>
+          </div>
+        </div>
+        <div class="span3 expando ad-guidelines-new">
+          <div class="ad-guidelines expandable hide" id="web_help_text">
+            <p> <b>Ad Creative Guidelines:</b> For your ad to pass review it MUST adhere to the following guidelines:<br> </p>
+            <ol>
+              <li>Your ad must be a .gif or .jpg smaller than 40kb in filesize.</li>
+              <li>Your ad must have one of the standard sets of dimensions: 300x250, 728x35, 160x600, 468x60, or 120x600.</li>
+              <li>Your ad must include the advertiser's brand.</li>
+              <li>Your ad must have a border.</li>
+              <li>Your ad cannot imitate computer effects like scrolling or mousing over.</li>
+              <li>No animations longer than 30 seconds.</li>
+              <li>No strobe or flashing effects allowed.</li>
+              <li>Your ad and campaign must not feature or promote alcohol, anabolic steroids, drugs, financial products, gambling, adult content, or weight loss products.</li>
+            </ol>
+            <p></p>
+          </div>
+          <div class="ad-guidelines expandable " id="fb_help_text">
+            <p> <b>Facebook Creative Guidelines:</b> For your ad to pass review it MUST adhere to the following guidelines:<br> </p>
+            <ol>
+              <li>Your ad image must be a .png, .gif,.jpeg ,.swf or .jpg.</li>
+              <li>Your ad image must be <b>99x72</b> pixels.</li>
+              <li>The title must be 25 characters or fewer.</li>
+              <li>The body must be 70 characters or fewer.</li>
+              <li>Neither the title nor body text may include a word longer than 20 characters. This includes URLs so please do not use URLs in your text.</li>
+              <li>No non-latin characters, special punctuation, misspellings, or improper grammar.</li>
+            </ol>
+            <p></p>
+<% if @parsed["adType"] == "TextAd"  %>
+            <div style="position:absolute;right:-40px;top:300px">
+              <div class="pull-right facebook_ad_builder_preview"  style="margin-top:10px;background-color:#FFFFFF;width:260px">
+                <p class="sponsored">
+                  Ad Preview
+                  <img src="/assets/microphone.png" alt="Facebook_megaphone">
+                </p>
+
+<div>
+	<ul style="width: 240px;margin:10px;">
+		<li id="preview_title" style="float: none;color:blue;"><a href="">Your title</a></li>
+		<li id="preview_url" class="adunits-innerli" style="float: none; color: rgb(0, 128, 0);">http://myappone.com</li>
+		<li id="preview_body" class="adunits-innerli" style="float: none; color: rgb(0, 0, 0);">Your body text</li>
+	</ul>
+</div>
+              </div>
+            </div>
+          </div>
+<% end %>
+          <div class="ad-guidelines expandable hide" id="pagepost_help_text">
+            <p> <b>News Feed Ad Guidelines:</b> For your ad to pass review it MUST adhere to the following guidelines:<br> </p>
+            <ol>
+              <li>Your ad image must be a .png, .gif,.jpeg ,.swf or .jpg.</li>
+              <li>Your ad image must be <b>200x200</b> pixels.</li>
+              <li>The post message is optional must be 500 characters or fewer.</li>
+              <li>The link headline must be 55 characters or fewer.</li>
+              <li>The link description must be 145 characters or fewer.</li>
+              <li>No text fields may include a word longer than 20 characters. This includes URLs so please do not use URLs in your text.</li>
+              <li>No non-latin characters, special punctuation, misspellings, or improper grammar.</li>
+            </ol>
+            <p></p>
+            <div style="position:absolute;right:-72px;top:325px">
+              <div style="background:#fff;" class="pull-right pagepost_ad_builder_preview">
+                <p class="sponsored"> Native Ad Preview
+                <img src="/assets/microphone.png" alt="Facebook_megaphone"> </p>
+                <br>
+                <p style="font-size:11px;padding-left:8px;padding-right:8px;" id="message">
+                  Why my company is amazing...
+                </p>
+                <div style="background:#F7F7F7;border:1px solid #e3e3e3;height:100px;">
+                  <img width="100" height="100" class="pagepost_ad_builder_image" src="images/nfpreviewimg-3ef71b033bc3f2234dcb041c76e8efea.png">  
+                  <p style="margin-top:9px;margin-bottom:1px;" class="headline">
+                    My link headline...
+                  </p>
+                  <p style="margin-top:0;color:#80808a" class="decription">  www.domain.com </p>
+                  <p style="color:#80808a" id="native_description"> A little bit about my url... </p>
+                </div> 
+              </div>
+            </div>
+          </div>
+          <div class="ad-guidelines expandable hide" id="dynamic_fb_sidebar_help_text">
+            <p> <b>Available Macros:</b> You may use any of the following macros in your template <strong>title</strong> or <strong>body</strong>. Bear in mind that even after your product data is inserted in place of the macros, the resulting text still must adhere to the standard facebook sidebar ad guidelines (25 characters in the title; 70 in the body).<br> </p>
+            <ul>
+              <li><strong>{{ name }}</strong> - The name of your product</li>
+              <li><strong>{{ description }}</strong> - The description of your product</li>
+              <li><strong>{{ category }}</strong> - The category of your product</li>
+              <li><strong>{{ price }}</strong> - The price of your product. Be sure to add currency symbols ($) as necessary.</li>
+            </ul>
+            <p></p>
+          </div>
+            <span class="underangle"><img src="/assets/yellow.png" alt="Yellowunder"></span>
+        </div>
+          
+        <script type="text/javascript">
+          $(document).ready(function() {
+          $('#new_web_ad_btn').click(function() {
+            $('.ad-guidelines').hide();
+            $('#web_help_text').show();
+          });
+          $('#new_fb_ad_btn').click(function() {
+            $('.ad-guidelines').hide();
+            $('#fb_help_text').show();
+          });
+          $('#new_pagepost_ad_btn').click(function() {
+            $('.ad-guidelines').hide();
+            $('#pagepost_help_text').show();
+          });
+          $('#new_dynamic_fb_ad_btn').click(function() {
+            $('.ad-guidelines').hide();
+            $('#dynamic_fb_sidebar_help_text').show();
+            });
+          });
+        </script>
+      </div>
+    </div>
+      
+    <div class='modal fade hide' id='utm-builder'>
+      <div class='modal-header'>
+        <button class='close' data-dismiss='modal'>x</button>
+        <h3>Build URL with UTM parameters</h3>
+      </div>
+      <div class='modal-body'>
+        <p> 
+          <label for="Click_URL__required_">Click url (required)</label>
+          <input id="utm_click_url" name="utm_click_url" placeholder="e.g. http://www.zady.com" type="text" /> 
+        </p>
+        <p>
+          <label for="UTM_Source__required_">Utm source (required)</label>
+          <input id="utm_source" name="utm_source" placeholder="(referrer: google, facebook, twitter)" type="text" />
+        </p>
+        <p>
+          <label for="UTM_Medium__required_">Utm medium (required)</label>
+          <input id="utm_medium" name="utm_medium" placeholder="(marketing medium: cpc, banner, email)" type="text" />
+        </p>
+        <p>
+          <label for="UTM_Term">Utm term</label>
+          <input id="utm_term" name="utm_term" placeholder="(identify the paid keywords)" type="text" />
+        </p>
+        <p>
+          <label for="UTM_Content">Utm content</label>
+          <input id="utm_content" name="utm_content" placeholder="(use to differentiate ads)" type="text" />
+        </p>
+        <p>
+          <label for="UTM_Name__required_">Utm name (required)</label>
+          <input id="utm_campaign" name="utm_campaign" placeholder="(product, promo code, or slogan)" type="text" />
+        </p>
+      </div>
+      <div class='modal-footer'>
+        <a class='btn' data-dismiss='modal'>Close</a>
+        <a href="#" class="btn btn-success" id="utm_finish_button" >Finish</a>
+      </div>
+    </div>
+    <script>
+      //<![CDATA[ CPC-btn
+      
+      $(document).ready(function() {
+        $('[data-target=utm-builder]').each(function() {
+          var inputEl = $(this);
+          var triggerEl = $('#' + inputEl.data('trigger'));
+          var $modal = $('#utm-builder');
+      
+          triggerEl.click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+      
+            var url = inputEl.val();
+            var path = "";
+            var query = "";
+            var hash = "";
+            var params = {};
+            var urlCopy = url;
+            hash = urlCopy.split('#').slice(1).join('');
+            urlCopy = urlCopy.split('#')[0];
+            query = urlCopy.split('?').slice(1).join('');
+            path = urlCopy.split('?')[0];
+            if (query !== "") {
+              query.split('&').forEach(function(param) {
+                params[param.split('=')[0]] = param.split('=')[1];
+              });
+            }
+      
+            $modal.find('input[type=text]').each(function(index, input) {
+              var $input = $(input);
+              $input.val('');
+              var id = $input.attr('id');
+              if (params.hasOwnProperty(id)) {
+                $input.val(params[id]);
+                delete params[id];
+              }
+            });
+      
+            var paramString = $.param(params);
+            var baseUrl = path;
+            if (paramString !== "") {
+              baseUrl += "?" + paramString;
+            }
+            if (hash !== "") {
+              baseUrl += '#' + hash;
+            }
+      
+            $('#utm_click_url').val(baseUrl);
+            $modal.modal('show');
+          });
+      
+          $('#utm_finish_button').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+      
+            var url = $('#utm_click_url').val();
+      
+            var hash = url.split('#').slice(1).join('');
+            url = url.split('#')[0];
+      
+            var options = ["utm_source", "utm_medium", "utm_term", "utm_content", "utm_campaign"];
+            var params = [];
+            for (var i = 0; i < options.length; i++) {
+              var optionId = options[i];
+              var optionValue = $('#' + optionId).val();
+              if (optionValue !== "") {
+                params.push(optionId + '=' + optionValue);
+              }
+            }
+            var paramString = params.join('&');
+            if (paramString !== "") {
+              if (url.indexOf('?') === -1) {
+                url += '?';
+              } else {
+                url += '&';
+              }
+              url += paramString;
+            }
+            if (hash !== "") {
+              url += '#' + hash;
+            }
+            inputEl.val(url);
+            $modal.modal('hide');
+          });
+        });
+      
+      });
+      //]]>
+    </script>
+    
+  </body>
+</html>

@@ -1,0 +1,74 @@
+<link rel="stylesheet" type="text/css" href="/assets/dashboardframe.css">
+<script>
+window.onload=function(){
+	window.parent.document.getElementById('conversionsData').style.height = document.body.scrollHeight + 'px';
+    parent.iframeLoaded();
+}
+	</script>
+	<style>
+table{
+  font-size:11px;
+}
+</style>
+<table style="margin-bottom:0;" class="table table-striped table-bordered summary-table" id="dashboard-conversions-table">
+	<thead class="widget-header">
+		<tr>
+			<th> Conversion Goal Name </th>
+			<th> Type </th>
+			<th> Conversion Path </th>
+			<th> Conversion Counting </th>
+			<th> Conversions </th>
+			<!-- <th> Conversions Many Per Click </th> -->
+			<!-- <th> Total Cost </th> -->
+		</tr>
+	</thead>
+	<tbody>
+	<% if @ConversionsDataStats != nil && @ConversionsDataStats.respond_to?('each') %>
+	<% @ConversionsDataStats.each do |key,camps| %>
+	<tr>
+		<td> <%= @ConversionsDataStats[key]["ConversionDetails"]["conversionName"] %> </td>
+		<td> <%= @ConversionsDataStats[key]["ConversionDetails"]["conversionType"] %> </td>
+		<td> <%= @ConversionsDataStats[key]["ConversionDetails"]["conversionTypeValue"] %> </td>
+	 		<%
+				convCounting = @ConversionsDataStats[key]["ConversionDetails"]["conversionCounting"]
+				if convCounting == "every"
+					convCounting = "Count every conversion"
+				else
+					convCounting = "Count once per user"
+				end
+			%>
+		<td> <%= convCounting %> </td>
+		<td> <%= @ConversionsDataStats[key]["conversions"] %> </td>
+		<!--<td> <%= @ConversionsDataStats[key]["conversionsManyPerClick"] %> </td>-->
+		<!--<td> <%= @ConversionsDataStats[key]["cost"] %> </td> -->
+	</tr>
+<% end %>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan='4'>Totals</td>
+			<td> <%= @ConversionsDataTotals["totConversions"] %> </td>
+			<!--<td> <%= @ConversionsDataTotals["totConversionsManyPerClick"] %> </td>-->
+			<!--<td> <%= @ConversionsDataTotals["totCost"] %> </td>-->
+		</tr>
+	</tfoot>
+	<% else %>
+	<tr>
+		<td colspan="5">
+			No conversions are present for the site ! Create <a href="/conversions/new" target="_blank">here</a>
+		</td>
+	</tr>
+<% end %>
+</table>
+   		<div class="undernote">
+			<div>Note : The above conversions correspond to both assigned and un-assigned ads to campaigns. </div>
+			<div>
+      <i style="margin-top:-2px;" class="icon-refresh"></i> The stats are refreshed every 3 hours.
+			</div>
+   		</div>
+   		<br>
+<% if @ConversionsDataStats != nil %>
+<% session[:dashboardGraphType] = "Conversions" %>
+<% session[:dashboardTotalCost] = @ConversionsDataTotals["totCost"] %>
+<% session[:dashboardTotalConversions] = @ConversionsDataTotals["totConversions"] %>
+<% end %>

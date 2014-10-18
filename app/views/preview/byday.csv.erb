@@ -1,0 +1,51 @@
+<table>
+<tr>
+ <th>Date</th>
+ <th>Total Conversions Per Click </th>
+ <th>Total Impressions </th>
+ <th>Total Cost </th>
+ <th>Total Conversions </th>
+ <th>Total Clicks</th>
+ <th>Total Average Position </th>
+</tr>
+<%
+	totConvsManyPerClick = 0
+	totImpressions = 0
+	totCost = 0
+	totConversions = 0
+	totViewThroughConversions = 0
+	totClicks = 0
+	totAveragePosition = 0
+%>
+<% @graphDataForCamp.each do |key,byday| %>
+<%
+	totConvsManyPerClick = totConvsManyPerClick + byday["totConversionsManyPerClick"]
+	totImpressions = totImpressions + byday["totImpressions"]
+	totCost = totCost + byday["totCost"]
+	totConversions = totConversions + byday["totConversions"]
+	totViewThroughConversions = totViewThroughConversions + byday["totViewThroughConversions"]
+	totClicks = totClicks + byday["totClicks"]
+	totAveragePosition = totAveragePosition + byday["totAveragePosition"]
+%>
+  <tr>
+    <td><%= key %></td>
+    <td><%= byday["totConversionsManyPerClick"] %></td>
+    <td><%= byday["totImpressions"] %></td>
+    <td><%= byday["totCost"] %></td>
+    <td><%= byday["totConversions"] %></td>
+    <td><%= byday["totViewThroughConversions"] %></td>
+    <td><%= byday["totClicks"] %></td>
+    <td><%= byday["totAveragePosition"] %></td>
+  </tr>
+<% end %>
+<tr>
+	<td> Totals </td>
+	<td> <%= totConvsManyPerClick  %> </td>
+	<td> <%= totImpressions  %> </td>
+	<td> <%= totCost  %> </td>
+	<td> <%= totConversions  %> </td>
+	<td> <%= totViewThroughConversions  %> </td>
+	<td> <%= totClicks  %> </td>
+	<td> <%= totAveragePosition  %> </td>
+</tr>
+</table>

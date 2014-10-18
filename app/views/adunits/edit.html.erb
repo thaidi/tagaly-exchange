@@ -1,0 +1,566 @@
+<script src="/assets/jquery.paulund_modal_box.js"></script>
+<script src="https://js.stripe.com/v1/" type="text/javascript"></script>
+<%
+	adUnitName = @adunitData["adUnitName"]
+	description = @adunitData["description"]
+	backupAdType = @adunitData["backupAdType"]
+	alternateUrl = @adunitData["alternateUrl"]
+	fullBackground = @adunitData["fullBackground"]
+	price = @adunitData["price"]
+	format = @adunitData["format"]
+	adunitAdType = @adunitData["adType"]
+	styleId = @adunitData["styleId"]
+	placementId = @adunitData["placementId"][0]
+%>
+<link href="/assets/adunits.css" rel="stylesheet" type="text/css" />
+<script>
+
+	function validate(id,divId) {
+		value = $( "#" + id ).val();
+		if(divId == "nameerror") {
+			msg = "Name Field cannot be blank";
+		} else if(divId == "descriptionerror") {
+			msg = "Alternate URL Field cannot be blank";
+		} 
+		if($( "#" + id ).hasClass( "req" )) {
+			if(value.trim().length == 0) {
+				document.getElementById(divId).innerHTML = msg;
+				document.getElementById(divId).style.display = "inline";
+			} else {
+				document.getElementById(divId).innerHTML = "";
+				document.getElementById(divId).style.display = "none";
+			}
+		}
+		if($( "#" + id ).hasClass( "url" )) {
+			if(!value.match(/((?:https?\:\/\/|www\.)(?:[-a-z0-9]+\.)*[-a-z0-9]+.*)/i)) {
+				document.getElementById(divId).innerHTML = "Please give a valid URL";
+				document.getElementById(divId).style.display = "inline";
+				return false;
+			} else {
+				document.getElementById(divId).innerHTML = "";
+				document.getElementById(divId).style.display = "none";
+			}
+		}
+		if($( "#" + id ).hasClass( "numeric" )) {
+			CPC = value;
+			if(isNaN(CPC)){
+				document.getElementById("PricingError").innerHTML = "Please give only integer values";
+				document.getElementById("PricingError").style.display = "inline";
+				return false;
+			} else if (CPC < 0){
+				document.getElementById("PricingError").innerHTML = "Please give only positive integer values";
+				document.getElementById("PricingError").style.display = "inline";
+				return false;
+			} else if(CPC > 1000){
+				document.getElementById("PricingError").innerHTML = "CPC should be below $1000";
+				document.getElementById("PricingError").style.display = "inline";
+				return false;
+			}
+		}
+		if($( "#" + id ).hasClass( "length" )) {
+			if(value.length > len) {
+				document.getElementById(divId).innerHTML = lenmsg;
+				document.getElementById(divId).style.display = "inline";
+				return false;
+			} else {
+				document.getElementById(divId).innerHTML = "";
+				document.getElementById(divId).style.display = "none";
+			}
+		}
+	}
+	$(document).ready(function($) {
+
+		editformat = "<%= format %>";
+		editadType = "<%= adunitAdType %>";
+		editstyleId = "<%= styleId %>";
+		editplacementId = "<%= placementId %>";
+		editAdUnitName = "<%= adUnitName %>";
+		var adunitsname = new Array();
+		<%
+			if @adunitsTotalData.present?
+				@adunitsTotalData.each do |key, value|
+				%>
+					if( "<%= @adunitsTotalData[key]['adUnitName'] %>" != editAdUnitName ){
+						adunitsname.push('<%= @adunitsTotalData[key]["adUnitName"] %>');
+					}
+				<%
+				end
+			end
+		%>
+		var channels = new Array();
+		<%
+			if @placements.present?
+				@placements.each do |key, value|
+				%>
+					channels.push('<%= @placements[key]["placementName"] %>');
+				<%
+				end
+			end
+		%>
+		setStylePreview();
+		setFormats(editformat);
+		setBackupAds();
+		adunittypesel = $("#adunittypesel").val();
+		if(adunittypesel == "new") {
+			$("#styles").show(); $("#stylePreviewSec").show(); window.location.hash = '#styles';
+		} else { $("#styles").hide(); $("#stylePreviewSec").hide(); setIframeSrc(); }
+
+		// setIframeSrc();
+		$(".formvalues").change(function() {
+			$(".error").map(function() {
+				$(this).hide();
+				$(this).html("");
+			}).get();
+		});
+		var adType = $('input:radio[name=adunit[adtype]]:checked').val();
+		if (adType == 'TextAd' || adType == 'TextAndDisplayAd' ) { $('#divadunittypesel').show(); $('#formatsDiv').show(); $('#divNativeadunit').hide(); }
+		else if ( adType == 'DisplayAd' ) { $('#divadunittypesel').hide();  $('#formatsDiv').show(); $('#divNativeadunit').hide(); }
+		else if ( adType == 'NativeAd' ) { $('#divadunittypesel').hide();  $('#formatsDiv').hide();  $('#divNativeadunit').show();  }
+		$("#adunittype").val(adType);
+		$( "#backupads" ).change(function() {
+			setBackupAds();
+		});
+		$("input:radio[name=adunit[adtype]]").click(function() {
+			var adType = $(this).val();
+			$("#adunittype").val(adType);
+			var adType = $('input:radio[name=adunit[adtype]]:checked').val();
+			if (adType == 'TextAd' || adType == 'TextAndDisplayAd' ) { $('#divadunittypesel').show(); $('#formatsDiv').show(); $('#divNativeadunit').hide(); }
+			else if ( adType == 'DisplayAd' ) { $('#divadunittypesel').hide();  $('#formatsDiv').show(); $('#divNativeadunit').hide(); }
+			else if ( adType == 'NativeAd' ) { $('#divadunittypesel').hide();  $('#formatsDiv').hide();  $('#divNativeadunit').show();  }
+			setFormats(editformat);
+			setIframeSrc();
+		});
+		$(".stylesFeilds").change(function(){
+			setStylePreview();
+		});
+		$("#adunitformat").change(function(){
+			setIframeSrc();
+		});
+		$("#adunittypesel").change(function(){
+			adunittypesel = $(this).val();
+			if(adunittypesel == "new") {
+				$("#styles").show(); $("#stylePreviewSec").show();window.location.hash = '#styles';
+			} else { $("#styles").hide(); $("#stylePreviewSec").hide(); setIframeSrc(); }
+		});
+		$("#adunitNativeAdunitStyles").change(function(){
+			adunittypesel = $(this).val();
+			if(adunittypesel == "new") {
+				   window.location.assign("/preview/jsonParse");
+			} else { $("#styles").hide(); $("#stylePreviewSec").hide(); setIframeSrc(); }
+		});
+		$("#eCpm").change(function(){
+			eCpm = $(this).val();
+			if(isNaN(eCpm) == false){
+				if(eCpm > 0){
+					$("#PricingError").html(""); $("#PricingError").hide();
+					$(this).val(parseFloat(eCpm).toFixed(2));
+				} else { $("#PricingError").html("Please give positive integers"); $("#PricingError").show();$(this).val(""); }
+			} else { $("#PricingError").html("Please give positive integers"); $("#PricingError").show();$(this).val(""); }
+		});
+/* Creating Placements Function */
+/* Starts here*/
+		$(".createPlacements").paulund_modal_box({
+			title:"Create Channel",
+			description:"<div><center><table width='80%'><tbody><tr><td>Channel Name: </td><td><input type='text' id='placementname' value=''><div style='margin-left:0px' class='error' id='placementnamepopuperror'></div></td></tr><tr><td align='center' colspan='2'><button data-toggle='button' class='btn btn-primary' id='createplacement' type='button'>Create new</button></td></tr></tbody></table></center></div>"
+		});
+		$("#createplacement").live("click",function(event) {
+			var placementname = (document.getElementById("placementname").value).trim();
+			if(placementname.length == 0) {
+				document.getElementById("placementnamepopuperror").style.display = 'block';
+				document.getElementById("placementnamepopuperror").innerHTML = 'Channel name cannot be null';
+				return false;
+			} else {
+				if(channels.indexOf(placementname) != -1) {
+					document.getElementById("placementnamepopuperror").style.display = 'block';
+					document.getElementById("placementnamepopuperror").innerHTML = 'Name already exists';
+					return false;
+				} else {
+					var hostname = "http://"+window.location.hostname+":3000/preview/addplacement";
+					$.ajax({
+						type: "GET",
+						url: hostname,
+						data: "placementname=" + placementname,
+						success: function(data){
+							location.reload();
+						}
+					});
+				}
+			}
+		});
+		$( "#save" ).click(function() {
+			var vali = adunitValidation(adunitsname);
+			if(vali == false){
+				return false;
+			}
+			else {
+				document.getElementById("goto").value = 'no';
+				document.getElementById("adunit_form").submit();
+			}
+		});
+		$( "#saveAndGetCode" ).click(function() {
+			var vali = adunitValidation(adunitsname);
+			if(vali == false){
+				return false;
+			}
+			else {
+				document.getElementById("goto").value = 'yes';
+				document.getElementById("adunit_form").submit();
+			}
+		});
+		$("#stylesubmit").click(function(){
+			stylename = $("#stylename").val();
+			if (stylename.trim() == ""){
+				$("#stylenameerror").html("Style Name cannot be null");
+				$("#stylenameerror").show();
+				return false;
+			}
+		});
+/*  Ends here */
+	function setIframeSrc() {
+		var adType = $('input:radio[name=adunit[adtype]]:checked').val();
+		if( adType == 'NativeAd' ) { var styleId = $("#adunitNativeAdunitStyles").val(); }
+		else { var styleId = $("#adunittypesel").val(); }
+		var adunitformat = $("#adunitformat").val();
+		if (adType == 'TextAd' || adType == 'DisplayAd' || adType == 'TextAndDisplayAd') { 
+			sizes = adunitformat.split("x");
+		}
+		if (styleId != "new" && adunitformat != "") {
+			if (adType == 'TextAd') { src = "/preview/?size=" + adunitformat + "&styleId=" + styleId ; }
+			else if ( adType == 'DisplayAd' ) { src = "/preview/?img=" + adunitformat ; }
+			else if( adType == 'TextAndDisplayAd' ) { src = "/preview/?size=" + adunitformat + "&img=" + adunitformat + "&styleId=" + styleId ; }
+			else if( adType == 'NativeAd' ) { 
+				styledivied = styleId.split("X");
+				nsizes = styledivied[1].split("x");
+				src = "/preview/nativeStyleDisplay/"+ styledivied[0] ; 
+			}
+			else { src = ""; }
+		} else { src = ""; }
+
+		if (adType == 'TextAd' || adType == 'DisplayAd' ) { 
+			$("#adDisplayFrame").css({"width":parseInt(sizes[0])+ 30 +"px"});
+			$("#adDisplayFrame").css({"height":parseInt(sizes[1])+ 20 +"px"});
+		} else if( adType == 'TextAndDisplayAd' ) {
+			$("#adDisplayFrame").css({"width":(parseInt(sizes[0])+ 30) * 2 +"px"});
+			if(parseInt(sizes[0]) == 728 || parseInt(sizes[0]) == 1024 || parseInt(sizes[0]) == 468) {
+				$("#adDisplayFrame").css({"height":parseInt(sizes[1]) + parseInt(sizes[1]) + 40 +"px"});
+			} else {
+				$("#adDisplayFrame").css({"height":parseInt(sizes[1])+ 20 +"px"});
+			}
+		} else if( adType == 'NativeAd' ) {
+			$("#adDisplayFrame").css({"width":parseInt(nsizes[0])+ 30 +"px"});
+			$("#adDisplayFrame").css({"height":parseInt(nsizes[1])+ 20 +"px"});
+		}
+		$("#adDisplayFrame").attr("src",src);
+	}
+	function setStylePreview() {
+		styleborder = $("#styleborder").val();
+		styletitle = $("#styletitle").val();
+		stylebackground = $("#stylebackground").val();
+		styletext = $("#styletext").val();
+		styleurl = $("#styleurl").val();
+		stylefontfamily = $("#stylefontfamily").val();
+		if ($("#style_cornerstyle_0px").prop("checked")) {
+			cornerstyle = "0px";
+		} else if ($("#style_cornerstyle_6px").prop("checked")) {
+			cornerstyle = "6px";
+		}  else if ($("#style_cornerstyle_10px").prop("checked")) {
+			cornerstyle = "10px";
+		} 
+		styleUl = $("#stylePreview");
+		styleUl.css({"background-color":"#"+stylebackground});
+		styleUl.css({"border":"1px solid #"+styleborder});
+		styleUl.css({"border-radius":cornerstyle});
+		styleUl.css({"color":"#"+styletext});
+		styleUl.css({"font-family":stylefontfamily});
+		styleUl.children("ul").children('li').eq(0).css({"color":"#"+styletitle});
+		styleUl.children("ul").children('li').eq(1).css({"color":"#"+styleurl});
+	}
+	function setBackupAds() {
+		if(document.getElementById("backupads").value == "anotherURL"){
+			document.getElementById("adunitbackupads").style.display = 'block';
+			document.getElementById("adunitfullbackground").style.display = 'none';
+		} else if (document.getElementById("backupads").value == "FillSpace"){
+			document.getElementById("adunitfullbackground").style.display = 'block';
+			document.getElementById("adunitbackupads").style.display = 'none';
+		} else {
+			document.getElementById("adunitfullbackground").style.display = 'none';
+			document.getElementById("adunitbackupads").style.display = 'none';
+		}
+	}
+/* Formats For Placements Function */
+/* Starts here*/
+
+	function setFormats(editformat){
+		var textAdsOnly = { "728x90":"728 x 90 Leaderboard", "1024x90":"1024 x 90", "468x60":"468 x 60 Full Banner", "250x250":"250 x 250 Square", "240x400":"240 x 400  Fat Skyscraper", "234x60":"234 x 60  Half Banner", "160x600":"160 x 600  Skyscraper", "300x250":"300 x 250[Smart Phones only]", "320x50":"320 x 50[Smart Phones only]", "300x50":"300 x 50[Smart Phones only]" };
+		var onlyBannerAds = { "728x90":"728 x 90 Leaderboard" , "1024x90":"1024 x 90", "468x60":"468 x 60 Full Banner", "250x250":"250 x 250 Square", "240x400":"240 x 400  Fat Skyscraper", "234x60":"234 x 60  Half Banner", "160x600":"160 x 600  Skyscraper", "216x36":"216 x 36", "300x250":"300 x 250[Smart Phones only]", "320x50":"320 x 50[Smart Phones only]", "300x50":"300 x 50[Smart Phones only]", "88x31":"88 x 31  Button", "120x60":"120 x 60 Button", "120x20":"120 x 20", "168x28":"168 x 28" };
+		var adType = $('input:radio[name=adunit[adtype]]:checked').val();
+		if (adType == 'TextAd'  || adType == 'TextAndDisplayAd') { sizes = textAdsOnly; }
+		else if ( adType == 'DisplayAd' ) { sizes = onlyBannerAds; }
+		var selectobject = document.getElementById("adunitformat");
+		var sellength = selectobject.options.length;
+		selectobject.options.length = 0;
+		if (adType == 'TextAd'  || adType == 'TextAndDisplayAd' || adType == 'DisplayAd') { 
+			for(var item in sizes) {
+				if(editformat == item )  {
+					$('<option value="'+item+'" selected="selected">'+sizes[item]+'</option>').appendTo('#adunitformat'); 
+				} else {
+					$('<option value="'+item+'" >'+sizes[item]+'</option>').appendTo('#adunitformat');
+				}
+			}
+		}
+	}
+/*  Ends here */
+
+	});
+</script>
+<style>
+	.icon-img{ background:url('/assets/nicEditorIcons.gif') no-repeat scroll -17px 0px #FFF;width:20px;height:20px;float:left; }
+	.icon-bold { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -53px 0px #FFF;width:20px;height:20px;float:left; }
+	.icon-italic { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -125px 0px #FFF;width:20px;height:20px;float:left; }
+	.icon-underline { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -341px 0px #FFF;width:20px;height:20px;float:left; }
+	.icon-fontcolor { background:url('/assets/nicEditorIcons.gif') no-repeat scroll -35px 0px #FFF;width:20px;height:20px;float:left; }
+	.main-adtype { height:20px; margin:10px; }
+	.inner-adtype { float:left; margin:0px 10px; }
+	.adtype{ float:left; }
+	.adtype-text{ margin:3px 20px; }
+	.adunit-section{ display:none; }
+	.show{ display:block; }
+	.nativeAdStyleSelect { border: 2px solid #000000; }
+	.template-placeholder { height:100px; margin:5px;}
+	.layout-type-class { float:left; padding:3px; margin:5px;}
+	.layout-type-class:hover { border: 3px solid #DDDDDD; }
+	.selected { border: 3px solid #000000; }
+	.selected:hover { border: 3px solid #000000; }
+	.controls.side { float:left; }
+	#code-table td { vertical-align:top; }
+	table td { vertical-align:top; }
+	.nativeAds-preview{ width:300px;height:130px;margin:10px;border-radius:10px;padding:20px 10px 12px 10px; }
+	#nativeads_step1 td { vertical-align:middle; }
+</style>
+
+<div class="span12" id='maindiv'>
+<form action="" method="post" class="adunit_form" id="adunit_form" >
+<input type="hidden" value="<%= form_authenticity_token() %>" name="authenticity_token" id="style_authenticity_token">
+	<section>
+    <header>   <h2>Create Ad Placements</h2>   </header>
+		<div class='main-adtype'>
+<% if adunitAdType == "TextAd" %>
+			<div class='inner-adtype' id='inner_adtype_textad'>
+				<div class='adtype'> <label><input type='radio' id='adunit_adtype_TextAd' name='adunit[adtype]' value='TextAd' checked/> Text Ad </label> </div>
+			</div>
+<% elsif adunitAdType == "DisplayAd" %>
+			<div class='inner-adtype' id='inner_adtype_displayad'>
+				<div class='adtype'> <label> <input type='radio' id='adunit_adtype_DisplayAd' name='adunit[adtype]' value='DisplayAd' checked/>  Display Ad </label></div>
+			</div>
+<% elsif adunitAdType == "TextAndDisplayAd" %>
+			<div class='inner-adtype' id='inner_adtype_textanddisplayad'>
+				<div class='adtype'>  <label><input type='radio' id='adunit_adtype_TextAndDisplayAd' name='adunit[adtype]' value='TextAndDisplayAd' checked/>Text & Display Ad </label> </div>
+			</div>
+<% elsif adunitAdType == "NativeAd" %>
+			<div class='inner-adtype' id='inner_adtype_nativead'>
+				<div class='adtype'>  <label><input type='radio' id='adunit_adtype_NativeAd' name='adunit[adtype]' value='NativeAd' checked/> Native Ad </label> </div>
+			</div>
+<% end %>
+		</div>
+	</section>
+<section class=''>
+<div style='width:95%;padding:25px;'>
+<input type='hidden' value='' id='goto' name='goto'/>
+<input type='hidden' id='adunittype' value='TextAd'/>
+<% if flash[:notice].present? %>
+<div style='color:red;'><center><%= flash[:notice] %></center></div>
+<% end %>
+<table width='100%' id='code-table'>
+	<tr>
+		<td>
+      <label for="txtName">Name:</label>
+      <input type="text" style='width: 241px; height:33px;' value="<%= adUnitName %>" name="adunit[name]" maxlength="200" id="adunitname" class="formvalues req" onblur="validate(this.id,'nameerror')" required  ><br>
+			<div class="error" id="nameerror"></div>
+
+			<label for="txtdescription">Description:</label>
+			<textarea name="adunit[description]" style="height: 75px; width: 240px;" rows="4" cols="50" class="formvalues req" onblur="validate(this.id,'descriptionerror')" id="adunitdescription" required ><%= description %></textarea><br>
+			<div class="error" id="descriptionerror" style='margin-left:0px'></div>
+
+		</td>
+		<td>
+			<div style='position: relative; width: 200px;'>
+				<label for="txtbackupads">Channels:</label>
+				<a href='#' class="createPlacements">Create new Channel</a>
+				<select id="adunitPlacementId" name="adunit[placementId][]"  class='formvalues' >
+					<% if @placements.present? %>
+						<% @placements.each do |key, value| %>
+							<% if placementId == key %>
+								<option value="<%= key %>" selected="selected"><%= value["placementName"] %></option>
+							<% else %>
+								<option value="<%= key %>" ><%= value["placementName"] %></option>
+							<% end %>
+						<% end %>
+					<% end %>
+				</select>
+				<div class="error" id="placementerror" style='margin-left:0px'></div>
+			</div>
+			<label for="txtbackupads">Backup Ads:</label>
+			<select id="backupads" name="adunit[backupadtype]" class='formvalues'  >
+				<option selected="selected" value="Blank" <% if backupAdType == "Blank" %> selected='selected' <% end %> >Show blank space</option>
+				<option value="anotherURL" <% if backupAdType == "anotherURL" %> selected='selected' <% end %> >Show other ads from another URL</option>
+				<option value="FillSpace" <% if backupAdType == "FillSpace" %> selected='selected' <% end %> >Fill Space with a Solid color</option>
+			</select>
+			<input type="url" style="width: 220px; height:33px;display:none;"  class="formvalues req url" onblur="validate(this.id,'alternateerror')" name="adunit[alternate]" id="adunitbackupads"  placeholder="Alternate URL"  value="<%= alternateUrl %>">
+			<div class="error" style='margin:0px;' id="alternateerror"></div>
+			<input type="text" id='adunitfullbackground' class="color formvalues" name="adunit[fullbackground]" autocomplete="off" value="<%= fullBackground %>">
+			<div class="error" id="fullbackgrounderror"></div>
+		</td>
+		<td>
+			<div id='divadunittypesel'>
+					<label for="slcType">Styles:</label>
+					<select id="adunittypesel" name="adunit[styleid]"  class='formvalues' >
+						<% if @allstyles.present? %>
+							<% @allstyles.each do |key, value| %>
+							<% value['name'] = Rack::Utils.unescape(value['name']) %> 
+									<% if styleId.to_i == key.to_i %>
+										<option value="<%= key %>" selected="selected"><%= value["name"] %></option>
+									<% else %>
+										<option value="<%= key %>"><%= value["name"] %></option>
+									<% end %>
+							<% end %>
+						<% end %>
+						<option value='new'>Create new Style</option>
+					</select>
+			</div>
+			<div id='divNativeadunit'>
+					<label for="slcType">Styles:</label>
+					<select id="adunitNativeAdunitStyles" name="adunit[nativestyleid]"  class='formvalues' >
+						<% if @allNativestyles.present? %>
+							<% @allNativestyles.each do |key, value| %>
+								<% value['styleName'] = Rack::Utils.unescape(value['styleName']) %>
+								<% if styleId == key %>
+									<option value="<%= key %>X<%= value['format'] %>" selected="selected"><%= value["styleName"] %></option>
+								<% else %>
+									<option value="<%= key %>X<%= value['format'] %>"><%= value["styleName"] %></option>
+								<% end %>
+							<% end %>
+						<% end %>
+						<option value='new'>Create new Style</option>
+					</select>
+			</div>
+			<div class="error" style='margin:0px;' id="styleiderror"></div>
+
+			<div id="formatsDiv" style='position: relative; width: 200px;'>
+				<label for="slcFormat">Format:</label>
+				<select name="adunit[format]" id='adunitformat'  class='formvalues' >
+				</select>
+				<div class="error" id="formaterror" style='margin:0px;'></div>
+			</div>		
+
+			<label for="slcType">Bid Strategy: <a rel="tooltip" title="Tagaly offers several bid strategies depending on whether you want to focus on getting clicks, impressions, or conversions">[?]</a></label>
+
+			<div class="side" style="height:20px;">
+				<div style="float:left;">eCpm: </div>
+				<div style="float:left;margin:-12px 16px;">$ <input type='text'  class="formvalues req numeric" onblur="validate(this.id,'PricingError')"  placeholder='eCpm' id='eCpm' name="adunit[bidStrategy]" style='width:60px;margin-top:10px' value="<%= price %>"/></div>
+			</div>
+			<br>
+			<div class="error" id="PricingError" style="margin:8px 0px;"></div>
+		</td>
+	</tr>
+	<tr>
+		<td colspan='3' align='center'>
+        <input type="button" value="Save" class="btn btn-success submit" id='save' style='margin:10px'>
+        <input type="button" value="Save and Get Code" class="btn btn-success submit" id='saveAndGetCode'>
+		</td>
+	</tr>
+</table>
+</div>
+</form>
+</section>
+<section class='adDisplaySec'>
+	<iframe id='adDisplayFrame' src='' frameBorder="0" style='max-width:820px;'></iframe>
+</section>
+<section id='styles'>
+<form method="post" id="new_style" class="form standard" action="/styles/new" accept-charset="UTF-8"><div style="margin:0;padding:0;display:inline">
+		<table style='width:100%;margin:20px;'>	
+			<tbody><tr>
+				<td>
+			<label class="control-label" for="segment_name"> Style Name </label>  
+			<input type="text" size="30" class='stylesFeilds' name="style[styleName]" id="stylename" autofocus="autofocus">
+			<div id="stylenameerror" class="error"></div>
+				</td>
+				<td>
+			<label class="control-label" for="segment_name"> Border </label>  
+			<input type="text" size="30" name="style[BorderColor]" id="styleborder" class="color stylesFeilds" autocomplete="off" style="background-image: none; background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);" value='FFFFFF'>
+			<div id="bordererror" class="error"></div>
+				</td>
+				<td>
+			<label class="control-label" for="segment_name"> Title </label>  
+			<input type="text" value="0000FF" size="30"  name="style[TitleColor]" id="styletitle" class="color stylesFeilds" autocomplete="off" style="background-image: none; background-color: rgb(0, 0, 255); color: rgb(255, 255, 255);">
+			<div id="titleerror" class="error"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+			<label class="control-label" for="segment_name"> Background </label>  
+			<input type="text" size="30"  name="style[BackgroundColor]" id="stylebackground" class="color stylesFeilds" autocomplete="off" style="background-image: none; background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);" value='FFFFFF'>
+			<div id="backgrounderror" class="error"></div>
+				</td>
+				<td>
+			<label class="control-label" for="segment_name"> Text </label>  
+			<input type="text" value="000000"  size="30" name="style[TextColor]" id="styletext" class="color stylesFeilds" autocomplete="off" style="background-image: none; background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">
+			<div id="texterror" class="error"></div>
+				</td>
+				<td>
+			<label class="control-label" for="segment_name"> Url </label>  
+			<input type="text" value="008000" size="30"  name="style[urlColor]" id="styleurl" class="color stylesFeilds" autocomplete="off" style="background-image: none; background-color: rgb(0, 128, 0); color: rgb(255, 255, 255);">
+			<div id="urlerror" class="error"></div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">          
+							<label class="control-label" for="segment_name"> Corner Style </label>  
+<div>
+								<div style="margin:5px 0px;float:left;width:120px">
+							<div style="float:left;">
+								<input type="radio" value="0px" name="style[cornerstyle]" id="style_cornerstyle_0px" class='stylesFeilds' checked="checked">
+							</div>
+							<div style="border: 1px solid #000000;height:25px;width:80px;margin-left:18px">
+							</div>
+							</div><div style="margin:5px 0px;float:left;width:120px">
+							<div style="float:left;">
+								<input type="radio" value="6px" name="style[cornerstyle]" id="style_cornerstyle_6px" class='stylesFeilds'>
+							</div>
+							<div style="border: 1px solid #000000;height:25px;width:80px;border-radius:6px;margin-left:18px">
+							</div>
+			</div><div style="margin:5px 0px;float:left;width:120px">
+							<div style="float:left;">
+								<input type="radio" value="10px" name="style[cornerstyle]" id="style_cornerstyle_10px" class='stylesFeilds'>
+							</div>
+							<div style="border: 1px solid #000000;height:25px;width:80px;border-radius:6px;margin-left:18px">
+							</div>
+</div>
+				</div></td>
+				<td>	
+					<label class="control-label" for="segment_name"> Font Family </label> 
+						<select style="width:210px;" id="stylefontfamily" name="style[fontfamily]" class="stylesFeilds" >
+							<option value="Default font family">Default font family</option>
+							<option value="Arial">Arial</option>
+							<option value="Times">Times</option>
+							<option value="Verdana">Verdana</option>
+							<option value="Open Sans">Open Sans</option>
+							<option value="Open Sans Light">Open Sans Light</option>
+							<option value="Roboto Light">Roboto Light</option>
+							<option value="Ubuntu Light">Ubuntu Light</option>
+							<option value="Lora">Lora</option>
+						</select>
+						<div id="fontfamilyerror" class="error"></div>
+				</td>
+			</tr>
+			<tr><td colspan="3">
+                        <center>
+<input type="hidden" value="textAd" name="style[styletype]">
+				<input type="hidden" value="/placements/new/" name='style[redirect]'/>
+		    <input type="hidden" value="<%= form_authenticity_token() %>" name="authenticity_token" id="style_authenticity_token">
+		    <input type="submit" value="Add Style" name="save" id="stylesubmit" class="btn btn-primary btn-large">
+</center></td>
+			</tr>
+		</tbody></table>
+</form>
+</section>
+</div>

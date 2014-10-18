@@ -1,0 +1,240 @@
+<%
+  #### Site Tracking Tag Page
+  
+  #### Code to check the tracking tag code 
+	require 'json'
+	require 'open-uri'
+	result=''
+	if @siteurl != nil
+  	begin
+          result = open(@siteurl).read
+          rescue OpenURI::HTTPError
+          @failure =""
+          rescue SocketError
+          @failure =""
+          rescue Exception
+          @failure =""
+          else
+          @success =""
+          end
+        else
+          result='no site'
+        end
+        
+
+%>
+   <script type="text/javascript">
+     $(document).ready(function() {
+      $('#copy-tag-button').zclip({
+          path: 'http://www.steamdev.com/zclip/js/ZeroClipboard.swf',
+          copy: function() {
+    return $('#tagscript').text();
+       }
+      });
+     });
+     $( document ).ready(function() {
+	document.getElementById("selectedsite").innerHTML="<%= @sitename %>"
+     });
+
+     function showtag(siteid,sitename,siteurl){
+     str=document.getElementById("tagscript").innerHTML;
+     str = str.replace(/<\/?span[^>]*>/g,"");
+     	document.getElementById("scriptcode").value=str;
+     }
+     function validatetagemails(){
+     	var emails=document.getElementById("email_addresses").value ;
+     	//emailsTrimmed=emails.slice(0,-1);
+     	var emailsArr=emails.split(",");
+     	 var noofAts=emails.split("@").length - 1;
+     	if((emailsArr.length < 1 && noofAts >1) || emails.indexOf(";") != -1 )
+     	{
+     		// Check if the emails are seperated using comma 
+     		document.getElementById("emailserror").style.display="block" ;
+     		document.getElementById("emailserror").innerHTML="Please make sure that the emails are comma (,) seperated ! ";
+     		return false;
+     	}
+     	else
+     	{
+     	   for(var i=0 ; i<emailsArr.length ; i++)
+     	   {
+		   		 var x=emailsArr[i].trim();
+		   		 var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		       //var atpos=x.indexOf("@");
+		       //var dotpos=x.lastIndexOf(".");
+		       if (!filter.test(x))
+		       {
+		          document.getElementById("emailserror").style.display="block";
+		          document.getElementById("emailserror").innerHTML="Please enter valid email ids!";
+		          return false;
+		        }
+		        else
+		        {
+		           
+		           document.getElementById("emailserror").style.display="none";
+		        }
+     			}
+     			return true ;
+     	}
+     }
+</script>
+
+    <div align='center' style='background: none repeat scroll 0 0 #FFE4C4;color: green;'>
+	<%= flash[:notice] %>
+    </div>
+    <div class="modal fade hide" id="email_developer_modal">
+   <div class="modal-header">
+     <button class="close" data-dismiss="modal">X</button>
+     <h3>
+       <i class="icon-tag"></i> Email my tag to my developer
+     </h3>
+   </div>
+   <%= 
+   #### Track code email form starts here ####
+   form_tag("/sites/tag", method: "post") do %>
+     <%= text_field_tag(:authenticity_token,form_authenticity_token(),:type=>"hidden") %>
+     <%= text_field_tag(:scriptcode,nil,:type=>"hidden",:id=>"scriptcode") %>
+     <%= text_field_tag(:sitename1,nil,:type=>"hidden",:id=>"sitename1",:value=>@sitename) %>
+     <%= text_field_tag(:email1,session[:email],:type=>"hidden",:id=>"email1") %>
+     <div class="modal-body">
+       <p>
+      Enter a comma-separated list of email addresses.
+       </p>
+       <%= text_field_tag(:email_addresses,nil,:required=>"required") %>
+       <div class="error" id="emailserror" style="display:none;"></div>
+     </div>
+     <div class="modal-footer">
+       <input class="btn btn-primary btn-large pull-right" name="commit" onclick="return validatetagemails();" type="submit" value="Send email" />
+       <a class="back-button btn btn-large pull-left" data-dismiss="modal">
+      Cancel
+       </a>
+     </div>
+   <% end 
+   #### Track code email form ends here
+   %>
+    </div>
+    <div class="pcontent">
+    <div align="center"><% if params[:aft] == '1' %> <p>Website submitted successfully. Get your site tag below.</p> <% end %></div>
+   <div class="widget">
+     <div class="widget-header">
+       <div style="height:20px;font-size:11px;" class="pull-right">
+      <span>Your Site URL: <a rel="tooltip" data-original-title="This is your site url that's used for connecting to 3rd-party applications.">[?]</a> 
+      <span style="color:#999;" id="@siteurl"></span><%= @siteurl %></span>
+       </div>
+       <h3>
+      <i class="icon-tag"> </i> 
+      
+      
+      &nbsp; 
+      <%
+            src=Tagaly3::TAG
+            #src=src + "/trackingmo.js"
+            #http://54.225.91.236/trackingmo.js
+          %>
+      <%
+	       # scriptcode='<script type="text/javascript"> var tpid=' + @siteid.to_s + ' ;</script> <script src="http://54.225.91.236/trackingmo.js"></script>'
+	scriptcode=src.to_s + "/retargetPixel.php?tpid="+@siteid.to_s  
+	
+	#scriptcode="var tpid="+@siteid.to_s+" ;"  
+%>
+<%
+        if result.include? scriptcode
+        %>
+     
+          Your Site Tracking Tag  
+       <%
+        else
+       %>
+          Step 2 of 2 - Install Your Site Tracking Tag
+       <% end %>
+     <i rel="tooltip" class="icon-question-sign" data-original-title="The site tracking tag is a piece of code you add to your web site in order to add visitors to your retargeting lists and to track conversion goals for your campaigns."></i>
+     </h3>
+   </div>
+   <div class="widget-content">
+     <div class="field control-group">
+       <ul style="text-align:left;margin-bottom:0px;" class="nav nav-tabs sego trust">
+      <li style="margin-left:0;" class="span3 active">
+        <a data-toggle="tab" href="#tab1">
+          <h2 id="stat-impression-total">Web Site</h2>
+          <h4><small><b>INSTALL INSTRUCTIONS</b></small></h4>
+        </a>
+      </li>
+       </ul>
+       <div class="tab-content">
+      <div style="border:1px solid #ddd;border-radius:0 0 5px 5px;border-top:0;box-shadow: 0px 1px 1px rgba(66, 66, 66, 0.1);padding:20px 10px 10px;margin-bottom:10px;" id="tab1" class="tab-pane active">  
+        <p>The Javascript code below is needed to cookie visitors and track conversions. To add it to your site, click the button below to copy it to your clipboard.  Then paste it into your site code on EVERY page, just before the closing "body" tag.</p>
+        <div style="margin-top:15px;" id="copy-tag">
+          <div class="btn" id="copy-tag-button">
+         <i class="icon-paste"></i>
+         Copy tag to clipboard
+          </div>
+          <br><br>
+          <div style="text-align:left;"> 
+          <%
+            src=Tagaly3::TAG
+            #src=src + "/trackingmo.js"
+            #http://54.225.91.236/trackingmo.js
+          %>
+          <!--<pre style="text-align:left;border:1px solid #bbb;box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1) inset;" id="tagscript">&lt;script type="text/javascript"&gt; var tpid=<span id='@siteid'><%=@siteid%></span> ;&lt;/script&gt;&nbsp;&lt;script src="<%= src %>"&gt;&lt;/script&gt;
+         </pre>-->
+
+         <!-- Site tracking tag -->
+         <pre style="text-align:left;border:1px solid #bbb;box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1) inset;" id="tagscript">
+         	&lt;iframe  id="<%=@siteid%>" height="0" width="0" frameborder="no" &gt;&lt;/iframe&gt;
+         	&lt;script type='text/javascript'&gt;
+         	document.getElementById("<%=@siteid%>").src = "<%= src %>/retargetPixel.php?tpid=<%=@siteid%>&url="+ window.location.href;
+         	&lt;/script&gt;
+					</pre>
+<!-- Site tracking tag -->
+         <div id="email_tag_button" class="">
+           <p class="pull-left">
+             
+             <p class="pull-right">
+            <a data-toggle="modal" class="btn btn-success" href="#email_developer_modal" onclick="showtag('<%=@siteid%>','<%=@sitename%>','<%= @siteurl %>')"><i style="margin-top:3px;" class="icon-share"></i> Email this tag to my developer</a> 
+             </p>
+           </p>
+         </div>
+        </div>
+      </div>
+       </div>
+     </div>
+     <%
+      if result.include? scriptcode
+      %>
+      <div style="padding-top:10px;margin-top:10px;" class="alert alert-success">
+      <b>Tracking status:</b> 
+      <span class="tracking-pixel-status active">
+        <i class="icon-ok"></i>
+        TRACKING INSTALLED
+      </span>
+        
+       </div>
+       <%
+      else
+      %>
+       <div class="alert">
+      <b>Tracking status:</b> 
+      <span class="tracking-pixel-status inactive">
+      
+        <i>TRACKING TAG NOT YET ACTIVE ON "<%= @siteurl %>"</i>
+      </span>
+      <p>
+      
+        We will notify you as soon as the Tagaly tracking code begins cookieing users on your website. This generally happens an hour or two after you install our tag. If you have not yet installed the tracking tag, please follow the instructions above.
+      
+      </p>
+      
+       </div>
+        <% end %>
+     	   <%
+      if result.include? scriptcode
+      
+      else
+      %>
+   
+       
+       <a href="/dashboard" style="clear:both;margin-top:0px;" class="btn btn-large btn-primary pull-right">Next: Get started »</a>
+       <% end %>
+     </div> 
+   </div>
+    </div>
+

@@ -1,0 +1,263 @@
+<link rel="stylesheet" href="/assets/bsa.min.css" type="text/css" />
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<% if params[:id] %>
+<script>
+window.onload = function() {
+    parent.iframeLoaded("<%= params[:id] %>","<%= params[:adType] %>");
+}
+</script>
+<% end %>
+
+<style>
+
+.edit {
+background-color: black;
+color: white; 
+border-radius: 5px 5px 5px 5px; 
+margin-top: -32px; 
+position: relative; 
+right: 11px; 
+top: -0px; 
+transition: opacity 0.5s ease 0s;
+width: 25px; 
+margin-left: 0px;
+padding: 2px;
+}
+.delete {
+background-color: black;
+color: white; 
+border-radius: 5px 5px 5px 5px; 
+margin-top: -32px; 
+position: relative; 
+right: -22px; 
+top: -4px;
+transition: opacity 0.5s ease 0s;
+width: 40px; 
+margin-left: -18px;
+padding: 2px;
+}
+			.nav-tabs 
+				{
+					border-bottom: 0px solid ;
+				}
+			.contentwrap 
+				{
+					max-width: 100%;
+				}
+			ul.balance li
+				{
+					border-left: 1px solid #E1E1E1;
+				}
+			ul.balance li:first-child 
+				{
+					border-left: medium none;
+				}	
+			ul.balance li
+				{
+					border-right: medium none;
+				}
+			ul.balance li:first-child 
+				{
+					border-right: medium none;
+				}
+			.contentwrap .content
+				{
+					padding-right: ;
+				}
+			.browsecontainer .bcpad 
+				{
+					margin: 0 0 0 0px;
+					padding: 20px;
+					width: 1018px;
+				}
+			h3 a 
+				{ 
+					font-size: 18px; 
+				}
+			h3 a:hover
+				{
+					text-decoration: none;
+				}
+			
+			.myads-beta 
+				{
+					color: #B31308;
+					font-size: 10px;
+					font-weight: normal;
+					padding-left: 4px;
+					position: relative;
+					top: -3px;
+				}
+			.pcontent
+				{
+					width: 1195px;
+				}
+			.span9 
+				{
+					width: 945px;
+				}
+			.pull-right 
+				{
+					float: left;
+				}			
+			.myads-title-bar-button 
+				{
+					font-weight: bolder;
+					padding: 0 7px 0 15px;
+				}
+			.gwt-Anchor 
+				{
+					display: inline;
+				}
+			.sma a
+				{
+					font-size:10px;
+				}	
+			.status-active 
+				{
+					color: #009900;
+				}
+			.text {
+				height: 40px;
+			}
+			body {
+					background: none repeat scroll 0 0 #ffffff;
+				}
+				
+			select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input 
+				{
+					height: 25px;
+					line-height: 14px;
+					padding: 5px 8px;
+				}
+
+input.submit.mid {
+    min-width: 115px;
+}
+
+		</style>
+
+<script>
+$(document).ready(function(){
+  $(".adZoomEdit").mouseover(function(e) {
+	var div = $(this).parent(".adZoomer");
+	div.append("<div class='edit'>Edit</div>");
+  });
+  $(".adZoomEdit").mouseout(function() {
+	$(this).parent(".adZoomer").children(".edit").remove();
+  });
+  $(".adZoomDelete").mouseover(function(e) {
+	var div = $(this).parent(".adZoomer");
+	div.append("<div class='delete'>Delete</div>");
+  });
+  $(".adZoomDelete").mouseout(function() {
+	$(this).parent(".adZoomer").children(".delete").remove();
+  });
+});
+</script>
+
+
+									<div class="span12">
+<div style="padding:5px">
+
+    <div style="float:left;"><h1>Custom Styles</h1></div>
+
+<div style="float:right">
+	<%= link_to "Create new style", { controller: "styles" , action: "new" }, class: "btn btn-success" , style:"" %>
+	<%= csrf_meta_tag %>
+</div>
+</div>
+<% @parsed.each do |key, value| %>
+<section>
+<div style="margin-bottom:15px;height:15px;">
+<div style="float: left; position: absolute; padding: 10px;"><% value['name'] = Rack::Utils.unescape(value['name']) %><%= value['name'] %></div>
+<% if value["styleType"] != "Default" %>
+
+<div style="width: 60px; float: right; margin: 8px -18px 0;" >
+<div class='adZoomer'>
+
+	<a href="/styles/<%= key %>/edit" target="_blank" class='adZoomEdit' rel="tooltip" data-original-title="edit">
+		<i  class="icon-edit"></i>
+	</a>
+
+	<a href="/styles/<%= key %>" data-method="delete" data-confirm="Are you sure you want to delete?" class='adZoomDelete' data-original-title="delete" rel="tooltip" >
+		<i class="icon-trash"></i>
+	</a>	
+</div>
+</div>
+<% end %>
+</div>
+<% if value["styleType"] == "Default" ||  value["styleType"] == "textAd" %>
+<div style='margin-left:10px'>
+	<div style='font-size:<%= value['fontsize'] %>;border:1px solid #<%= value['border'] %>;border-radius:<%= value['cornerStyle'] %>;padding:20px 10px 12px 10px;width:245px;background-color:#<%= value['background'] %>;font-family:<%= value['fontFamily'] %>;'>
+		<div style='font-size:medium;color:#<%= value['title'] %>'><u>Sample HeadLine To Check</u></div>
+		<div class="preview" style='font-size:small;margin-top:2px;color:#<%= value['url'] %>'>www.example.com<b style='margin-left:5px;margin-top:6px' class="caret"></b></div>
+		<div style='font-size:small;color:#<%= value['text'] %>'>
+			<div class='preview'>Description Line 1</div>
+			<div class='preview'>Description Line 2</div>
+		</div>
+		<div style='float:right;font-size:9px;color:grey;margin-top:-10px;'>Ads by Tagaly</div>
+	</div>
+</div>
+<% else %>
+<div class="nativeAds-preview" style="background:#<%= value['background'] %>; border:2px solid #<%= value['border'] %>;overflow: hidden;width:300px;height:150px;border-radius:<%= value['cornerStyle'] %>;margin:20px;position:relative;">
+	<ul class="nativeAdsUl" style="padding:0px;margin:0px;">
+<% if value['layoutStyle'] != '1' %>
+		<li style="padding:5px;">
+			<center>
+				<img class="nativeAdsImg" src='/assets/Sample-trans.png' style="<% if value['layoutStyle'] == '2' %>width:150px;height:80px;float:right;<% elsif value['layoutStyle'] == '3' %>width:150px;height:80px;float:left;<% else %>width:280px;height:100px;<% end %>"/>
+			</center>
+		</li>
+<% end %>
+		<li class="headline_nativeads" style="<% if value['headlineBold'] == 1  %><%= 'font-weight:bold;' %><% end %><% if value['headlineItalic'] == 1  %>font-style:italic;<% end %><% if value['headlineUnderline'] == 1 %>text-decoration:underline;<% end %>color:<%= value['headlineColor'] %>;<% if value['headlineFontSize'] != 'none'  %>font-size:<%= value['headlineFontSize'] %>;<% end %><% if value['headlineFontFamily'] != 'none'  %>font-family:<%= value['headlineFontFamily'] %>;<% else %>font-family:medium;<% end %>"> Your Headline goes here.</li>
+<% if value['layoutStyle'] == '1' %>
+		<li style="padding:5px">
+			<center>
+				<img class="nativeAdsImg" src='/assets/Sample-trans.png' style="width:280px;height:80px;"/>
+			</center>
+		</li>
+<% end %>
+		<li class="description_nativeads" style="margin-top:6.5px;<% if value['desBold'] == 1  %>font-weight:bold;<% end %><% if value['desItalic'] == 1  %>font-style:italic;<% end %><% if value['desUnderline'] == 1  %>text-decoration:underline;<% end %>color:<%= value['desColor'] %>;<% if value['desFontSize'] != 'none'  %>font-size:<%= value['desFontSize'] %>;<% end %><% if value['desFontFamily'] != 'none'  %>font-family:<%= value['desFontFamily'] %>;<% else %>font-family:small;<% end %>" class="description_nativeads"> Native ad test. Your ad description goes here with atmst 70 characters length. </li>
+	</ul>
+		<div style="font-size:9px;color:grey;right:0;bottom:0;position:absolute;">Ads by Tagaly</div>
+</div>
+
+<!--
+<div class="nativeAds-preview" style="background:#FFF;border:2px solid #FFF;overflow: hidden;width:300px;height:150px;margin:20px 0px 0px 20px">
+	<ul class="nativeAdsUl" style="padding:0px;margin:0px;">
+<% if value['layoutStyle'] != '1' %>
+		<li style="padding:5px">
+			<center>
+				<img class="nativeAdsImg" src='/assets/Sample-trans.png' style="<% if value['layoutStyle'] == '3' %>width:150px;height:80px;float:right;<% elsif value['layoutStyle'] == '4' %>width:150px;height:80px;float:left;<% else %>width:280px;height:100px;<% end %>"/>
+			</center>
+		</li>
+<% end %>
+		<li class="headline_nativeads" style="<% if value['headlineBold'] == 1  %><%= 'font-weight:bold;' %><% end %><% if value['headlineItalic'] == 1  %>font-style:italic;<% end %><% if value['headlineUnderline'] == 1  %>text-decoration:underline;<% end %>color:<%= value['headlineColor'] %>;<% if value['headlineFontSize'] != 'none'  %>font-size:<%= value['headlineFontSize'] %>;<% end %><% if value['headlineFontFamily'] != 'none'  %>font-family:<%= value['headlineFontFamily'] %>;<% else %>font-family:medium;<% end %>"> Your Headline goes here.</li>
+<% if value['layoutStyle'] == '1' %>
+		<li style="padding:5px">
+			<center>
+				<img class="nativeAdsImg" src='/assets/Sample-trans.png' style="width:280px;height:100px;"/>
+			</center>
+		</li>
+<% end %>
+		<li class="description_nativeads" style="<% if value['desBold'] == 1  %>font-weight:bold;<% end %><% if value['desItalic'] == 1  %>font-style:italic;<% end %><% if value['desUnderline'] == 1  %>text-decoration:underline;<% end %>color:<%= value['desColor'] %>;<% if value['desFontSize'] != 'none'  %>font-size:<%= value['desFontSize'] %>;<% end %><% if value['desFontFamily'] != 'none'  %>font-family:<%= value['desFontFamily'] %>;<% else %>font-family:small;<% end %>" class="description_nativeads"> Native ad test. Your ad description goes here with atmst 70 characters length. </li>
+		<li style="float:right;font-size:9px;color:grey;margin-top:-10px;margin-right:0px">Ads by Tagaly</li>
+	</ul>
+</div>
+
+<!--
+
+	<div class="nativeAds-preview" style="width:300px;height:100px;margin:10px;border:1px solid #<%= value['border'] %>;border-radius:<%= value['cornerStyle'] %>;padding:20px 10px 12px 10px;background-color:#<%= value['background'] %>;">
+	<div style="float:left"> <img src="/assets/120x60.png"> </div>
+	<ul style="padding: 0px; margin: 0px;">
+		<li class="headline_nativeads" style="<% if value['headlineBold'] == 1  %><%= 'font-weight:bold;' %><% end %><% if value['headlineItalic'] == 1  %>font-style:italic;<% end %><% if value['headlineUnderline'] == 1  %>text-decoration:underline;<% end %>color:<%= value['headlineColor'] %>;<% if value['headlineFontSize'] != 'none'  %>font-size:<%= value['headlineFontSize'] %>;<% end %><% if value['headlineFontFamily'] != 'none'  %>font-family:<%= value['headlineFontFamily'] %>;<% else %>font-family:medium;<% end %>" > Your Headline goes here.</li>
+
+		<li style="<% if value['desBold'] == 1  %>font-weight:bold;<% end %><% if value['desItalic'] == 1  %>font-style:italic;<% end %><% if value['desUnderline'] == 1  %>text-decoration:underline;<% end %>color:<%= value['desColor'] %>;<% if value['desFontSize'] != 'none'  %>font-size:<%= value['desFontSize'] %>;<% end %><% if value['desFontFamily'] != 'none'  %>font-family:<%= value['desFontFamily'] %>;<% else %>font-family:small;<% end %>" class="description_nativeads"> Native ad test. Your ad description goes here with atmst 70 characters length. </li>
+	</ul>
+</div>
+-->
+<% end %>
+</section>
+
+<% end %>
+									</div>

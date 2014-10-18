@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <p>
+    	Your colleague is using Tagaly for retargeting and media buying and sent a site tracking tag for you to install on <%= @sitename %>: <br>
+    	<br>
+    	Here is the tag: <br>
+    	<%
+    	@code=@code.gsub(/&lt;/, '<')
+    	@code=@code.gsub(/&gt;/, '>')
+    	%>
+    	<%= @code %>
+    	 <br><br>For technical details, visit our docs here if you need help installing it or run into trouble, get in touch with our developers at support@tagaly.com.<br><br><br>
+
+Tag, you're it!<br>
+- Tagaly 
+    	</p>
+    
+  </body>
+</html>
