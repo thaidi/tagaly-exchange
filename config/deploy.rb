@@ -3,13 +3,13 @@ lock '3.2.1'
 invoke :production
 set :application, 'Tagaly'
 set :repo_url, 'https://github.com/thaidi/tagaly-exchange.git'
-server '54.86.238.65', user: 'root', port: 22 , roles: %w{web app db},  ssh_options: {keys: %w{~/.ssh/tagaly}, forward_agent: true, auth_methods: %w(publickey)}
+server '54.86.238.65', user: 'root', port: 22 , roles: %w{web app db},  ssh_options: {keys: %w{~/.ssh/tagaly-ec2.pem}, forward_agent: true, auth_methods: %w(publickey)}
 set :stages, ["production"]
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
 # Default deploy_to directory is /var/www/my_app
- set :deploy_to, '/var/www/tagaly   '
+ set :deploy_to, '/var/www/tagaly/'
 
 # Default value for :scm is :git
  set :scm, :git
